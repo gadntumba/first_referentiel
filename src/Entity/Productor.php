@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\ProductorRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -79,6 +81,55 @@ class Productor
      * @ORM\Column(type="string", length=255)
      */
     private $nui;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=LevelStudy::class, inversedBy="productors")
+     */
+    private $LevelStudy;
+
+    /**
+     * @ORM\OneToMany(targetEntity=AgriculturalActivity::class, mappedBy="productor")
+     */
+    private $AgriculturalActivity;
+
+    /**
+     * @ORM\OneToMany(targetEntity=NFC::class, mappedBy="productor")
+     */
+    private $nfc;
+
+    /**
+     * @ORM\OneToMany(targetEntity=FichingActivity::class, mappedBy="productor")
+     */
+    private $fichingactivity;
+
+    /**
+     * @ORM\OneToMany(targetEntity=StockRaisingActivity::class, mappedBy="productor")
+     */
+    private $raisingactivity;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=HouseKeeping::class, inversedBy="productors")
+     */
+    private $housekeeping;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Smartphone::class, inversedBy="productors")
+     */
+    private $smartphone;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Monitor::class, inversedBy="productors")
+     */
+    private $monitor;
+
+    public function __construct()
+    {
+        $this->AgriculturalActivity = new ArrayCollection();
+        $this->nfc = new ArrayCollection();
+        $this->fichingactivity = new ArrayCollection();
+        $this->raisingactivity = new ArrayCollection();
+        $this->smartphone = new ArrayCollection();
+    }
 
     public static function validationGroups(self $productor){
         return ['create:Productor'];
@@ -169,6 +220,186 @@ class Productor
     public function setNui(string $nui): self
     {
         $this->nui = $nui;
+
+        return $this;
+    }
+
+    public function getLevelStudy(): ?LevelStudy
+    {
+        return $this->LevelStudy;
+    }
+
+    public function setLevelStudy(?LevelStudy $LevelStudy): self
+    {
+        $this->LevelStudy = $LevelStudy;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|AgriculturalActivity[]
+     */
+    public function getAgriculturalActivity(): Collection
+    {
+        return $this->AgriculturalActivity;
+    }
+
+    public function addAgriculturalActivity(AgriculturalActivity $agriculturalActivity): self
+    {
+        if (!$this->AgriculturalActivity->contains($agriculturalActivity)) {
+            $this->AgriculturalActivity[] = $agriculturalActivity;
+            $agriculturalActivity->setProductor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAgriculturalActivity(AgriculturalActivity $agriculturalActivity): self
+    {
+        if ($this->AgriculturalActivity->removeElement($agriculturalActivity)) {
+            // set the owning side to null (unless already changed)
+            if ($agriculturalActivity->getProductor() === $this) {
+                $agriculturalActivity->setProductor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|NFC[]
+     */
+    public function getNfc(): Collection
+    {
+        return $this->nfc;
+    }
+
+    public function addNfc(NFC $nfc): self
+    {
+        if (!$this->nfc->contains($nfc)) {
+            $this->nfc[] = $nfc;
+            $nfc->setProductor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNfc(NFC $nfc): self
+    {
+        if ($this->nfc->removeElement($nfc)) {
+            // set the owning side to null (unless already changed)
+            if ($nfc->getProductor() === $this) {
+                $nfc->setProductor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|FichingActivity[]
+     */
+    public function getFichingactivity(): Collection
+    {
+        return $this->fichingactivity;
+    }
+
+    public function addFichingactivity(FichingActivity $fichingactivity): self
+    {
+        if (!$this->fichingactivity->contains($fichingactivity)) {
+            $this->fichingactivity[] = $fichingactivity;
+            $fichingactivity->setProductor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFichingactivity(FichingActivity $fichingactivity): self
+    {
+        if ($this->fichingactivity->removeElement($fichingactivity)) {
+            // set the owning side to null (unless already changed)
+            if ($fichingactivity->getProductor() === $this) {
+                $fichingactivity->setProductor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|StockRaisingActivity[]
+     */
+    public function getRaisingactivity(): Collection
+    {
+        return $this->raisingactivity;
+    }
+
+    public function addRaisingactivity(StockRaisingActivity $raisingactivity): self
+    {
+        if (!$this->raisingactivity->contains($raisingactivity)) {
+            $this->raisingactivity[] = $raisingactivity;
+            $raisingactivity->setProductor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRaisingactivity(StockRaisingActivity $raisingactivity): self
+    {
+        if ($this->raisingactivity->removeElement($raisingactivity)) {
+            // set the owning side to null (unless already changed)
+            if ($raisingactivity->getProductor() === $this) {
+                $raisingactivity->setProductor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getHousekeeping(): ?HouseKeeping
+    {
+        return $this->housekeeping;
+    }
+
+    public function setHousekeeping(?HouseKeeping $housekeeping): self
+    {
+        $this->housekeeping = $housekeeping;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Smartphone[]
+     */
+    public function getSmartphone(): Collection
+    {
+        return $this->smartphone;
+    }
+
+    public function addSmartphone(Smartphone $smartphone): self
+    {
+        if (!$this->smartphone->contains($smartphone)) {
+            $this->smartphone[] = $smartphone;
+        }
+
+        return $this;
+    }
+
+    public function removeSmartphone(Smartphone $smartphone): self
+    {
+        $this->smartphone->removeElement($smartphone);
+
+        return $this;
+    }
+
+    public function getMonitor(): ?Monitor
+    {
+        return $this->monitor;
+    }
+
+    public function setMonitor(?Monitor $monitor): self
+    {
+        $this->monitor = $monitor;
 
         return $this;
     }
