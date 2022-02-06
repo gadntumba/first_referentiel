@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\HouseKeepingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,11 +21,13 @@ class HouseKeeping
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read:housecollection"})
      */
     private $NIM;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read:housecollection"})
      */
     private $reference;
 

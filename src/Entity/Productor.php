@@ -12,358 +12,43 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=ProductorRepository::class)
  * @ApiResource(
- *     normalizationContext={"groups": {"read:collection"}},
- *     collectionOperations={
- *         "get",
- *         "post"= {
- *              "validation_groups"={Productor::class, "validationGroups"}
- *          }
- *      },
- *     itemOperations={
- *         "put"={
- *            "denormalization_context"={"groups":{"write:Productor"}}  
- *          },
- *         "delete",
- *         "get"={
- *             "normalization_context"={"groups":{"read:collection", "read:item", "read:Productor"}}
- *          },
- *         "housekeeping"={
- *              "method"= "POST",
- *              "path"= "/productors/houseKeeping",
- *              "controller"= "ProductorHousekeeping::class",
- *              "openapi_context"={
- *                  "summary": "Création d'un producteur avec son menage"
+ *     normalizationContext={"groups": {"read:productorcollection"}},
+ *      collectionOperations={
+ *         "productor-create"={
+ *             "method"="POST",
+ *             "path"="/productors/houseKeeping",
+ *             "openapi_context"={
+ *                  "summary"= "Création d'un producteur avec son menage directement"
  *              }
  *          },
- *          "productor-update"={
- *              "method"= "PATCH",
- *              "path"= "/productors/{productor}",
- *              "controller"= "ProductorController::class",
- *              "openapi_context"={
- *                  "summary": "Modifier un producteur"
+ *         "post"={
+ *             "method"="POST",
+ *             "path"="/productors",
+ *             "denormalization_context"={"groups":{"write:Productor"}},
+ *             "openapi_context"={
+ *                  "summary"= "Création d'un producteur avec un menage préenregistré"
+ *              }
+ *         }
+ *      },
+ *      itemOperations={
+ *         "get",
+ *         "productor-update"={
+ *            "denormalization_context"={"groups":{"write:Productor"}},
+ *            "method"="PATCH",
+ *             "path"="/productors/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Modifier un producteur"
  *              }
  *          },
  *          "productor-delete"={
- *              "method"= "DELETE",
- *              "path"= "/productors/{productor}",
- *              "controller"= "ProductorSupController::class",
- *              "openapi_context"={
- *                  "summary": "Suppression du logiciel du producteur"
+ *            "denormalization_context"={"groups":{"write:Productor"}},
+ *            "method"="DELETE",
+ *             "path"="/productors/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Supprimer  un producteur"
  *              }
- *          },
- *          "level-study voir"={
- *              "method"= "GET",
- *              "path"= "/productors/level-study",
- *              "controller"= "ProductorLevelStudy::class",
- *              "openapi_context"={
- *                  "summary": "Voir les niveaux d'études possible"
- *              }
- *          },
- *          "level-study"={
- *              "method"= "POST",
- *              "path"= "/productors/level-study",
- *              "controller"= "ProductorLevelStudy::class",
- *              "openapi_context"={
- *                  "summary": "Ajouter un niveau d'étude"
- *           },
- *          "level-study-update"={
- *              "method"= "PATCH",
- *              "path"= "/productors/level-study/{levelStudy}",
- *              "controller"= "ProductorLevelStudy::class",
- *              "openapi_context"={
- *                  "summary": "Modifier un niveau d'étude"
- *              }
- *           },
- *          "exploite-area-view"={
- *              "method"= "GET",
- *              "path"= "api/productors/exploite-area",
- *              "controller"= "ProductorExploitedArea::class",
- *              "openapi_context"={
- *                  "summary": "Voir les zones d'exploitations"
- *           },
- *           "exploite-area-create"={
- *              "method"= "POST",
- *              "path"= "api/productors/exploite-area",
- *              "controller"= "ProductorExploitedArea::class",
- *              "openapi_context"={
- *                  "summary": "Ajouter une zone d'exploitation"
- *              }
- *           },
- *           "exploite-area-update"={
- *              "method"= "PATCH",
- *              "path"= "api/productors/exploite-area/{exploiteArea}",
- *              "controller"= "ProductorExploitedArea::class",
- *              "openapi_context"={
- *                  "summary": "Modifier une zone d'exploitation"
- *              }
- *           },
- *           "source-supply-activities-vue"={
- *              "method"= "GET",
- *              "path"= "api/productors/source-supply-activities",
- *              "controller"= "ProductorSource::class",
- *              "openapi_context"={
- *                  "summary": "Voir les sources d'approvisionnement"
- *              }
- *           },
- *           "source-supply-activities-add"={
- *              "method"= "POST",
- *              "path"= "api/productors/source-supply-activities",
- *              "controller"= "ProductorSource::class",
- *              "openapi_context"={
- *                  "summary": "Ajouter une source d'approvisionnement"
- *              }
- *           },
- *           "source-supply-activities-update"={
- *              "method"= "¨PATCH",
- *              "path"= "api/productors/source-supply-activities/{sourceSupplyActivities]",
- *              "controller"= "ProductorSource::class",
- *              "openapi_context"={
- *                  "summary": "Modifier une source d'approvisionnement"
- *              }
- *           },
- *           "fiching-activities-vue"={
- *              "method"= "GET",
- *              "path"= "api/productors/fiching-activities/types",
- *              "controller"= "ProductorFichingActivity::class",
- *              "openapi_context"={
- *                  "summary": "Voir les types de pêche"
- *              }
- *           },
- *           "fiching-activities-add"={
- *              "method"= "POST",
- *              "path"= "api/productors/fiching-activities/types",
- *              "controller"= "ProductorFichingActivity::class",
- *              "openapi_context"={
- *                  "summary": "Ajouter un type de pêche"
- *              }
- *           },
- *           "fiching-activities-update"={
- *              "method"= "PATCH",
- *              "path"= "api/productors/fiching-activities/types/{type}",
- *              "controller"= "ProductorFichingActivity::class",
- *              "openapi_context"={
- *                  "summary": "Modifier un type de pêche"
- *              }
- *           },
- *           "stock-rainsing-activities/types-vue"={
- *              "method"= "GET",
- *              "path"= "api/productors/stock-rainsing-activities/types",
- *              "controller"= "ProductorStockRainsingActivitiesTypes::class",
- *              "openapi_context"={
- *                  "summary": "Voir les types d'elevage"
- *              }
- *           },
- *           "stock-rainsing-activities/types-add"={
- *              "method"= "POST",
- *              "path"= "api/productors/stock-rainsing-activities/types",
- *              "controller"= "ProductorStockRainsingActivitiesTypes::class",
- *              "openapi_context"={
- *                  "summary": "Ajouter les types d'elevage"
- *              }
- *           },
- *           "stock-rainsing-activities/types-update"={
- *              "method"= "PATCH",
- *              "path"= "api/productors/stock-rainsing-activities/types/{type}",
- *              "controller"= "ProductorStockRainsingActivitiesTypes::class",
- *              "openapi_context"={
- *                  "summary": "Modifier un type d'elevage"
- *              }
- *           },
- *           "provinces-vue"={
- *              "method"= "GET",
- *              "path"= "api/location/provinces",
- *              "controller"= "ProductorProvinces::class",
- *              "openapi_context"={
- *                  "summary": "Voir les provinces"
- *              }
- *           },
- *           "provinces-add"={
- *              "method"= "POST",
- *              "path"= "api/location/provinces",
- *              "controller"= "ProductorProvinces::class",
- *              "openapi_context"={
- *                  "summary": "Ajouter les provinces"
- *              }
- *           },
- *           "provinces-update"={
- *              "method"= "PATCH",
- *              "path"= "api/location/provinces/{province}",
- *              "controller"= "ProductorProvinces::class",
- *              "openapi_context"={
- *                  "summary": "Modifier les provinces"
- *              }
- *           },
- *           "cities-vue"={
- *              "method"= "GET",
- *              "path"= "api/location/cities",
- *              "controller"= "ProductorCities::class",
- *              "openapi_context"={
- *                  "summary": "Voir les villes"
- *              }
- *           },
- *           "cities-add"={
- *              "method"= "POST",
- *              "path"= "api/location/cities",
- *              "controller"= "ProductorCities::class",
- *              "openapi_context"={
- *                  "summary": "Ajouter les villes"
- *              }
- *           },
- *           "cities-update"={
- *              "method"= "PATCH",
- *              "path"= "api/location/cities/{city}",
- *              "controller"= "ProductorCities::class",
- *              "openapi_context"={
- *                  "summary": "Modifier les villes"
- *              }
- *           },
- *           "territories-vue"={
- *              "method"= "GET",
- *              "path"= "api/location/territories",
- *              "controller"= "ProductorTerritories::class",
- *              "openapi_context"={
- *                  "summary": "Voir les territoires"
- *              }
- *           },
- *           "territories-add"={
- *              "method"= "POST",
- *              "path"= "api/location/territories",
- *              "controller"= "ProductorTerritories::class",
- *              "openapi_context"={
- *                  "summary": "Ajouter les territoires"
- *              }
- *           },
- *           "territories-update"={
- *              "method"= "PATCH",
- *              "path"= "api/location/territories/{territory}",
- *              "controller"= "ProductorTerritories::class",
- *              "openapi_context"={
- *                  "summary": "Modifier les territoires"
- *              }
- *           },
- *           "town-vue"={
- *              "method"= "GET",
- *              "path"= "api/location/towns",
- *              "controller"= "ProductorTown::class",
- *              "openapi_context"={
- *                  "summary": "Voir les territoires"
- *              }
- *           },
- *           "town-add"={
- *              "method"= "POST",
- *              "path"= "api/location/towns",
- *              "controller"= "ProductorTown::class",
- *              "openapi_context"={
- *                  "summary": "Ajouter les territoires"
- *              }
- *           },
- *           "town-update"={
- *              "method"= "PATCH",
- *              "path"= "api/location/towns/{town}",
- *              "controller"= "ProductorTown::class",
- *              "openapi_context"={
- *                  "summary": "Modifier les territoires"
- *              }
- *           },
- *           "sectors-vue"={
- *              "method"= "GET",
- *              "path"= "api/location/sectors",
- *              "controller"= "ProductorSectors::class",
- *              "openapi_context"={
- *                  "summary": "Voir les secteurs"
- *              }
- *           },
- *           "sectors-add"={
- *              "method"= "POST",
- *              "path"= "api/location/sectors",
- *              "controller"= "ProductorSectors::class",
- *              "openapi_context"={
- *                  "summary": "Ajouter les secteurs"
- *              }
- *           },
- *           "sectors-update"={
- *              "method"= "PATCH",
- *              "path"= "api/location/sectors/{sector}",
- *              "controller"= "ProductorSectors::class",
- *              "openapi_context"={
- *                  "summary": "Modifier les secteurs"
- *              }
- *           },
- *           "agricultural-activities-vue"={
- *              "method"= "GET",
- *              "path"= "api/productors/{productor}/agricultural-activities",
- *              "controller"= "ProductorAgriculturalActivities::class",
- *              "openapi_context"={
- *                  "summary": "Voir les activités agricoles"
- *              }
- *           },
- *           "agricultural-activities-add"={
- *              "method"= "POST",
- *              "path"= "api/productors/{productor}/agricultural-activities",
- *              "controller"= "ProductorAgriculturalActivities::class",
- *              "openapi_context"={
- *                  "summary": "Ajouter les activités agricoles"
- *              }
- *           },
- *           "agricultural-activities-update"={
- *              "method"= "PATCH",
- *              "path"= "api/productors/{productor}/agricultural-activities/{agriculturalActivitiy}",
- *              "controller"= "ProductorAgriculturalActivities::class",
- *              "openapi_context"={
- *                  "summary": "Modifier les activités agricoles"
- *              }
- *           },
- *           "fiching-activities-vue"={
- *              "method"= "GET",
- *              "path"= "api/productors/{productor}/fiching-activities",
- *              "controller"= "ProductorFichingActivities::class",
- *              "openapi_context"={
- *                  "summary": "Voir les activités pêches"
- *              }
- *           },
- *           "fiching-activities-add"={
- *              "method"= "POST",
- *              "path"= "api/productors/{productor}/fiching-activities",
- *              "controller"= "ProductorFichingActivities::class",
- *              "openapi_context"={
- *                  "summary": "Ajouter les activités pêches"
- *              }
- *           },
- *           "fiching-activities-update"={
- *              "method"= "PATCH",
- *              "path"= "api/productors/{productor}/fiching-activities/{fichingActivities}",
- *              "controller"= "ProductorFichingActivities::class",
- *              "openapi_context"={
- *                  "summary": "Modifier les activités pêches"
- *              }
- *           },
- *           "stock-raising-activities-vue"={
- *              "method"= "GET",
- *              "path"= "api/productors/{productor}/stock-raising-activities",
- *              "controller"= "ProductorStockRainsingActivities::class",
- *              "openapi_context"={
- *                  "summary": "Voir les activités d'elevage"
- *              }
- *           },
- *           "stock-raising-activities-add"={
- *              "method"= "POST",
- *              "path"= "api/productors/{productor}/stock-raising-activities",
- *              "controller"= "ProductorStockRainsingActivities::class",
- *              "openapi_context"={
- *                  "summary": "Ajouter les activités d'elevage"
- *              }
- *           },
- *           "stock-raising-activities-update"={
- *              "method"= "PATCH",
- *              "path"= "api/productors/{productor}/stock-raising-activities/{stockRaisingActivity}",
- *              "controller"= "ProductorStockRainsingActivities::class",
- *              "openapi_context"={
- *                  "summary": "Modidier les activités d'elevage"
- *              }
- *           }
- *          }
- *          }
- *     }
+ *          } 
+ *       } 
  * )
  */
 class Productor
@@ -372,7 +57,6 @@ class Productor
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:Productor","write:Productor"})
      */
     private $id;
 
@@ -432,7 +116,6 @@ class Productor
 
     /**
      * @ORM\OneToMany(targetEntity=NFC::class, mappedBy="productor")
-     * @Groups({"read:collection","write:Productor"})
      */
     private $nfc;
 
@@ -456,7 +139,6 @@ class Productor
 
     /**
      * @ORM\ManyToMany(targetEntity=Smartphone::class, inversedBy="productors")
-     * @Groups({"read:collection","write:Productor"})
      */
     private $smartphone;
 

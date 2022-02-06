@@ -4,11 +4,44 @@ namespace App\Entity;
 
 use App\Repository\SourceOfSupplyActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=SourceOfSupplyActivityRepository::class)
+ * @ApiResource(
+ *      normalizationContext={"groups": {"read:sourcecollection"}},
+ *      collectionOperations={
+ *         "source-supply-activities-vue"={
+ *             "method"="GET",
+ *             "path"="/productors/source-supply-activities",
+ *             "openapi_context"={
+ *                  "summary"= "Voir les sources d'approvisionnement"
+ *              }
+ *          },
+ *         "post"={
+ *             "method"="POST",
+ *             "path"="/productors/source-supply-activities",
+ *             "denormalization_context"={"groups":{"write:SourceOfSupplyActivity"}},
+ *             "openapi_context"={
+ *                  "summary"= "Ajouter une source d'approvisionnement"
+ *              }
+ *         }
+ *      },
+ *      itemOperations={
+ *         "get",
+ *         "source-supply-activities-update"={
+ *            "denormalization_context"={"groups":{"write:SourceOfSupplyActivity"}},
+ *            "method"="PATCH",
+ *             "path"="/productors/source-supply-activities/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Modifier une source d'approvisionnement"
+ *              }
+ *          } 
+ *       }
+ * )
  */
 class SourceOfSupplyActivity
 {
@@ -16,16 +49,19 @@ class SourceOfSupplyActivity
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read:sourcecollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"write:SourceOfSupplyActivity","read:sourcecollection"})
      */
     private $libelle;
 
     /**
      * @ORM\OneToMany(targetEntity=FichingActivity::class, mappedBy="sourceOfSupplyActivity")
+     * 
      */
     private $fichingActivities;
 

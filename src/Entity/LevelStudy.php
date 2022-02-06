@@ -4,11 +4,45 @@ namespace App\Entity;
 
 use App\Repository\LevelStudyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=LevelStudyRepository::class)
+ * @ApiResource(
+ *      normalizationContext={"groups": {"read:levelstudycollection"}},
+ *      collectionOperations={
+ *         "level-study-vue"={
+ *             "method"="GET",
+ *             "path"="/productors/level-study",
+ *             "openapi_context"={
+ *                  "summary"= "Voir les niveaux d'études"
+ *              }
+ *          },
+ *         "post"={
+ *             "method"="POST",
+ *             "path"="/productors/level-study",
+ *             "denormalization_context"={"groups":{"write:LevelStudy"}},
+ *             "openapi_context"={
+ *                  "summary"= "Ajouter un niveau d'étude"
+ *              }
+ *         }
+ *      },
+ *      itemOperations={
+ *         "get",
+ *         "level-study-update"={
+ *            "denormalization_context"={"groups":{"write:LevelStudy"}},
+ *            "method"="PATCH",
+ *             "path"="/productors/level-study/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Modifier un niveau d'étude"
+ *              }
+ *          } 
+ *       }
+ * )
+ * 
  */
 class LevelStudy
 {
@@ -16,11 +50,13 @@ class LevelStudy
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read:levelstudycollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"write:LevelStudy","read:levelstudycollection"})
      */
     private $libelle;
 

@@ -1,12 +1,47 @@
 <?php
 
 namespace App\Entity;
-
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Doctrine\Common\Collections\Collection;
 use App\Repository\FichingActivityRepository;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=FichingActivityRepository::class)
+ * @ApiResource(
+ *      normalizationContext={"groups": {"read:fichingacollection"}},
+ *      collectionOperations={
+ *         "fiching-activities-vue"={
+ *             "method"="GET",
+ *             "path"="/productors/{id}/fiching-activities",
+ *             "openapi_context"={
+ *                  "summary"= "Voir les activités pêches"
+ *              }
+ *          },
+ *         "post"={
+ *             "method"="POST",
+ *             "path"="/productors/{id}/fiching-activities",
+ *             "denormalization_context"={"groups":{"write:FichingActivity"}},
+ *             "openapi_context"={
+ *                  "summary"= "Ajouter une activité pêche"
+ *              }
+ *         }
+ *      },
+ *      itemOperations={
+ *         "get",
+ *         "fiching-activities-update"={
+ *            "denormalization_context"={"groups":{"write:FichingActivity"}},
+ *            "method"="PATCH",
+ *             "path"="/productors/{id}/fiching-activities/{fichingActivities}",
+ *             "openapi_context"={
+ *                  "summary"= "Modifier une activité pêche"
+ *              }
+ *          } 
+ *       } 
+ * )
  */
 class FichingActivity
 {
@@ -14,16 +49,19 @@ class FichingActivity
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read:fichingacollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"read:fichingacollection","write:FichingActivity"})
      */
     private $createdate;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"write:FichingActivity","read:fichingacollection"})
      */
     private $goal;
 

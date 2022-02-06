@@ -1,14 +1,46 @@
 <?php
 
 namespace App\Entity;
-
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\SectorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=SectorRepository::class)
+ * @ApiResource(
+ *      normalizationContext={"groups": {"read:sectorcollection"}},
+ *      collectionOperations={
+ *         "sector-vue"={
+ *             "method"="GET",
+ *             "path"="/location/sectors",
+ *             "openapi_context"={
+ *                  "summary"= "Voir les secteurs"
+ *              }
+ *          },
+ *         "post"={
+ *             "method"="POST",
+ *             "path"="/location/sectors",
+ *             "denormalization_context"={"groups":{"write:Sector"}},
+ *             "openapi_context"={
+ *                  "summary"= "Ajouter un secteur"
+ *              }
+ *         }
+ *      },
+ *      itemOperations={
+ *         "get",
+ *         "sector-update"={
+ *            "denormalization_context"={"groups":{"write:Sector"}},
+ *            "method"="PATCH",
+ *             "path"="/location/sectors/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Modifier un secteur"
+ *              }
+ *          } 
+ *       } 
+ * )
  */
 class Sector
 {
@@ -16,11 +48,13 @@ class Sector
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read:sectorcollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"write:Sector","read:sectorcollection"})
      */
     private $name;
 

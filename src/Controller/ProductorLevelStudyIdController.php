@@ -8,7 +8,7 @@ class ProductorLevelStudyIdController
 {
     public function __invoke(Productor $data): Productor
     {
-        $data->setLevelStudy;
+        $data->setLevelStudyId;
         return $data;
         
     }  

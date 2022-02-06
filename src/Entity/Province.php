@@ -1,14 +1,46 @@
 <?php
 
 namespace App\Entity;
-
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ProvinceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ProvinceRepository::class)
+ * @ApiResource(
+ *     normalizationContext={"groups": {"read:provincecollection"}},
+ *      collectionOperations={
+ *         "provinces-vue"={
+ *             "method"="GET",
+ *             "path"="/location/provinces",
+ *             "openapi_context"={
+ *                  "summary"= "Voir les provinces"
+ *              }
+ *          },
+ *         "post"={
+ *             "method"="POST",
+ *             "path"="/location/provinces",
+ *             "denormalization_context"={"groups":{"write:Province"}},
+ *             "openapi_context"={
+ *                  "summary"= "Ajouter une province"
+ *              }
+ *         }
+ *      },
+ *      itemOperations={
+ *         "get",
+ *         "province-update"={
+ *            "denormalization_context"={"groups":{"write:Province"}},
+ *            "method"="PATCH",
+ *             "path"="/location/provinces/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Modifier une province"
+ *              }
+ *          } 
+ *       } 
+ * )
  */
 class Province
 {
@@ -16,11 +48,13 @@ class Province
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read:provincecollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"write:Province","read:provincecollection"})
      */
     private $name;
 

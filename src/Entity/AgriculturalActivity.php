@@ -1,12 +1,46 @@
 <?php
 
 namespace App\Entity;
-
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\AgriculturalActivityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=AgriculturalActivityRepository::class)
+ * @ApiResource(
+ *      normalizationContext={"groups": {"read:agriculcollection"}},
+ *      collectionOperations={
+ *         "agriculural-activities-vue"={
+ *             "method"="GET",
+ *             "path"="/productors/{id}/agricultural-activities",
+ *             "openapi_context"={
+ *                  "summary"= "Voir les activités agricoles"
+ *              }
+ *          },
+ *         "post"={
+ *             "method"="POST",
+ *             "path"="/productors/{id}/agricultural-activities",
+ *             "denormalization_context"={"groups":{"write:AgriculturalActivity"}},
+ *             "openapi_context"={
+ *                  "summary"= "Ajouter une activité agricole"
+ *              }
+ *         }
+ *      },
+ *      itemOperations={
+ *         "get",
+ *         "agricultural-activities-update"={
+ *            "denormalization_context"={"groups":{"write:AgriculturalActivity"}},
+ *            "method"="PATCH",
+ *             "path"="/productors/{id}/agricultural-activities/{agriculturalActivitiy}",
+ *             "openapi_context"={
+ *                  "summary"= "Modifier une activité agricole"
+ *              }
+ *          } 
+ *       } 
+ * )
  */
 class AgriculturalActivity
 {
@@ -14,16 +48,19 @@ class AgriculturalActivity
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read:agriculcollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"read:agriculcollection","write:AgriculturalActivity"})
      */
     private $date;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"write:AgriculturalActivity","read:agriculcollection"})
      */
     private $goal;
 

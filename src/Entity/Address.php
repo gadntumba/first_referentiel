@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\AddressRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,21 +21,25 @@ class Address
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read:adresscollection"})
      */
     private $line;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"read:adresscollection"})
      */
     private $latitude;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"read:adresscollection"})
      */
     private $longitude;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"read:adresscollection"})
      */
     private $altitude;
 
@@ -56,11 +60,13 @@ class Address
 
     /**
      * @ORM\ManyToOne(targetEntity=Town::class, inversedBy="addresses")
+     * @Groups({"read:adresscollection"})
      */
     private $town;
 
     /**
      * @ORM\ManyToOne(targetEntity=Sector::class, inversedBy="addresses")
+     * @Groups({"read:adresscollection"})
      */
     private $sector;
 

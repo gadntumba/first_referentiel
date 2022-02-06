@@ -1,14 +1,46 @@
 <?php
 
 namespace App\Entity;
-
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TerritorryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=TerritorryRepository::class)
+ * @ApiResource(
+ *      normalizationContext={"groups": {"read:territorycollection"}},
+ *      collectionOperations={
+ *         "city-vue"={
+ *             "method"="GET",
+ *             "path"="/location/territories",
+ *             "openapi_context"={
+ *                  "summary"= "Voir les territoires"
+ *              }
+ *          },
+ *         "post"={
+ *             "method"="POST",
+ *             "path"="/location/territories",
+ *             "denormalization_context"={"groups":{"write:Territory"}},
+ *             "openapi_context"={
+ *                  "summary"= "Ajouter les territoires"
+ *              }
+ *         }
+ *      },
+ *      itemOperations={
+ *         "get",
+ *         "territory-update"={
+ *            "denormalization_context"={"groups":{"write:Territory"}},
+ *            "method"="PATCH",
+ *             "path"="/location/territories/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Modifier un territoire"
+ *              }
+ *          } 
+ *       } 
+ * )
  */
 class Territorry
 {
@@ -16,11 +48,13 @@ class Territorry
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read:territorycollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"write:Territory","read:territorycollection"})
      */
     private $name;
 
