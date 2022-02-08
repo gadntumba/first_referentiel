@@ -14,16 +14,16 @@ use Doctrine\ORM\Mapping as ORM;
  * @ApiResource(
  *      normalizationContext={"groups": {"read:sourcecollection"}},
  *      collectionOperations={
- *         "source-supply-activities-vue"={
+ *         "source-supply-activities-vue-2"={
  *             "method"="GET",
- *             "path"="/productors/source-supply-activities",
+ *             "path"="/source-supply-activities",
  *             "openapi_context"={
  *                  "summary"= "Voir les sources d'approvisionnement"
  *              }
  *          },
  *         "post"={
  *             "method"="POST",
- *             "path"="/productors/source-supply-activities",
+ *             "path"="/source-supply-activities",
  *             "denormalization_context"={"groups":{"write:SourceOfSupplyActivity"}},
  *             "openapi_context"={
  *                  "summary"= "Ajouter une source d'approvisionnement"
@@ -35,7 +35,7 @@ use Doctrine\ORM\Mapping as ORM;
  *         "source-supply-activities-update"={
  *            "denormalization_context"={"groups":{"write:SourceOfSupplyActivity"}},
  *            "method"="PATCH",
- *             "path"="/productors/source-supply-activities/{id}",
+ *             "path"="/source-supply-activities/{id}",
  *             "openapi_context"={
  *                  "summary"= "Modifier une source d'approvisionnement"
  *              }

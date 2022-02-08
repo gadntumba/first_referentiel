@@ -16,14 +16,14 @@ use Doctrine\ORM\Mapping as ORM;
  *      collectionOperations={
  *         "fiching-activities-vue"={
  *             "method"="GET",
- *             "path"="/productors/{id}/fiching-activities",
+ *             "path"="/{id}/fiching-activities",
  *             "openapi_context"={
  *                  "summary"= "Voir les activités pêches"
  *              }
  *          },
  *         "post"={
  *             "method"="POST",
- *             "path"="/productors/{id}/fiching-activities",
+ *             "path"="/{id}/fiching-activities",
  *             "denormalization_context"={"groups":{"write:FichingActivity"}},
  *             "openapi_context"={
  *                  "summary"= "Ajouter une activité pêche"
@@ -35,7 +35,7 @@ use Doctrine\ORM\Mapping as ORM;
  *         "fiching-activities-update"={
  *            "denormalization_context"={"groups":{"write:FichingActivity"}},
  *            "method"="PATCH",
- *             "path"="/productors/{id}/fiching-activities/{fichingActivities}",
+ *             "path"="/{id}/fiching-activities/{fichingActivities}",
  *             "openapi_context"={
  *                  "summary"= "Modifier une activité pêche"
  *              }

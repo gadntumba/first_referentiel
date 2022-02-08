@@ -60,11 +60,13 @@ class City
 
     /**
      * @ORM\OneToMany(targetEntity=Town::class, mappedBy="city")
+     * @Groups({"read:citycollection"})
      */
     private $towns;
 
     /**
      * @ORM\ManyToOne(targetEntity=Province::class, inversedBy="cities")
+     * @Groups({"read:citycollection"})
      */
     private $province;
 
