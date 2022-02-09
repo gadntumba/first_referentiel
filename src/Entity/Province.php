@@ -60,13 +60,11 @@ class Province
 
     /**
      * @ORM\OneToMany(targetEntity=City::class, mappedBy="province")
-     * @Groups({"read:provincecollection"})
      */
     private $cities;
 
     /**
      * @ORM\OneToMany(targetEntity=Territorry::class, mappedBy="province")
-     * @Groups({"read:provincecollection"})
      */
     private $territorries;
 

@@ -65,7 +65,6 @@ class Territorry
 
     /**
      * @ORM\ManyToOne(targetEntity=Province::class, inversedBy="territorries")
-     * @Groups({"read:territorycollection"})
      */
     private $province;
 
