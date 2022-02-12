@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=FichingActivityTypeRepository::class)
  * @ApiResource(
+ *      denormalizationContext={"groups":{"write:FichingActivity"}},
  *      normalizationContext={"groups": {"read:fichingcollection"}},
  *      collectionOperations={
  *         "fiching-activities-types-vue"={
@@ -31,7 +32,13 @@ use Doctrine\ORM\Mapping as ORM;
  *         }
  *      },
  *      itemOperations={
- *         "get",
+ *         "get"={
+ *            "method"="GET",
+ *             "path"="/productors/fiching-activities/types/{id}",
+ *             "openapi_context"={
+ *                  "summary"= ""
+ *              }
+ *          } ,
  *         "fichingactivities-types-update"={
  *            "denormalization_context"={"groups":{"read:FichingActivityType"}},
  *            "method"="PATCH",
@@ -50,7 +57,7 @@ class FichingActivityType
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:fichingcollection"})
+     * @Groups({"read:fichingcollection", "write:FichingActivity"})
      */
     private $id;
 
@@ -68,6 +75,14 @@ class FichingActivityType
     public function __construct()
     {
         $this->fichingActivities = new ArrayCollection();
+    }
+
+    /*
+    * @Groups({"read:fichingcollection"})
+    */
+    public function getIri(): string
+    {
+        return '/productors/fiching-activities/types/'. $this->id;
     }
 
     public function getId(): ?int

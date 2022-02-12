@@ -73,6 +73,14 @@ class City
         $this->towns = new ArrayCollection();
     }
 
+    /*
+    * @Groups({"read:citycollection"})
+    */
+    public function getIri(): int
+    {
+        return '/location/cities'. $this->id;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

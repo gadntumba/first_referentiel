@@ -1,0 +1,285 @@
+<?php
+namespace App\Validators\Productor;
+
+use App\Entity\HouseKeeping;
+use App\Entity\LevelStudy;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+
+class PersonnalIdentityData {
+    /**
+     * @var string
+     */
+    private $name; //String
+    /**
+     * @var string
+     */
+    private $firstNnameame; //String
+    /**
+     * @var string
+     */
+    private $lastName; //String
+    /**
+     * @var string
+     */
+    private $sexe; //String
+    /**
+     * @var string
+     */
+    private $phone; //String
+    /**
+     * @var \DateTime
+     */
+    private $birthday; //String
+    /**
+     * @var string
+     */
+    private $nui; //String
+    /**
+     * @var HouseKeeping
+     */
+    private $houseKeeping; //HouseKeeping
+    /**
+     * 
+     */
+    private $photo; //String
+    /**
+     * @var LevelStudy
+     */
+    private $levelStudy; //LevelStudy
+    /**
+     * @var int
+     */
+    private $householdSize; //int
+
+    /**
+     * @var DenormalizerInterface
+     */
+    private $denormalizer; //int
+
+    
+    public function __construct(DenormalizerInterface $denormalizer)
+    {
+        $this->denormalizer = $denormalizer;
+    }
+
+ /**
+  * Get the value of name
+  */ 
+ public function getName()
+ {
+  return $this->name;
+ }
+
+ /**
+  * Set the value of name
+  *
+  * @return  self
+  */ 
+ public function setName($name)
+ {
+  $this->name = $name;
+
+  return $this;
+ }
+
+ /**
+  * Get the value of firstNnameame
+  */ 
+ public function getFirstNnameame()
+ {
+  return $this->firstNnameame;
+ }
+
+ /**
+  * Set the value of firstNnameame
+  *
+  * @return  self
+  */ 
+ public function setFirstNnameame($firstNnameame)
+ {
+  $this->firstNnameame = $firstNnameame;
+
+  return $this;
+ }
+
+ /**
+  * Get the value of lastName
+  */ 
+ public function getLastName()
+ {
+  return $this->lastName;
+ }
+
+ /**
+  * Set the value of lastName
+  *
+  * @return  self
+  */ 
+ public function setLastName($lastName)
+ {
+  $this->lastName = $lastName;
+
+  return $this;
+ }
+
+ /**
+  * Get the value of sexe
+  */ 
+ public function getSexe()
+ {
+  return $this->sexe;
+ }
+
+ /**
+  * Set the value of sexe
+  *
+  * @return  self
+  */ 
+ public function setSexe($sexe)
+ {
+  $this->sexe = $sexe;
+
+  return $this;
+ }
+
+ /**
+  * Get the value of phone
+  */ 
+ public function getPhone()
+ {
+  return $this->phone;
+ }
+
+ /**
+  * Set the value of phone
+  *
+  * @return  self
+  */ 
+ public function setPhone($phone)
+ {
+  $this->phone = $phone;
+
+  return $this;
+ }
+
+ /**
+  * Get the value of birthday
+  */ 
+ public function getBirthday()
+ {
+  return $this->birthday;
+ }
+
+ /**
+  * Set the value of birthday
+  *
+  * @return  self
+  */ 
+ public function setBirthday(\DateTime $birthday)
+ {
+  $this->birthday = $birthday;
+
+  return $this;
+ }
+
+ /**
+  * Get the value of nui
+  */ 
+ public function getNui()
+ {
+  return $this->nui;
+ }
+
+ /**
+  * Set the value of nui
+  *
+  * @return  self
+  */ 
+ public function setNui($nui)
+ {
+  $this->nui = $nui;
+
+  return $this;
+ }
+
+/**
+ * Get the value of houseKeeping
+ */ 
+public function getHouseKeeping()
+{
+return $this->houseKeeping;
+}
+
+/**
+ * Set the value of houseKeeping
+ *
+ * @return  self
+ */ 
+public function setHouseKeeping(HouseKeeping $houseKeeping)
+{
+    $this->houseKeeping = $houseKeeping;
+    return $this;
+}
+
+ /**
+  * Get the value of photo
+  */ 
+ public function getPhoto()
+ {
+  return $this->photo;
+ }
+
+ /**
+  * Set the value of photo
+  *
+  * @return  self
+  */ 
+ public function setPhoto($photo)
+ {
+    $this->photo = $photo;
+
+    return $this;
+ }
+
+/**
+ * Get the value of levelStudy
+ */ 
+public function getLevelStudy()
+{
+return $this->levelStudy;
+}
+
+/**
+ * Set the value of levelStudy
+ *
+ * @return  self
+ */ 
+public function setLevelStudy(LevelStudy $levelStudy)
+{
+
+    $this->levelStudy = $levelStudy;
+
+    return $this;
+}
+
+ /**
+  * Get the value of householdSize
+  */ 
+ public function getHouseholdSize()
+ {
+  return $this->householdSize;
+ }
+
+ /**
+  * Set the value of householdSize
+  *
+  * @return  self
+  */ 
+ public function setHouseholdSize($householdSize)
+ {
+  $this->householdSize = $householdSize;
+
+  return $this;
+ }
+}

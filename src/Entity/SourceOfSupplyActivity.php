@@ -14,9 +14,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @ApiResource(
  *      normalizationContext={"groups": {"read:sourcecollection"}},
  *      collectionOperations={
- *         "source-supply-activities-vue"={
+ *         "get"={
  *             "method"="GET",
- *             "path"="/productors/source-supply-activities",
+ *             "normalization_context"={"groups":{"read:sourcecollection"}},
+ *             "path"="/source-supply-activities",
  *             "openapi_context"={
  *                  "summary"= "Voir les sources d'approvisionnement"
  *              }
@@ -31,7 +32,14 @@ use Doctrine\ORM\Mapping as ORM;
  *         }
  *      },
  *      itemOperations={
- *         "get",
+ *         "get" = {
+ *            "method"="GET",
+ *             "path"="/productors/source-supply-activities/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Modifier une source d'approvisionnement"
+ *              }
+ *              
+ *          },
  *         "source-supply-activities-update"={
  *            "denormalization_context"={"groups":{"write:SourceOfSupplyActivity"}},
  *            "method"="PATCH",

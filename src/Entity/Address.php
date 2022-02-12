@@ -75,6 +75,14 @@ class Address
         $this->agriculturalActivities = new ArrayCollection();
     }
 
+    /*
+    * @Groups({"read:adresscollection"})
+    */
+    public function getIri(): int
+    {
+        return ''. $this->id;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

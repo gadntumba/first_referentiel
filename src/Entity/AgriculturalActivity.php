@@ -15,14 +15,14 @@ use Doctrine\ORM\Mapping as ORM;
  *      collectionOperations={
  *         "agriculural-activities-vue"={
  *             "method"="GET",
- *             "path"="/productors/{id}/agricultural-activities",
+ *             "path"="/productors/agricultural-activities",
  *             "openapi_context"={
  *                  "summary"= "Voir les activités agricoles"
  *              }
  *          },
  *         "post"={
  *             "method"="POST",
- *             "path"="/productors/{id}/agricultural-activities",
+ *             "path"="/productors/agricultural-activities",
  *             "denormalization_context"={"groups":{"write:AgriculturalActivity"}},
  *             "openapi_context"={
  *                  "summary"= "Ajouter une activité agricole"
@@ -30,11 +30,17 @@ use Doctrine\ORM\Mapping as ORM;
  *         }
  *      },
  *      itemOperations={
- *         "get",
+ *         "get"={
+ *            "method"="GET",
+ *             "path"="/productors/agricultural-activities/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Modifier une activité agricole"
+ *              }
+ *          } ,
  *         "agricultural-activities-update"={
  *            "denormalization_context"={"groups":{"write:AgriculturalActivity"}},
  *            "method"="PATCH",
- *             "path"="/productors/{id}/agricultural-activities/{agriculturalActivitiy}",
+ *             "path"="/productors/agricultural-activities/{id}",
  *             "openapi_context"={
  *                  "summary"= "Modifier une activité agricole"
  *              }
@@ -83,6 +89,15 @@ class AgriculturalActivity
      * @ORM\ManyToOne(targetEntity=Address::class, inversedBy="agriculturalActivities")
      */
     private $adress;
+
+
+    /*
+    * @Groups({"read:agriculcollection"})
+    */
+    public function getIri(): int
+    {
+        return '/productors/agricultural-activities/'. $this->id;
+    }
 
     public function getId(): ?int
     {

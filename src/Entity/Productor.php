@@ -179,7 +179,7 @@ class Productor
     private $numberPieceOfIdentification;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="blob")
      * @Groups({"read:collection","write:Productor"})
      */
     private $photoPieceOfIdentification;

@@ -8,15 +8,18 @@ use Doctrine\Common\Collections\Collection;
 use App\Repository\FichingActivityRepository;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToMany;
 
 /**
  * @ORM\Entity(repositoryClass=FichingActivityRepository::class)
  * @ApiResource(
  *      normalizationContext={"groups": {"read:fichingacollection"}},
+ *      denormalizationContext={"groups":{"write:FichingActivity"}},
+ * 
  *      collectionOperations={
  *         "fiching-activities-vue"={
  *             "method"="GET",
- *             "path"="/productors/{id}/fiching-activities",
+ *             "path"="/productors/fiching-activities",
  *             "openapi_context"={
  *                  "summary"= "Voir les activités pêches"
  *              }
@@ -35,7 +38,7 @@ use Doctrine\ORM\Mapping as ORM;
  *         "fiching-activities-update"={
  *            "denormalization_context"={"groups":{"write:FichingActivity"}},
  *            "method"="PATCH",
- *             "path"="/productors/{id}/fiching-activities/{fichingActivities}",
+ *             "path"="/productors/fiching-activities/{fichingActivities}",
  *             "openapi_context"={
  *                  "summary"= "Modifier une activité pêche"
  *              }
@@ -81,9 +84,18 @@ class FichingActivity
     private $address;
 
     /**
-     * @ORM\ManyToOne(targetEntity=FichingActivityType::class, inversedBy="fichingActivities")
+     * @Groups({"write:FichingActivity"})
+     * @ORM\ManyToOne(targetEntity=FichingActivityType::class, inversedBy="fichingActivities", cascade={"persist", "remove"})
      */
     private $fichingActivityType;
+
+    /*
+    * @Groups({"read:fichingacollection"})
+    */
+    public function getIri(): int
+    {
+        return '/productors/fiching-activities'. $this->id;
+    }
 
     public function getId(): ?int
     {
