@@ -14,14 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ApiResource(
  *      normalizationContext={"groups": {"read:sourcecollection"}},
  *      collectionOperations={
-<<<<<<< HEAD
  *         "get"={
  *             "method"="GET",
  *             "normalization_context"={"groups":{"read:sourcecollection"}},
-=======
- *         "source-supply-activities-vue-2"={
- *             "method"="GET",
->>>>>>> 68d3ce543590b77c2d7b71f4ad9f00c0d1f4f343
  *             "path"="/source-supply-activities",
  *             "openapi_context"={
  *                  "summary"= "Voir les sources d'approvisionnement"
