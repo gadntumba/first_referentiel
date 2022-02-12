@@ -15,14 +15,22 @@ use Doctrine\ORM\Mapping as ORM;
  *      collectionOperations={
  *         "agriculural-activities-vue"={
  *             "method"="GET",
+<<<<<<< HEAD
  *             "path"="/productors/agricultural-activities",
+=======
+ *             "path"="/{id}/agricultural-activities",
+>>>>>>> 68d3ce543590b77c2d7b71f4ad9f00c0d1f4f343
  *             "openapi_context"={
  *                  "summary"= "Voir les activités agricoles"
  *              }
  *          },
  *         "post"={
  *             "method"="POST",
+<<<<<<< HEAD
  *             "path"="/productors/agricultural-activities",
+=======
+ *             "path"="/{id}/agricultural-activities",
+>>>>>>> 68d3ce543590b77c2d7b71f4ad9f00c0d1f4f343
  *             "denormalization_context"={"groups":{"write:AgriculturalActivity"}},
  *             "openapi_context"={
  *                  "summary"= "Ajouter une activité agricole"
@@ -40,7 +48,11 @@ use Doctrine\ORM\Mapping as ORM;
  *         "agricultural-activities-update"={
  *            "denormalization_context"={"groups":{"write:AgriculturalActivity"}},
  *            "method"="PATCH",
+<<<<<<< HEAD
  *             "path"="/productors/agricultural-activities/{id}",
+=======
+ *             "path"="/{id}/agricultural-activities/{agriculturalActivitiy}",
+>>>>>>> 68d3ce543590b77c2d7b71f4ad9f00c0d1f4f343
  *             "openapi_context"={
  *                  "summary"= "Modifier une activité agricole"
  *              }

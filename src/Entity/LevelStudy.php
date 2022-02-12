@@ -16,14 +16,14 @@ use Doctrine\ORM\Mapping as ORM;
  *      collectionOperations={
  *         "level-study-vue"={
  *             "method"="GET",
- *             "path"="/productors/level-study",
+ *             "path"="/level-study",
  *             "openapi_context"={
  *                  "summary"= "Voir les niveaux d'études"
  *              }
  *          },
  *         "post"={
  *             "method"="POST",
- *             "path"="/productors/level-study",
+ *             "path"="/level-study",
  *             "denormalization_context"={"groups":{"write:LevelStudy"}},
  *             "openapi_context"={
  *                  "summary"= "Ajouter un niveau d'étude"
@@ -35,7 +35,7 @@ use Doctrine\ORM\Mapping as ORM;
  *         "level-study-update"={
  *            "denormalization_context"={"groups":{"write:LevelStudy"}},
  *            "method"="PATCH",
- *             "path"="/productors/level-study/{id}",
+ *             "path"="/level-study/{id}",
  *             "openapi_context"={
  *                  "summary"= "Modifier un niveau d'étude"
  *              }

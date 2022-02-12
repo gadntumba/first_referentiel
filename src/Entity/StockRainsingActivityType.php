@@ -13,14 +13,14 @@ use Doctrine\ORM\Mapping as ORM;
  *      collectionOperations={
  *         "stock-rainsing-activities-types-vue"={
  *             "method"="GET",
- *             "path"="/productors/stock-rainsing-activities/types",
+ *             "path"="/stock-rainsing-activities/types",
  *             "openapi_context"={
  *                  "summary"= "Voir les types d'elevage"
  *              }
  *          },
  *         "stock-rainsing-activities-types-add"={
  *             "method"="POST",
- *             "path"="/productors/stock-rainsing-activities/types",
+ *             "path"="/stock-rainsing-activities/types",
  *             "denormalization_context"={"groups":{"read:StockRainsingActivityType"}},
  *             "openapi_context"={
  *                  "summary"= "Ajouter un type d'elevage"
@@ -32,7 +32,7 @@ use Doctrine\ORM\Mapping as ORM;
  *         "stock-rainsing-activities-types-update"={
  *            "denormalization_context"={"groups":{"read:StockRainsingActivityType"}},
  *            "method"="PATCH",
- *             "path"="/productors/stock-rainsing-activities/types/{id}",
+ *             "path"="/stock-rainsing-activities/types/{id}",
  *             "openapi_context"={
  *                  "summary"= "Modifier un type d'elevage"
  *              }

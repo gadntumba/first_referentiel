@@ -14,14 +14,14 @@ use Doctrine\ORM\Mapping as ORM;
  *      collectionOperations={
  *         "stock-raising-activities-vue"={
  *             "method"="GET",
- *             "path"="/productors/{id}/stock-raising-activities",
+ *             "path"="/{id}/stock-raising-activities",
  *             "openapi_context"={
  *                  "summary"= "Voir les activités d'elevage"
  *              }
  *          },
  *         "stock-raising-activities-add"={
  *             "method"="POST",
- *             "path"="/productors/{id}/stock-raising-activities",
+ *             "path"="/{id}/stock-raising-activities",
  *             "denormalization_context"={"groups":{"read:StockRaisingActivity"}},
  *             "openapi_context"={
  *                  "summary"= "Ajouter une activité d'elevage"
@@ -33,7 +33,7 @@ use Doctrine\ORM\Mapping as ORM;
  *         "stock-raising-activities-update"={
  *            "denormalization_context"={"groups":{"read:StockRaisingActivity"}},
  *            "method"="PATCH",
- *             "path"="api/productors/{id}/stock-raising-activities/{stockRaisingActivity}",
+ *             "path"="/{id}/stock-raising-activities/{stockRaisingActivity}",
  *             "openapi_context"={
  *                  "summary"= "Modifier une activité d'elevage"
  *              }
