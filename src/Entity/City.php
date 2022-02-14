@@ -48,13 +48,13 @@ class City
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:citycollection"})
+     * @Groups({"read:citycollection","read:towncollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write:City","read:citycollection"})
+     * @Groups({"write:City","read:citycollection","read:towncollection"})
      */
     private $name;
 
@@ -64,6 +64,7 @@ class City
     private $towns;
 
     /**
+     * @Groups({"write:City","read:citycollection","read:towncollection"})
      * @ORM\ManyToOne(targetEntity=Province::class, inversedBy="cities")
      */
     private $province;
@@ -76,9 +77,9 @@ class City
     /*
     * @Groups({"read:citycollection"})
     */
-    public function getIri(): int
+    public function getIri(): string
     {
-        return '/location/cities'. $this->id;
+        return '/api/cities/'. $this->id;
     }
 
     public function getId(): ?int

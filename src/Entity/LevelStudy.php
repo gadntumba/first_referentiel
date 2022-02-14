@@ -69,6 +69,13 @@ class LevelStudy
     {
         $this->productors = new ArrayCollection();
     }
+    /*
+    * @Groups({"read:adresscollection"})
+    */
+    public function getIri(): string
+    {
+        return '/api/level_studies/'. $this->id;
+    }
 
     public function getId(): ?int
     {

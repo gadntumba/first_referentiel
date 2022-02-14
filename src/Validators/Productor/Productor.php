@@ -5,33 +5,35 @@ namespace App\Validators\Productor;
 use App\Entity\Monitor;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use App\Entity\HouseKeeping;
 
 
 class Productor {
     
     private $personnalIdentityData; //PersonnalIdentityData
     private $pieceOfIdentificationData; //PieceOfIdentificationData
-    private $adressData; //AdressData
     private $activityData; //ActivityData
     private $monitor; //Monitor
     /**
      * @var DenormalizerInterface
      */
     private $denormalizer; //int
+    /**
+     * @var HouseKeeping
+     */
+    private $houseKeeping; //HouseKeeping
 
 
     public function __construct(
         DenormalizerInterface $denormalizer,
         PersonnalIdentityData $personnalIdentityData,
         PieceOfIdentificationData $pieceOfIdentificationData,
-        AdressData $adressData,
         ActivityData $activityData
     )
     {
         $this->denormalizer = $denormalizer;
         $this->personnalIdentityData = $personnalIdentityData;
         $this->pieceOfIdentificationData = $pieceOfIdentificationData;
-        $this->adressData = $adressData;
         $this->activityData = $activityData;
     }
 
@@ -97,33 +99,6 @@ class Productor {
 
         return $this;
     }
-
-    /**
-     * Get the value of adressData
-     */ 
-    public function getAdressData()
-    {
-        return $this->adressData;
-    }
-
-    /**
-     * Set the value of adressData
-     *
-     * @return  self
-     */ 
-    public function setAdressData(array $adressData)
-    {   
-        $adressData = $this->denormalizer->denormalize($adressData, AdressData::class, null, []);
-
-        if (!($adressData instanceof AdressData)) {
-            throw new \Exception("Not supported yet");
-        }
-
-        $this->adressData = $adressData;
-
-        return $this;
-    }
-
     /**
      * Get the value of activityData
      */ 
@@ -179,6 +154,25 @@ class Productor {
 
         $this->monitor = $monitor;
 
+        return $this;
+    }
+
+    /**
+     * Get the value of houseKeeping
+     */ 
+    public function getHouseKeeping()
+    {
+    return $this->houseKeeping;
+    }
+
+    /**
+     * Set the value of houseKeeping
+     *
+     * @return  self
+     */ 
+    public function setHouseKeeping(HouseKeeping $houseKeeping)
+    {
+        $this->houseKeeping = $houseKeeping;
         return $this;
     }
 }

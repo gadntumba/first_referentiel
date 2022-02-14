@@ -48,13 +48,13 @@ class Territorry
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:territorycollection"})
+     * @Groups({"read:territorycollection","read:sectorcollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write:Territory","read:territorycollection"})
+     * @Groups({"write:Territory","read:territorycollection","read:sectorcollection"})
      */
     private $name;
 
@@ -64,6 +64,7 @@ class Territorry
     private $sectors;
 
     /**
+     * @Groups({"write:Territory","read:territorycollection"})
      * @ORM\ManyToOne(targetEntity=Province::class, inversedBy="territorries")
      */
     private $province;
@@ -71,6 +72,13 @@ class Territorry
     public function __construct()
     {
         $this->sectors = new ArrayCollection();
+    }
+    /*
+    * @Groups({"read:citycollection"})
+    */
+    public function getIri(): string
+    {
+        return '/api/territories/'. $this->id;
     }
 
     public function getId(): ?int

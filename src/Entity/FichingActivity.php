@@ -34,11 +34,17 @@ use Doctrine\ORM\Mapping\OneToMany;
  *         }
  *      },
  *      itemOperations={
- *         "get",
+ *         "get"={
+ *            "method"="GET",
+ *             "path"="/fiching-activities/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Modifier une activité pêche"
+ *              }
+ *          } ,
  *         "fiching-activities-update"={
  *            "denormalization_context"={"groups":{"write:FichingActivity"}},
  *            "method"="PATCH",
- *             "path"="/fiching-activities/{fichingActivities}",
+ *             "path"="/fiching-activities/{id}",
  *             "openapi_context"={
  *                  "summary"= "Modifier une activité pêche"
  *              }
@@ -74,6 +80,7 @@ class FichingActivity
     private $productor;
 
     /**
+     * @Groups({"write:FichingActivity","read:fichingacollection"})
      * @ORM\ManyToOne(targetEntity=SourceOfSupplyActivity::class, inversedBy="fichingActivities")
      */
     private $sourceOfSupplyActivity;
@@ -85,7 +92,7 @@ class FichingActivity
 
     /**
      * @Groups({"write:FichingActivity"})
-     * @ORM\ManyToOne(targetEntity=FichingActivityType::class, inversedBy="fichingActivities", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=FichingActivityType::class, inversedBy="fichingActivities")
      */
     private $fichingActivityType;
 

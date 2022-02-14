@@ -39,6 +39,8 @@ class ActivityData {
  public function setAgriculturals(array $agriculturals)
  {
     $newAgriculturals = [];
+
+    //dd($agriculturals);
     
     foreach ($agriculturals as $key => $agricultural) {
         

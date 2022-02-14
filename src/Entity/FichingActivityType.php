@@ -17,14 +17,14 @@ use Doctrine\ORM\Mapping as ORM;
  *      collectionOperations={
  *         "fiching-activities-types-vue"={
  *             "method"="GET",
- *             "path"="/fiching-activities/types",
+ *             "path"="/fiching-activities/p/types",
  *             "openapi_context"={
  *                  "summary"= "Voir les types de pêche"
  *              }
  *          },
  *         "fiching-activities-types-add"={
  *             "method"="POST",
- *             "path"="/fiching-activities/types",
+ *             "path"="/fiching-activities/p/types",
  *             "denormalization_context"={"groups":{"read:FichingActivityType"}},
  *             "openapi_context"={
  *                  "summary"= "Ajouter un type de pêche"
@@ -34,7 +34,7 @@ use Doctrine\ORM\Mapping as ORM;
  *      itemOperations={
  *         "get"={
  *            "method"="GET",
- *             "path"="/productors/fiching-activities/types/{id}",
+ *             "path"="/fiching-activities/p/types/{id}",
  *             "openapi_context"={
  *                  "summary"= ""
  *              }
@@ -42,7 +42,7 @@ use Doctrine\ORM\Mapping as ORM;
  *         "fichingactivities-types-update"={
  *            "denormalization_context"={"groups":{"read:FichingActivityType"}},
  *            "method"="PATCH",
- *             "path"="/fiching-activities/types/{id}",
+ *             "path"="/fiching-activities/p/types/{id}",
  *             "openapi_context"={
  *                  "summary"= "Modifier un type de pêche"
  *              }
@@ -82,7 +82,7 @@ class FichingActivityType
     */
     public function getIri(): string
     {
-        return '/productors/fiching-activities/types/'. $this->id;
+        return '/api/fiching-activities/p/types/'. $this->id;
     }
 
     public function getId(): ?int

@@ -14,26 +14,32 @@ use Doctrine\ORM\Mapping as ORM;
  *      collectionOperations={
  *         "stock-raising-activities-vue"={
  *             "method"="GET",
- *             "path"="/{id}/stock-raising-activities",
+ *             "path"="/stock-raising-activities",
  *             "openapi_context"={
  *                  "summary"= "Voir les activités d'elevage"
  *              }
  *          },
  *         "stock-raising-activities-add"={
  *             "method"="POST",
- *             "path"="/{id}/stock-raising-activities",
- *             "denormalization_context"={"groups":{"read:StockRaisingActivity"}},
+ *             "path"="/stock-raising-activities",
+ *             "denormalization_context"={"groups":{"white:stock-raising-activity"}},
  *             "openapi_context"={
  *                  "summary"= "Ajouter une activité d'elevage"
  *              }
  *         }
  *      },
  *      itemOperations={
- *         "get",
+ *         "get"={
+ *            "method"="GET",
+ *             "path"="/stock-raising-activities/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Modifier une activité d'elevage"
+ *              }
+ *          } ,
  *         "stock-raising-activities-update"={
- *            "denormalization_context"={"groups":{"read:StockRaisingActivity"}},
+ *            "denormalization_context"={"groups":{"white:stock-raising-activity"}},
  *            "method"="PATCH",
- *             "path"="/{id}/stock-raising-activities/{stockRaisingActivity}",
+ *             "path"="/stock-raising-activities/{id}",
  *             "openapi_context"={
  *                  "summary"= "Modifier une activité d'elevage"
  *              }
@@ -53,13 +59,13 @@ class StockRaisingActivity
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"read:stockraisingcollection","read:StockRaisingActivity"})
+     * @Groups({"read:stockraisingcollection","white:stock-raising-activity"})
      */
-    private $CreateDate;
+    private $activityCreateDate;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"read:stockraisingcollection","read:StockRaisingActivity"})
+     * @Groups({"read:stockraisingcollection","white:stock-raising-activity"})
      */
     private $goal;
 
@@ -68,19 +74,32 @@ class StockRaisingActivity
      */
     private $productor;
 
+    /**
+     * @Groups({"read:stockraisingcollection","white:stock-raising-activity"})
+     * @ORM\ManyToOne(targetEntity=StockRainsingActivityType::class, inversedBy="stockRaisingActivities")
+     */
+    private $stockRainsingActivityType;
+
+    /**
+     * @Groups({"read:stockraisingcollection","white:stock-raising-activity"})
+     * @ORM\ManyToOne(targetEntity=SourceOfSupplyActivity::class, inversedBy="stockRaisingActivities")
+     */
+    private $sourceOfSupplyActivity;
+
     public function getId(): ?int
     {
         return $this->id;
     }
+    
 
-    public function getCreateDate(): ?\DateTimeInterface
+    public function getActivityCreateDate(): ?\DateTimeInterface
     {
-        return $this->CreateDate;
+        return $this->activityCreateDate;
     }
 
-    public function setCreateDate(\DateTimeInterface $CreateDate): self
+    public function setActivityCreateDate(\DateTimeInterface $createDate): self
     {
-        $this->CreateDate = $CreateDate;
+        $this->activityCreateDate = $createDate;
 
         return $this;
     }
@@ -105,6 +124,30 @@ class StockRaisingActivity
     public function setProductor(?Productor $productor): self
     {
         $this->productor = $productor;
+
+        return $this;
+    }
+
+    public function getStockRainsingActivityType(): ?StockRainsingActivityType
+    {
+        return $this->stockRainsingActivityType;
+    }
+
+    public function setStockRainsingActivityType(?StockRainsingActivityType $stockRainsingActivityType): self
+    {
+        $this->stockRainsingActivityType = $stockRainsingActivityType;
+
+        return $this;
+    }
+
+    public function getSourceOfSupplyActivity(): ?SourceOfSupplyActivity
+    {
+        return $this->sourceOfSupplyActivity;
+    }
+
+    public function setSourceOfSupplyActivity(?SourceOfSupplyActivity $sourceOfSupplyActivity): self
+    {
+        $this->sourceOfSupplyActivity = $sourceOfSupplyActivity;
 
         return $this;
     }

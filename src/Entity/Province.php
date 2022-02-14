@@ -48,13 +48,13 @@ class Province
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:provincecollection"})
+     * @Groups({"read:provincecollection","read:citycollection","write:Territory","read:territorycollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write:Province","read:provincecollection"})
+     * @Groups({"write:Province","read:provincecollection","read:citycollection","write:Territory","read:territorycollection"})
      */
     private $name;
 
@@ -72,6 +72,14 @@ class Province
     {
         $this->cities = new ArrayCollection();
         $this->territorries = new ArrayCollection();
+    }
+
+    /*
+    * @Groups({"read:adresscollection"})
+    */
+    public function getIri(): string
+    {
+        return '/api/provinces/'. $this->id;
     }
 
     public function getId(): ?int

@@ -64,6 +64,7 @@ class Town
     private $addresses;
 
     /**
+     * @Groups({"write:Town","read:towncollection"})
      * @ORM\ManyToOne(targetEntity=City::class, inversedBy="towns")
      */
     private $city;
@@ -71,6 +72,13 @@ class Town
     public function __construct()
     {
         $this->addresses = new ArrayCollection();
+    }
+    /*
+    * @Groups({"read:citycollection"})
+    */
+    public function getIri(): string
+    {
+        return '/api/towns/'. $this->id;
     }
 
     public function getId(): ?int

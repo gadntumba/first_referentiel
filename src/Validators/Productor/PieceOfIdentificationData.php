@@ -40,7 +40,7 @@ class PieceOfIdentificationData {
      *
      * @return  self
      */ 
-    public function setPieceIdentificationType(array $pieceIdentificationType)
+    public function setPieceIdentificationType(string $pieceIdentificationType)
     {
         $pieceIdentificationType = $this->denormalizer->denormalize($pieceIdentificationType, PieceIdentificationType::class, null, []);
     

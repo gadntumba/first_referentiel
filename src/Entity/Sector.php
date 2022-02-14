@@ -64,6 +64,7 @@ class Sector
     private $addresses;
 
     /**
+     * @Groups({"write:Sector","read:sectorcollection"})
      * @ORM\ManyToOne(targetEntity=Territorry::class, inversedBy="sectors")
      */
     private $territorry;
@@ -71,6 +72,13 @@ class Sector
     public function __construct()
     {
         $this->addresses = new ArrayCollection();
+    }
+    /*
+    * @Groups({"read:citycollection"})
+    */
+    public function getIri(): string
+    {
+        return '/api/sectors/'. $this->id;
     }
 
     public function getId(): ?int

@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\StockRainsingActivityTypeRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -56,6 +58,23 @@ class StockRainsingActivityType
      */
     private $libelle;
 
+    /**
+     * @ORM\OneToMany(targetEntity=StockRaisingActivity::class, mappedBy="stockRainsingActivityType")
+     */
+    private $stockRaisingActivities;
+
+    public function __construct()
+    {
+        $this->stockRaisingActivities = new ArrayCollection();
+    }
+    /*
+    * @Groups({"read:exploitedAreacollection"})
+    */
+    public function getIri(): string
+    {
+        return '/api/stock_rainsing_activity_types/'. $this->id;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -69,6 +88,36 @@ class StockRainsingActivityType
     public function setLibelle(string $libelle): self
     {
         $this->libelle = $libelle;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|StockRaisingActivity[]
+     */
+    public function getStockRaisingActivities(): Collection
+    {
+        return $this->stockRaisingActivities;
+    }
+
+    public function addStockRaisingActivity(StockRaisingActivity $stockRaisingActivity): self
+    {
+        if (!$this->stockRaisingActivities->contains($stockRaisingActivity)) {
+            $this->stockRaisingActivities[] = $stockRaisingActivity;
+            $stockRaisingActivity->setStockRainsingActivityType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStockRaisingActivity(StockRaisingActivity $stockRaisingActivity): self
+    {
+        if ($this->stockRaisingActivities->removeElement($stockRaisingActivity)) {
+            // set the owning side to null (unless already changed)
+            if ($stockRaisingActivity->getStockRainsingActivityType() === $this) {
+                $stockRaisingActivity->setStockRainsingActivityType(null);
+            }
+        }
 
         return $this;
     }

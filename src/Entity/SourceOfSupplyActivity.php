@@ -73,14 +73,27 @@ class SourceOfSupplyActivity
      */
     private $fichingActivities;
 
+    /**
+     * @ORM\OneToMany(targetEntity=StockRaisingActivity::class, mappedBy="sourceOfSupplyActivity")
+     */
+    private $stockRaisingActivities;
+
     public function __construct()
     {
         $this->fichingActivities = new ArrayCollection();
+        $this->stockRaisingActivities = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+    /*
+    * @Groups({"read:exploitedAreacollection"})
+    */
+    public function getIri(): string
+    {
+        return '/api/productors/source-supply-activities/'. $this->id;
     }
 
     public function getLibelle(): ?string
@@ -119,6 +132,36 @@ class SourceOfSupplyActivity
             // set the owning side to null (unless already changed)
             if ($fichingActivity->getSourceOfSupplyActivity() === $this) {
                 $fichingActivity->setSourceOfSupplyActivity(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|StockRaisingActivity[]
+     */
+    public function getStockRaisingActivities(): Collection
+    {
+        return $this->stockRaisingActivities;
+    }
+
+    public function addStockRaisingActivity(StockRaisingActivity $stockRaisingActivity): self
+    {
+        if (!$this->stockRaisingActivities->contains($stockRaisingActivity)) {
+            $this->stockRaisingActivities[] = $stockRaisingActivity;
+            $stockRaisingActivity->setSourceOfSupplyActivity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStockRaisingActivity(StockRaisingActivity $stockRaisingActivity): self
+    {
+        if ($this->stockRaisingActivities->removeElement($stockRaisingActivity)) {
+            // set the owning side to null (unless already changed)
+            if ($stockRaisingActivity->getSourceOfSupplyActivity() === $this) {
+                $stockRaisingActivity->setSourceOfSupplyActivity(null);
             }
         }
 

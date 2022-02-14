@@ -35,6 +35,8 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
             //$data['date'] = date(\DateTime::RFC3339);
             //$data['iri'] = $context['request_uri']??null ;
             //method_exists($object, 'getIri');
+            //dd(method_exists($object, 'getIri'));
+
             if (method_exists($object, 'getIri')) {
                 $data['iri'] = $object->getIri() ;
             }

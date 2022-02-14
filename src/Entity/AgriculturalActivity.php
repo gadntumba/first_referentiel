@@ -62,7 +62,7 @@ class AgriculturalActivity
      * @ORM\Column(type="date")
      * @Groups({"read:agriculcollection","write:AgriculturalActivity"})
      */
-    private $date;
+    private $activityCreateDate;
 
     /**
      * @ORM\Column(type="text")
@@ -77,11 +77,13 @@ class AgriculturalActivity
 
     /**
      * @ORM\ManyToOne(targetEntity=ExploitedArea::class, inversedBy="agriculturalActivities")
+     * @Groups({"write:AgriculturalActivity","read:agriculcollection"})
      */
     private $exploitedArea;
 
     /**
-     * @ORM\OneToOne(targetEntity=SourceOfSupplyActivity::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=SourceOfSupplyActivity::class)
+     * @Groups({"write:AgriculturalActivity","read:agriculcollection"})
      */
     private $sourceOfSupplyActivity;
 
@@ -96,7 +98,7 @@ class AgriculturalActivity
     */
     public function getIri(): int
     {
-        return '/productors/agricultural-activities/'. $this->id;
+        return '/api/agricultural-activities/'. $this->id;
     }
 
     public function getId(): ?int
@@ -104,14 +106,14 @@ class AgriculturalActivity
         return $this->id;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getActivityCreateDate(): ?\DateTimeInterface
     {
-        return $this->date;
+        return $this->activityCreateDate;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setActivityCreateDate(\DateTimeInterface $date): self
     {
-        $this->date = $date;
+        $this->activityCreateDate = $date;
 
         return $this;
     }

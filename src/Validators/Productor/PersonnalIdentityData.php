@@ -1,7 +1,6 @@
 <?php
 namespace App\Validators\Productor;
 
-use App\Entity\HouseKeeping;
 use App\Entity\LevelStudy;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -14,7 +13,7 @@ class PersonnalIdentityData {
     /**
      * @var string
      */
-    private $firstNnameame; //String
+    private $firstName; //String
     /**
      * @var string
      */
@@ -35,10 +34,6 @@ class PersonnalIdentityData {
      * @var string
      */
     private $nui; //String
-    /**
-     * @var HouseKeeping
-     */
-    private $houseKeeping; //HouseKeeping
     /**
      * 
      */
@@ -84,21 +79,21 @@ class PersonnalIdentityData {
  }
 
  /**
-  * Get the value of firstNnameame
+  * Get the value of firstName
   */ 
- public function getFirstNnameame()
+ public function getFirstName()
  {
-  return $this->firstNnameame;
+  return $this->firstName;
  }
 
  /**
-  * Set the value of firstNnameame
+  * Set the value of firstName
   *
   * @return  self
   */ 
- public function setFirstNnameame($firstNnameame)
+ public function setFirstName($firstName)
  {
-  $this->firstNnameame = $firstNnameame;
+  $this->firstName = $firstName;
 
   return $this;
  }
@@ -203,24 +198,6 @@ class PersonnalIdentityData {
   return $this;
  }
 
-/**
- * Get the value of houseKeeping
- */ 
-public function getHouseKeeping()
-{
-return $this->houseKeeping;
-}
-
-/**
- * Set the value of houseKeeping
- *
- * @return  self
- */ 
-public function setHouseKeeping(HouseKeeping $houseKeeping)
-{
-    $this->houseKeeping = $houseKeeping;
-    return $this;
-}
 
  /**
   * Get the value of photo
