@@ -50,13 +50,13 @@ class LevelStudy
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:levelstudycollection"})
+     * @Groups({"read:productor:personnal_id_data","read:levelstudycollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write:LevelStudy","read:levelstudycollection"})
+     * @Groups({"read:productor:personnal_id_data","write:LevelStudy","read:levelstudycollection"})
      */
     private $libelle;
 

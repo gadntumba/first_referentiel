@@ -48,13 +48,13 @@ class StockRainsingActivityType
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:stocktypecollection"})
+     * @Groups({"read:productor:activities_data","read:stocktypecollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:stocktypecollection","read:StockRainsingActivityType"})
+     * @Groups({"read:productor:activities_data","read:stocktypecollection","read:StockRainsingActivityType"})
      */
     private $libelle;
 

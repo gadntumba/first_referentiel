@@ -48,13 +48,13 @@ class Town
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:towncollection"})
+     * @Groups({"read:productor:house_keeping","read:towncollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write:Town","read:towncollection"})
+     * @Groups({"read:productor:house_keeping","write:Town","read:towncollection"})
      */
     private $name;
 
@@ -64,7 +64,7 @@ class Town
     private $addresses;
 
     /**
-     * @Groups({"write:Town","read:towncollection"})
+     * @Groups({"read:productor:house_keeping","write:Town","read:towncollection"})
      * @ORM\ManyToOne(targetEntity=City::class, inversedBy="towns")
      */
     private $city;

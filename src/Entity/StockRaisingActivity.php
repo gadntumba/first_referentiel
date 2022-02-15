@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use App\Repository\StockRaisingActivityRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=StockRaisingActivityRepository::class)
@@ -53,19 +54,22 @@ class StockRaisingActivity
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:stockrasingcollection"})
+     * @Groups({"read:productor:activities_data","read:stockrasingcollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"read:stockraisingcollection","white:stock-raising-activity"})
+     * @Groups({"read:productor:activities_data","read:stockraisingcollection","white:stock-raising-activity"})
+     * @Assert\NotNull
      */
     private $activityCreateDate;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"read:stockraisingcollection","white:stock-raising-activity"})
+     * @Groups({"read:productor:activities_data","read:stockraisingcollection","white:stock-raising-activity"})
+     * @Assert\NotNull
+     * @Assert\Type("string")
      */
     private $goal;
 
@@ -75,14 +79,16 @@ class StockRaisingActivity
     private $productor;
 
     /**
-     * @Groups({"read:stockraisingcollection","white:stock-raising-activity"})
+     * @Groups({"read:productor:activities_data","read:stockraisingcollection","white:stock-raising-activity"})
      * @ORM\ManyToOne(targetEntity=StockRainsingActivityType::class, inversedBy="stockRaisingActivities")
+     * @Assert\NotNull
      */
     private $stockRainsingActivityType;
 
     /**
-     * @Groups({"read:stockraisingcollection","white:stock-raising-activity"})
+     * @Groups({"read:productor:activities_data","read:stockraisingcollection","white:stock-raising-activity"})
      * @ORM\ManyToOne(targetEntity=SourceOfSupplyActivity::class, inversedBy="stockRaisingActivities")
+     * @Assert\NotNull
      */
     private $sourceOfSupplyActivity;
 

@@ -48,13 +48,13 @@ class Sector
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:sectorcollection"})
+     * @Groups({"read:productor:house_keeping","read:sectorcollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write:Sector","read:sectorcollection"})
+     * @Groups({"read:productor:house_keeping","write:Sector","read:sectorcollection"})
      */
     private $name;
 
@@ -64,7 +64,7 @@ class Sector
     private $addresses;
 
     /**
-     * @Groups({"write:Sector","read:sectorcollection"})
+     * @Groups({"read:productor:house_keeping","write:Sector","read:sectorcollection"})
      * @ORM\ManyToOne(targetEntity=Territorry::class, inversedBy="sectors")
      */
     private $territorry;

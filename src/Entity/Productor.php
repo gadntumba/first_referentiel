@@ -11,106 +11,69 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ProductorRepository::class)
- * @ApiResource(
- *     normalizationContext={"groups": {"read:productorcollection"}},
- *      collectionOperations={
- *         "productor-create"={
- *             "method"="POST",
- *             "path"="/productors/houseKeeping",
- *             "openapi_context"={
- *                  "summary"= "Création d'un producteur avec son menage directement"
- *              }
- *          },
- *         "post"={
- *             "method"="POST",
- *             "path"="/productors",
- *             "denormalization_context"={"groups":{"write:Productor"}},
- *             "openapi_context"={
- *                  "summary"= "Création d'un producteur avec un menage préenregistré"
- *              }
- *         }
- *      },
- *      itemOperations={
- *         "get",
- *         "productor-update"={
- *            "denormalization_context"={"groups":{"write:Productor"}},
- *            "method"="PATCH",
- *             "path"="/productors/{id}",
- *             "openapi_context"={
- *                  "summary"= "Modifier un producteur"
- *              }
- *          },
- *          "productor-delete"={
- *            "denormalization_context"={"groups":{"write:Productor"}},
- *            "method"="DELETE",
- *             "path"="/productors/{id}",
- *             "openapi_context"={
- *                  "summary"= "Supprimer  un producteur"
- *              }
- *          } 
- *       } 
- * )
+ * 
  */
 class Productor
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
+     * @Groups({"read:productor:level_0"})
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:Productor","write:Productor","read:collection"})
+     * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:collection","write:Productor"})
+     * @Groups({"read:productor:personnal_id_data","read:collection","write:Productor"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write:Productor","read:item","read:collection"})
+     * @Groups({"read:productor:personnal_id_data","write:Productor","read:item","read:collection"})
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:item","read:collection","write:Productor"})
+     * @Groups({"read:productor:personnal_id_data","read:item","read:collection","write:Productor"})
      */
     private $sexe;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write:Productor","read:collection"})
+     * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
      */
     private $phoneNumber;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"write:Productor","read:collection"})
+     * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
      */
     private $birthdate;
 
     /**
-     *  @Groups({"write:Productor","read:collection"})
+     *  @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
      * @ORM\Column(type="string", length=255)
      */
     private $nui;
 
     /**
      * @ORM\ManyToOne(targetEntity=LevelStudy::class, inversedBy="productors")
-     * @Groups({"write:Productor","read:collection"})
+     * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
      */
-    private $LevelStudy;
+    private $levelStudy;
 
     /**
      * @ORM\OneToMany(targetEntity=AgriculturalActivity::class, mappedBy="productor")
-     * @Groups({"read:collection","write:Productor"})
+     * @Groups({"read:productor:activities_data","read:collection","write:Productor"})
      */
     private $AgriculturalActivity;
 
@@ -121,19 +84,19 @@ class Productor
 
     /**
      * @ORM\OneToMany(targetEntity=FichingActivity::class, mappedBy="productor")
-     * @Groups({"read:collection","write:Productor"})
+     * @Groups({"read:productor:activities_data","read:collection","write:Productor"})
      */
     private $fichingactivity;
 
     /**
      * @ORM\OneToMany(targetEntity=StockRaisingActivity::class, mappedBy="productor")
-     * @Groups({"read:collection","write:Productor"})
+     * @Groups({"read:productor:activities_data","read:collection","write:Productor"})
      */
     private $raisingactivity;
 
     /**
      * @ORM\ManyToOne(targetEntity=HouseKeeping::class, inversedBy="productors")
-     * @Groups({"read:collection","write:Productor"})
+     * @Groups({"read:productor:house_keeping","read:collection","write:Productor"})
      */
     private $housekeeping;
 
@@ -150,31 +113,26 @@ class Productor
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"read:collection","write:Productor"})
+     * @Groups({"read:productor:level_0","read:collection","write:Productor"})
      */
     private $latitude;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"read:collection","write:Productor"})
+     * @Groups({"read:productor:level_0","read:collection","write:Productor"})
      */
     private $longitude;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"read:collection","write:Productor"})
+     * @Groups({"read:productor:level_0","read:collection","write:Productor"})
      */
     private $altitude;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"read:collection","write:Productor"})
-     */
-    private $typePieceOfIdentification;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:collection","write:Productor"})
+     * @Groups({"read:productor:piece_of_id_data","read:collection","write:Productor"})
      */
     private $numberPieceOfIdentification;
 
@@ -186,12 +144,12 @@ class Productor
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"read:collection","write:Productor"})
+     * @Groups({"read:productor:personnal_id_data","read:collection","write:Productor"})
      */
     private $householdSize;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date", nullable=true)
      * @Groups({"read:collection","write:Productor"})
      */
     private $deletedAt;
@@ -201,6 +159,12 @@ class Productor
      * @Groups({"read:collection","write:Productor"})
      */
     private $incumbentPhoto;
+
+    /**
+     * @Groups({"read:productor:piece_of_id_data"})
+     * @ORM\ManyToOne(targetEntity=PieceIdentificationType::class, inversedBy="productors")
+     */
+    private $typePieceOfIdentification;
 
     public function __construct()
     {
@@ -306,12 +270,12 @@ class Productor
 
     public function getLevelStudy(): ?LevelStudy
     {
-        return $this->LevelStudy;
+        return $this->levelStudy;
     }
 
-    public function setLevelStudy(?LevelStudy $LevelStudy): self
+    public function setLevelStudy(?LevelStudy $levelStudy): self
     {
-        $this->LevelStudy = $LevelStudy;
+        $this->levelStudy = $levelStudy;
 
         return $this;
     }
@@ -520,17 +484,6 @@ class Productor
         return $this;
     }
 
-    public function getTypePieceOfIdentification(): ?string
-    {
-        return $this->typePieceOfIdentification;
-    }
-
-    public function setTypePieceOfIdentification(string $typePieceOfIdentification): self
-    {
-        $this->typePieceOfIdentification = $typePieceOfIdentification;
-
-        return $this;
-    }
 
     public function getNumberPieceOfIdentification(): ?string
     {
@@ -588,6 +541,18 @@ class Productor
     public function setIncumbentPhoto($incumbentPhoto): self
     {
         $this->incumbentPhoto = $incumbentPhoto;
+
+        return $this;
+    }
+
+    public function getTypePieceOfIdentification(): ?PieceIdentificationType
+    {
+        return $this->typePieceOfIdentification;
+    }
+
+    public function setTypePieceOfIdentification(?PieceIdentificationType $typePieceOfIdentification): self
+    {
+        $this->typePieceOfIdentification = $typePieceOfIdentification;
 
         return $this;
     }

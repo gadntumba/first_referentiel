@@ -6,28 +6,55 @@ use App\Repository\HouseKeepingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * @ORM\Entity(repositoryClass=HouseKeepingRepository::class)
+ * @ApiResource(
+ *      normalizationContext={"groups": {"read:housecollection"}},
+ *      collectionOperations={
+ *         "get"={
+ *             "method"="GET",
+ *             "path"="/house_keepings",
+ *             "openapi_context"={
+ *                  "summary"= "Voir les menages"
+ *              }
+ *          }
+ *      },
+ *      itemOperations={
+ *         "get"={
+ *            "method"="GET",
+ *             "path"="/house_keepings/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Voir une menage"
+ *              }
+ *          }
+ *      }
+ * )
  */
 class HouseKeeping
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
+     * @Groups({"read:productor:house_keeping","read:housecollection"})
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:housecollection"})
+     * @Groups({"read:productor:house_keeping","read:housecollection"})
+     * @Assert\NotNull
+     * @Assert\Type("string")
      */
     private $NIM;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"read:housecollection"})
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Type("string")
+     * @Groups({"read:productor:house_keeping","read:housecollection"})
      */
     private $reference;
 
@@ -37,6 +64,8 @@ class HouseKeeping
     private $productors;
 
     /**
+     * @Assert\NotNull
+     * @Groups({"read:productor:house_keeping","read:housecollection"})
      * @ORM\OneToOne(targetEntity=Address::class, cascade={"persist", "remove"})
      */
     private $address;
@@ -50,6 +79,15 @@ class HouseKeeping
     {
         return $this->id;
     }
+
+    /*
+    * @Groups({"read:agriculcollection"})
+    */
+    public function getIri(): string
+    {
+        return '/api/house_keepings/'. $this->id;
+    }
+
 
     public function getNIM(): ?string
     {

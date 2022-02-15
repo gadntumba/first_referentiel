@@ -48,13 +48,13 @@ class Province
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:provincecollection","read:citycollection","write:Territory","read:territorycollection"})
+     * @Groups({"read:productor:house_keeping","read:provincecollection","read:citycollection","write:Territory","read:territorycollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write:Province","read:provincecollection","read:citycollection","write:Territory","read:territorycollection"})
+     * @Groups({"read:productor:house_keeping","write:Province","read:provincecollection","read:citycollection","write:Territory","read:territorycollection"})
      */
     private $name;
 

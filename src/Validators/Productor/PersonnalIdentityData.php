@@ -4,26 +4,37 @@ namespace App\Validators\Productor;
 use App\Entity\LevelStudy;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class PersonnalIdentityData {
     /**
      * @var string
+     * @Assert\NotNull
+     * @Assert\Type("string")
      */
     private $name; //String
     /**
      * @var string
+     * @Assert\NotNull
+     * @Assert\Type("string")
      */
     private $firstName; //String
     /**
      * @var string
+     * @Assert\NotNull
+     * @Assert\Type("string")
      */
     private $lastName; //String
     /**
      * @var string
+     * @Assert\NotNull
+     * @Assert\Type("string")
      */
     private $sexe; //String
     /**
      * @var string
+     * @Assert\NotNull
+     * @Assert\Type("string")
      */
     private $phone; //String
     /**
@@ -32,17 +43,22 @@ class PersonnalIdentityData {
     private $birthday; //String
     /**
      * @var string
+     * @Assert\NotNull
+     * @Assert\Type("string")
      */
     private $nui; //String
     /**
-     * 
+     * @Assert\NotNull
      */
     private $photo; //String
     /**
+     * @Assert\NotNull
      * @var LevelStudy
      */
     private $levelStudy; //LevelStudy
     /**
+     * @Assert\NotNull
+     * @Assert\Type("int")
      * @var int
      */
     private $householdSize; //int

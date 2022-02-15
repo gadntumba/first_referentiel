@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=AgriculturalActivityRepository::class)
@@ -54,19 +55,23 @@ class AgriculturalActivity
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:agriculcollection"})
+     * @Groups({"read:productor:activities_data","read:agriculcollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"read:agriculcollection","write:AgriculturalActivity"})
+     * @Groups({"read:productor:activities_data","read:agriculcollection","write:AgriculturalActivity"})
+     * @Assert\NotNull
+     * 
      */
     private $activityCreateDate;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"write:AgriculturalActivity","read:agriculcollection"})
+     * @Groups({"read:productor:activities_data","write:AgriculturalActivity","read:agriculcollection"})
+     * @Assert\NotNull
+     * @Assert\Type("string")
      */
     private $goal;
 
@@ -77,13 +82,15 @@ class AgriculturalActivity
 
     /**
      * @ORM\ManyToOne(targetEntity=ExploitedArea::class, inversedBy="agriculturalActivities")
-     * @Groups({"write:AgriculturalActivity","read:agriculcollection"})
+     * @Groups({"read:productor:activities_data","write:AgriculturalActivity","read:agriculcollection"})
+     * @Assert\NotNull
      */
     private $exploitedArea;
 
     /**
-     * @ORM\OneToOne(targetEntity=SourceOfSupplyActivity::class)
-     * @Groups({"write:AgriculturalActivity","read:agriculcollection"})
+     * @ORM\ManyToOne(targetEntity=SourceOfSupplyActivity::class)
+     * @Groups({"read:productor:activities_data","write:AgriculturalActivity","read:agriculcollection"})
+     * @Assert\NotNull
      */
     private $sourceOfSupplyActivity;
 
@@ -96,7 +103,7 @@ class AgriculturalActivity
     /*
     * @Groups({"read:agriculcollection"})
     */
-    public function getIri(): int
+    public function getIri(): string
     {
         return '/api/agricultural-activities/'. $this->id;
     }

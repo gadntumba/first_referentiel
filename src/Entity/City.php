@@ -48,13 +48,13 @@ class City
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:citycollection","read:towncollection"})
+     * @Groups({"read:productor:house_keeping","read:citycollection","read:towncollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write:City","read:citycollection","read:towncollection"})
+     * @Groups({"read:productor:house_keeping","write:City","read:citycollection","read:towncollection"})
      */
     private $name;
 
@@ -64,7 +64,7 @@ class City
     private $towns;
 
     /**
-     * @Groups({"write:City","read:citycollection","read:towncollection"})
+     * @Groups({"read:productor:house_keeping","write:City","read:citycollection","read:towncollection"})
      * @ORM\ManyToOne(targetEntity=Province::class, inversedBy="cities")
      */
     private $province;

@@ -2,29 +2,28 @@
 namespace App\Validators\Productor;
 
 use App\Entity\PieceIdentificationType;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 
 class PieceOfIdentificationData {
+
+    /**
+     * @Assert\NotNull
+     * @var PieceIdentificationType
+     */
     private $pieceIdentificationType; //PieceIdentificationType
     /**
      * @var string
+     * @Assert\NotNull
+     * @Assert\Type("string")
     */
     private $pieceId; //String
     /**
+     * @Assert\NotNull
      * 
      */
     private $photo; //String
-    /**
-     * @var DenormalizerInterface
-     */
-    private $denormalizer; //int
-
-    
-    public function __construct(DenormalizerInterface $denormalizer)
-    {
-        $this->denormalizer = $denormalizer;
-    }
 
 
     /**
@@ -40,13 +39,13 @@ class PieceOfIdentificationData {
      *
      * @return  self
      */ 
-    public function setPieceIdentificationType(string $pieceIdentificationType)
+    public function setPieceIdentificationType(PieceIdentificationType $pieceIdentificationType)
     {
-        $pieceIdentificationType = $this->denormalizer->denormalize($pieceIdentificationType, PieceIdentificationType::class, null, []);
+        /*$pieceIdentificationType = $this->denormalizer->denormalize($pieceIdentificationType, PieceIdentificationType::class, null, []);
     
         if (!($pieceIdentificationType instanceof PieceIdentificationType)) {
             throw new \Exception("Not supported yet");
-        }
+        }*/
     
         $this->pieceIdentificationType = $pieceIdentificationType;
 

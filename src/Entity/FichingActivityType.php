@@ -57,13 +57,13 @@ class FichingActivityType
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:fichingcollection", "write:FichingActivity"})
+     * @Groups({"read:productor:activities_data","read:fichingcollection", "write:FichingActivity"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:fichingcollection","read:FichingActivityType"})
+     * @Groups({"read:productor:activities_data","read:fichingcollection","read:FichingActivityType"})
      */
     private $libelle;
 

@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\Collection;
 use App\Repository\FichingActivityRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
@@ -58,19 +59,23 @@ class FichingActivity
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:fichingacollection"})
+     * @Groups({"read:productor:activities_data","read:fichingacollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"read:fichingacollection","write:FichingActivity"})
+     * @Groups({"read:productor:activities_data","read:fichingacollection","write:FichingActivity"})
+     * @Assert\NotNull
+     * 
      */
-    private $createdate;
+    private $activityCreateDate;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"write:FichingActivity","read:fichingacollection"})
+     * @Groups({"read:productor:activities_data","write:FichingActivity","read:fichingacollection"})
+     * @Assert\NotNull
+     * @Assert\Type("string")
      */
     private $goal;
 
@@ -80,8 +85,10 @@ class FichingActivity
     private $productor;
 
     /**
-     * @Groups({"write:FichingActivity","read:fichingacollection"})
+     * @Groups({"read:productor:activities_data","write:FichingActivity","read:fichingacollection"})
      * @ORM\ManyToOne(targetEntity=SourceOfSupplyActivity::class, inversedBy="fichingActivities")
+     * @Assert\NotNull
+     * 
      */
     private $sourceOfSupplyActivity;
 
@@ -91,15 +98,17 @@ class FichingActivity
     private $address;
 
     /**
-     * @Groups({"write:FichingActivity"})
+     * @Groups({"read:productor:activities_data","write:FichingActivity"})
      * @ORM\ManyToOne(targetEntity=FichingActivityType::class, inversedBy="fichingActivities")
+     * @Assert\NotNull
+     * 
      */
     private $fichingActivityType;
 
     /*
     * @Groups({"read:fichingacollection"})
     */
-    public function getIri(): int
+    public function getIri(): string
     {
         return '/productors/fiching-activities'. $this->id;
     }
@@ -109,14 +118,14 @@ class FichingActivity
         return $this->id;
     }
 
-    public function getCreatedate(): ?\DateTimeInterface
+    public function getActivityCreateDate(): ?\DateTimeInterface
     {
-        return $this->createdate;
+        return $this->activityCreateDate;
     }
 
-    public function setCreatedate(\DateTimeInterface $createdate): self
+    public function setActivityCreateDate(\DateTimeInterface $createdate): self
     {
-        $this->createdate = $createdate;
+        $this->activityCreateDate = $createdate;
 
         return $this;
     }

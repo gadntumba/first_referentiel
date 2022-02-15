@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PieceIdentificationTypeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -48,15 +50,25 @@ class PieceIdentificationType
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:piece_identification_type"})
+     * @Groups({"read:productor:piece_of_id_data","read:piece_identification_type"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write:piece_identification_type","read:piece_identification_type"})
+     * @Groups({"read:productor:piece_of_id_data","write:piece_identification_type","read:piece_identification_type"})
      */
     private $libelle;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Productor::class, mappedBy="typePieceOfIdentification")
+     */
+    private $productors;
+
+    public function __construct()
+    {
+        $this->productors = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -78,6 +90,36 @@ class PieceIdentificationType
     public function setLibelle(string $libelle): self
     {
         $this->libelle = $libelle;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Productor[]
+     */
+    public function getProductors(): Collection
+    {
+        return $this->productors;
+    }
+
+    public function addProductor(Productor $productor): self
+    {
+        if (!$this->productors->contains($productor)) {
+            $this->productors[] = $productor;
+            $productor->setTypePieceOfIdentification($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductor(Productor $productor): self
+    {
+        if ($this->productors->removeElement($productor)) {
+            // set the owning side to null (unless already changed)
+            if ($productor->getTypePieceOfIdentification() === $this) {
+                $productor->setTypePieceOfIdentification(null);
+            }
+        }
 
         return $this;
     }

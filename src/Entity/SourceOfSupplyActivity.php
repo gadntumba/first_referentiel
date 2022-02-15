@@ -57,13 +57,13 @@ class SourceOfSupplyActivity
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:sourcecollection"})
+     * @Groups({"read:productor:activities_data","read:sourcecollection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write:SourceOfSupplyActivity","read:sourcecollection"})
+     * @Groups({"read:productor:activities_data","write:SourceOfSupplyActivity","read:sourcecollection"})
      */
     private $libelle;
 
@@ -77,6 +77,10 @@ class SourceOfSupplyActivity
      * @ORM\OneToMany(targetEntity=StockRaisingActivity::class, mappedBy="sourceOfSupplyActivity")
      */
     private $stockRaisingActivities;
+    /**
+     * @ORM\OneToMany(targetEntity=AgriculturalActivity::class, mappedBy="sourceOfSupplyActivity")
+     */
+    private $agriculturalActivities;
 
     public function __construct()
     {
@@ -139,6 +143,38 @@ class SourceOfSupplyActivity
     }
 
     /**
+     * @return Collection|AgriculturalActivity[]
+     */
+    public function getAgriculturalActivities(): Collection
+    {
+        return $this->agriculturalActivities;
+    }
+
+    public function addAgriculturalActivity(AgriculturalActivity $agriculturalActivity): self
+    {
+        if (!$this->agriculturalActivities->contains($agriculturalActivity)) {
+            $this->agriculturalActivities[] = $agriculturalActivity;
+            $agriculturalActivity->setSourceOfSupplyActivity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAgriculturalActivity(AgriculturalActivity $agriculturalActivity): self
+    {
+        if ($this->agriculturalActivities->removeElement($agriculturalActivity)) {
+            // set the owning side to null (unless already changed)
+            if ($agriculturalActivity->getSourceOfSupplyActivity() === $this) {
+                $agriculturalActivity->setSourceOfSupplyActivity(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+    /**
      * @return Collection|StockRaisingActivity[]
      */
     public function getStockRaisingActivities(): Collection
@@ -167,4 +203,5 @@ class SourceOfSupplyActivity
 
         return $this;
     }
+
 }

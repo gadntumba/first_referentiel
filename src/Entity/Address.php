@@ -6,6 +6,7 @@ use App\Repository\AddressRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=AddressRepository::class)
@@ -15,30 +16,40 @@ class Address
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
+     * @Groups({"read:adresscollection"})
      * @ORM\Column(type="integer")
+     * @Groups({"read:productor:house_keeping"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:adresscollection"})
+     * @Groups({"read:productor:house_keeping","read:adresscollection"})
+     * @Assert\NotNull
+     * @Assert\Type("string")
      */
     private $line;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      * @Groups({"read:adresscollection"})
+     * 
+     * @Assert\Type("float")
      */
     private $latitude;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
+     * 
+     * @Assert\Type("float")
      * @Groups({"read:adresscollection"})
      */
     private $longitude;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
+     * 
+     * @Assert\Type("float")
      * @Groups({"read:adresscollection"})
      */
     private $altitude;
@@ -60,13 +71,13 @@ class Address
 
     /**
      * @ORM\ManyToOne(targetEntity=Town::class, inversedBy="addresses")
-     * @Groups({"read:adresscollection"})
+     * @Groups({"read:productor:house_keeping","read:adresscollection"})
      */
     private $town;
 
     /**
      * @ORM\ManyToOne(targetEntity=Sector::class, inversedBy="addresses")
-     * @Groups({"read:adresscollection"})
+     * @Groups({"read:productor:house_keeping","read:adresscollection"})
      */
     private $sector;
 
@@ -105,9 +116,9 @@ class Address
         return $this->latitude;
     }
 
-    public function setLatitude(float $latitude): self
+    public function setLatitude(string $latitude): self
     {
-        $this->latitude = $latitude;
+        $this->latitude = (float) $latitude;
 
         return $this;
     }
@@ -117,9 +128,9 @@ class Address
         return $this->longitude;
     }
 
-    public function setLongitude(float $longitude): self
+    public function setLongitude(string $longitude): self
     {
-        $this->longitude = $longitude;
+        $this->longitude = (float) $longitude;
 
         return $this;
     }
@@ -129,9 +140,9 @@ class Address
         return $this->altitude;
     }
 
-    public function setAltitude(float $altitude): self
+    public function setAltitude(string $altitude): self
     {
-        $this->altitude = $altitude;
+        $this->altitude = (float) $altitude;
 
         return $this;
     }
