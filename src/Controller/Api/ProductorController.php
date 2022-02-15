@@ -44,7 +44,7 @@ class ProductorController extends AbstractController
     }
 
     /**
-     * @Route("/api/v1/productors", methods={"POST"}, name="productor_crate")
+     * @Route("/api/productors", methods={"POST"}, name="productor_crate")
      */
     public function create(Request $request, ProductorProductor $productorValidator, EntityManagerInterface $em)
     {
@@ -162,7 +162,7 @@ class ProductorController extends AbstractController
         
     }
     /**
-     * @Route("/api/v1/productors", methods={"GET","HEAD"}, name="productor_list")
+     * @Route("/api/productors", methods={"GET","HEAD"}, name="productor_list")
      * 
      */
     public function list()
@@ -181,7 +181,7 @@ class ProductorController extends AbstractController
     }
 
     /**
-     * @Route("/api/v1/productors/{id}", methods={"GET","HEAD"}, name="productor_show")
+     * @Route("/api/productors/{id}", methods={"GET","HEAD"}, name="productor_show")
      */
     public function show(Request $request, string $id)
     {
