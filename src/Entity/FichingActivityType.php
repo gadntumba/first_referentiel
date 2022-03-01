@@ -6,14 +6,16 @@ use App\Repository\FichingActivityTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Utils\TimestampTrait;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=FichingActivityTypeRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
  *      denormalizationContext={"groups":{"write:FichingActivity"}},
- *      normalizationContext={"groups": {"read:fichingcollection"}},
+ *      normalizationContext={"groups": {"read:fichingcollection","timestamp:read","slug:read"}},
  *      collectionOperations={
  *         "fiching-activities-types-vue"={
  *             "method"="GET",
@@ -53,6 +55,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class FichingActivityType
 {
+
+    use TimestampTrait;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

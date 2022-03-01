@@ -5,13 +5,15 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=CityRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
- *      normalizationContext={"groups": {"read:citycollection"}},
+ *      normalizationContext={"groups": {"read:citycollection","timestamp:read","slug:read"}},
  *      collectionOperations={
  *         "city-vue"={
  *             "method"="GET",
@@ -44,6 +46,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class City
 {
+
+    use TimestampTrait;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

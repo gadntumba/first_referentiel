@@ -8,11 +8,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Utils\TimestampTrait;
 
 /**
+ * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
- * 
- *      normalizationContext={"groups": {"read:piece_identification_type"}},
+ *      normalizationContext={"groups": {"read:piece_identification_type","timestamp:read","slug:read"}},
  *      collectionOperations={
  *         "piece_Identificatiin_type-vue"={
  *             "method"="GET",
@@ -46,6 +47,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class PieceIdentificationType
 {
+
+    use TimestampTrait;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

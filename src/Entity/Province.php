@@ -5,13 +5,15 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ProvinceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ProvinceRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
- *     normalizationContext={"groups": {"read:provincecollection"}},
+ *     normalizationContext={"groups": {"read:provincecollection","timestamp:read","slug:read"}},
  *      collectionOperations={
  *         "provinces-vue"={
  *             "method"="GET",
@@ -44,6 +46,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Province
 {
+
+    use TimestampTrait;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

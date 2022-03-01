@@ -5,13 +5,15 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Repository\StockRaisingActivityRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Utils\TimestampTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=StockRaisingActivityRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
- *      normalizationContext={"groups": {"read:stockraisingcollection"}},
+ *      normalizationContext={"groups": {"read:stockraisingcollection","timestamp:read","slug:read"}},
  *      collectionOperations={
  *         "stock-raising-activities-vue"={
  *             "method"="GET",
@@ -50,6 +52,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class StockRaisingActivity
 {
+
+    use TimestampTrait;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

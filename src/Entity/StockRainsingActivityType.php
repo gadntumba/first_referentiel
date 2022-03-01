@@ -4,14 +4,16 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Utils\TimestampTrait;
 use App\Repository\StockRainsingActivityTypeRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=StockRainsingActivityTypeRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
- *      normalizationContext={"groups": {"read:stocktypecollection"}},
+ *      normalizationContext={"groups": {"read:stocktypecollection","timestamp:read","slug:read"}},
  *      collectionOperations={
  *         "stock-rainsing-activities-types-vue"={
  *             "method"="GET",
@@ -44,6 +46,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class StockRainsingActivityType
 {
+
+    use TimestampTrait;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

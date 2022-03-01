@@ -5,14 +5,16 @@ namespace App\Entity;
 use App\Repository\SourceOfSupplyActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=SourceOfSupplyActivityRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
- *      normalizationContext={"groups": {"read:sourcecollection"}},
+ *      normalizationContext={"groups": {"read:sourcecollection","timestamp:read","slug:read"}},
  *      collectionOperations={
  *         "get"={
  *             "method"="GET",
@@ -53,6 +55,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SourceOfSupplyActivity
 {
+
+    use TimestampTrait;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

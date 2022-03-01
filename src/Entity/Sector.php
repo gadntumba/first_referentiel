@@ -5,13 +5,15 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\SectorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=SectorRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
- *      normalizationContext={"groups": {"read:sectorcollection"}},
+ *      normalizationContext={"groups": {"read:sectorcollection","timestamp:read","slug:read"}},
  *      collectionOperations={
  *         "sector-vue"={
  *             "method"="GET",
@@ -44,6 +46,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Sector
 {
+
+    use TimestampTrait;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
