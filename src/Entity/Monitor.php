@@ -6,6 +6,7 @@ use App\Repository\MonitorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Utils\TimestampTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -40,6 +41,11 @@ class Monitor
      * @ORM\ManyToOne(targetEntity=OT::class, inversedBy="monitors")
      */
     private $ot;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="monitor")
+     */
+    private $user;
 
     public function __construct()
     {
@@ -113,6 +119,18 @@ class Monitor
     public function setOt(?OT $ot): self
     {
         $this->ot = $ot;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

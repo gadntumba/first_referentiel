@@ -81,6 +81,8 @@
         }
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "fzaninotto/faker": "^1.5",
         "symfony/maker-bundle": "^1.36"
     }
 }

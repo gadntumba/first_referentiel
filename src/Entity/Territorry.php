@@ -74,9 +74,15 @@ class Territorry
      */
     private $province;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Supervisor::class, mappedBy="territory")
+     */
+    private $supervisors;
+
     public function __construct()
     {
         $this->sectors = new ArrayCollection();
+        $this->supervisors = new ArrayCollection();
     }
     /*
     * @Groups({"read:citycollection"})
@@ -141,6 +147,36 @@ class Territorry
     public function setProvince(?Province $province): self
     {
         $this->province = $province;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Supervisor>
+     */
+    public function getSupervisors(): Collection
+    {
+        return $this->supervisors;
+    }
+
+    public function addSupervisor(Supervisor $supervisor): self
+    {
+        if (!$this->supervisors->contains($supervisor)) {
+            $this->supervisors[] = $supervisor;
+            $supervisor->setTerritory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSupervisor(Supervisor $supervisor): self
+    {
+        if ($this->supervisors->removeElement($supervisor)) {
+            // set the owning side to null (unless already changed)
+            if ($supervisor->getTerritory() === $this) {
+                $supervisor->setTerritory(null);
+            }
+        }
 
         return $this;
     }
