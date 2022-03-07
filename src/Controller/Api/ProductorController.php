@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Productor;
 use App\Repository\ProductorRepository;
+use App\Serializer\UnexpectedValueException;
 use App\Validators\Exception\Exception;
 use App\Validators\Productor\Productor as ProductorProductor;
 use Doctrine\ORM\EntityManagerInterface;
@@ -53,12 +54,23 @@ class ProductorController extends AbstractController
         /**
          * @var ProductorProductor
          */
-        $productorValidator = $this->denormalizer->denormalize(
-            $this->getRequestParams($request),
-            ProductorProductor::class,
-            null,
-            [AbstractNormalizer::OBJECT_TO_POPULATE => $productorValidator]
-        );
+        try {
+            
+            $productorValidator = $this->denormalizer->denormalize(
+                $this->getRequestParams($request),
+                ProductorProductor::class,
+                null,
+                [AbstractNormalizer::OBJECT_TO_POPULATE => $productorValidator]
+            );
+        } catch (UnexpectedValueException $th) {
+            //throw $th;
+            //dd($th);
+            
+            return new JsonResponse(
+                $th->getErrors(),
+                422
+            );
+        }
         try {
             $productorValidator->validate();
             $productor = new Productor();

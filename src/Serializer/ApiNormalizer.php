@@ -3,10 +3,13 @@
 
 namespace App\Serializer;
 
+use App\Serializer\UnexpectedValueException as SerializerUnexpectedValueException;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Exception\UnexpectedValueException;
+use JsonPath\JsonObject;
 
 final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface
 {
@@ -52,7 +55,28 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
 
     public function denormalize($data, $class, $format = null, array $context = [])
     {
-        return $this->decorated->denormalize($data, $class, $format, $context);
+        try {
+
+            return $this->decorated->denormalize($data, $class, $format, $context);
+
+        } catch (UnexpectedValueException $th) {
+            if (!isset($context["deserialization_path"]) || !is_string($context["deserialization_path"])) {
+                throw $th; 
+            }
+            $jsonObject = new JsonObject();
+            $jsonObject->set(
+                "$.".$context["deserialization_path"], 
+                [
+                    "code" => "aaafggfg-fhhfhfh-kgkgjgjgj-oruru",
+                    "message" => "Invalid iri",
+                ]
+            );
+            $arr = json_decode($jsonObject->getJson(), true);
+
+            throw new SerializerUnexpectedValueException($arr);
+            
+
+        }
     }
 
     public function setSerializer(SerializerInterface $serializer)
