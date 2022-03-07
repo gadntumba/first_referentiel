@@ -109,12 +109,10 @@ class ProductorController extends AbstractController
             //dd("ok");
 
             $em->flush();
-            return new JsonResponse(
-                [
-                    "message" => "Created"
-                ],
-                201
-            );
+
+            $itemArr = $this->transform($productor);
+            return new JsonResponse($itemArr, 201);
+            
         } catch (Exception $err) {
 
             return new JsonResponse(
