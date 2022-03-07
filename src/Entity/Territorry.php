@@ -5,13 +5,15 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TerritorryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=TerritorryRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
- *      normalizationContext={"groups": {"read:territorycollection"}},
+ *      normalizationContext={"groups": {"read:territorycollection","timestamp:read","slug:read"}},
  *      collectionOperations={
  *         "city-vue"={
  *             "method"="GET",
@@ -44,6 +46,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Territorry
 {
+
+    use TimestampTrait;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -69,9 +74,15 @@ class Territorry
      */
     private $province;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Supervisor::class, mappedBy="territory")
+     */
+    private $supervisors;
+
     public function __construct()
     {
         $this->sectors = new ArrayCollection();
+        $this->supervisors = new ArrayCollection();
     }
     /*
     * @Groups({"read:citycollection"})
@@ -136,6 +147,36 @@ class Territorry
     public function setProvince(?Province $province): self
     {
         $this->province = $province;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Supervisor>
+     */
+    public function getSupervisors(): Collection
+    {
+        return $this->supervisors;
+    }
+
+    public function addSupervisor(Supervisor $supervisor): self
+    {
+        if (!$this->supervisors->contains($supervisor)) {
+            $this->supervisors[] = $supervisor;
+            $supervisor->setTerritory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSupervisor(Supervisor $supervisor): self
+    {
+        if ($this->supervisors->removeElement($supervisor)) {
+            // set the owning side to null (unless already changed)
+            if ($supervisor->getTerritory() === $this) {
+                $supervisor->setTerritory(null);
+            }
+        }
 
         return $this;
     }

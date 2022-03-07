@@ -7,14 +7,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\Collection;
 use App\Repository\FichingActivityRepository;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use App\Entity\Utils\TimestampTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;
 
 /**
  * @ORM\Entity(repositoryClass=FichingActivityRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
- *      normalizationContext={"groups": {"read:fichingacollection"}},
+ *      normalizationContext={"groups": {"read:fichingacollection","timestamp:read","slug:read"}},
  *      denormalizationContext={"groups":{"write:FichingActivity"}},
  * 
  *      collectionOperations={
@@ -55,6 +56,9 @@ use Doctrine\ORM\Mapping\OneToMany;
  */
 class FichingActivity
 {
+
+    use TimestampTrait;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

@@ -5,14 +5,16 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\AgriculturalActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=AgriculturalActivityRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
- *      normalizationContext={"groups": {"read:agriculcollection"}},
+ *      normalizationContext={"groups": {"read:agriculcollection","timestamp:read","slug:read"}},
  *      collectionOperations={
  *         "agriculural-activities-vue"={
  *             "method"="GET",
@@ -51,6 +53,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AgriculturalActivity
 {
+
+    use TimestampTrait;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -59,13 +64,7 @@ class AgriculturalActivity
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="date")
-     * @Groups({"read:productor:activities_data","read:agriculcollection","write:AgriculturalActivity"})
-     * @Assert\NotNull
-     * 
-     */
-    private $activityCreateDate;
+    
 
     /**
      * @ORM\Column(type="text")
@@ -113,17 +112,6 @@ class AgriculturalActivity
         return $this->id;
     }
 
-    public function getActivityCreateDate(): ?\DateTimeInterface
-    {
-        return $this->activityCreateDate;
-    }
-
-    public function setActivityCreateDate(\DateTimeInterface $date): self
-    {
-        $this->activityCreateDate = $date;
-
-        return $this;
-    }
 
     public function getGoal(): ?string
     {

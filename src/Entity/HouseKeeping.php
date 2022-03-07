@@ -7,12 +7,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Utils\TimestampTrait;
 use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * @ORM\Entity(repositoryClass=HouseKeepingRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
- *      normalizationContext={"groups": {"read:housecollection"}},
+ *      normalizationContext={"groups": {"read:housecollection","timestamp:read","slug:read"}},
  *      collectionOperations={
  *         "get"={
  *             "method"="GET",
@@ -35,6 +37,9 @@ use ApiPlatform\Core\Annotation\ApiResource;
  */
 class HouseKeeping
 {
+
+    use TimestampTrait;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

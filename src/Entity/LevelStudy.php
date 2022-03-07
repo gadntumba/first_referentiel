@@ -5,14 +5,16 @@ namespace App\Entity;
 use App\Repository\LevelStudyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=LevelStudyRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
- *      normalizationContext={"groups": {"read:levelstudycollection"}},
+ *      normalizationContext={"groups": {"read:levelstudycollection","timestamp:read","slug:read"}},
  *      collectionOperations={
  *         "level-study-vue"={
  *             "method"="GET",
@@ -46,6 +48,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class LevelStudy
 {
+
+    use TimestampTrait;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
