@@ -2,6 +2,7 @@
 
 namespace App\Validators\Productor;
 
+use App\Entity\Address;
 use App\Validators\Util\Util;
 use App\Entity\Monitor;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
@@ -208,12 +209,17 @@ class Productor {
     {
         //validate housekeeping data
 
+        if (is_null($this->houseKeeping)) {
+            $this->houseKeeping = new HouseKeeping;
+        }
+
+        if (is_null($this->houseKeeping->getAddress())) {
+            $address = new Address;
+            $this->houseKeeping->setAddress($address);
+        }
+
         $errorsTmp = $this->validator->validate($this);
         $errors = (count($errorsTmp) > 0)? Util::tranformErrorsData($errorsTmp) : [];
-
-        if (is_null($this->houseKeeping)) {
-            throw new \Exception("Not supported yet");
-        }
 
         $errorsTmp = $this->validator->validate($this->houseKeeping);
 
