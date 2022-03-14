@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -60,8 +61,17 @@ class Productor
     private $birthdate;
 
     /**
-     *  @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
+     * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *  min = 9,
+     *  max = 9 
+     *)
+     * @Assert\Regex(
+     *      pattern="/\+/",
+     *      match=false,
+     *      message="Your nui cannot contain a letter"
+     * )
      */
     private $nui;
 
