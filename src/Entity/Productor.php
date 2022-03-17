@@ -12,7 +12,16 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ProductorRepository::class)
- * 
+ * @UniqueEntity(
+ *     fields= "phoneNumber",
+ *     errorPath="phoneNumber",
+ *     message="Ce numéro de téléphone existe déjà"
+ * )
+ * @UniqueEntity(
+ *     fields= "nui",
+ *     errorPath="nui",
+ *     message="Ce NUI existe déjà"
+ * )
  */
 class Productor
 {
@@ -49,8 +58,17 @@ class Productor
     private $sexe;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique= true)
      * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
+     * @Assert\Length(
+     *  min = 10,
+     *  max = 10 
+     *)
+     * @Assert\Regex(
+     *      pattern="/\d+/",
+     *      match=false,
+     *      message="Votre Nnuméro de téléphone doit contenir dix chiffres"
+     * )
      */
     private $phoneNumber;
 
@@ -62,15 +80,15 @@ class Productor
 
     /**
      * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique= true)
      * @Assert\Length(
      *  min = 9,
      *  max = 9 
      *)
      * @Assert\Regex(
-     *      pattern="/\+/",
+     *      pattern="/\d+/",
      *      match=false,
-     *      message="Your nui cannot contain a letter"
+     *      message="Votre NUI ne peut pas contenir des lettres"
      * )
      */
     private $nui;
