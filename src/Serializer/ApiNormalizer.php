@@ -66,6 +66,7 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
                 throw $th; 
             }
             $jsonObject = new JsonObject();
+            
             $jsonObject->set(
                 "$.".$context["deserialization_path"], 
                 [
@@ -74,6 +75,7 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
                 ]
             );
             $arr = json_decode($jsonObject->getJson(), true);
+            //dd($th);
 
             throw new SerializerUnexpectedValueException($arr);
 
