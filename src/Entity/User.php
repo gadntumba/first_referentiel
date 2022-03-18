@@ -2,50 +2,60 @@
 
 namespace App\Entity;
 
+use App\Entity\Utils\TimestampTraitCopy;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use Mink67\KafkaConnect\Annotations\Copy;
 
+#[Copy(resourceName: 'user.user', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
 class User
 {
+    use TimestampTraitCopy;
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
+     *@Groups({"read:usercollection", "event:kafka"})
      * @ORM\Column(type="string", length=255)
      */
     private $name;
 
     /**
+     *@Groups({"read:usercollection", "event:kafka"})
      * @ORM\Column(type="string", length=255)
      */
     private $firstName;
 
     /**
+     *@Groups({"read:usercollection", "event:kafka"})
      * @ORM\Column(type="string", length=255)
      */
     private $lastName;
 
     /**
+     *@Groups({"read:usercollection", "event:kafka"})
      * @ORM\Column(type="string", length=255)
      */
     private $sexe;
 
     /**
+     *@Groups({"read:usercollection", "event:kafka"})
      * @ORM\Column(type="string", length=255)
      */
     private $phoneNumber;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     *@Groups({"read:usercollection", "event:kafka"})
+     * @ORM\Column(type="string", length=255, nullable="true")
      */
     private $email;
 
@@ -68,6 +78,7 @@ class User
     {
         $this->monitor = new ArrayCollection();
         $this->ot = new ArrayCollection();
+        
     }
 
     public function getId(): ?int
@@ -140,7 +151,7 @@ class User
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(string $email = null): self
     {
         $this->email = $email;
 

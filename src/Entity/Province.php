@@ -8,10 +8,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Mink67\KafkaConnect\Annotations\Copyable;
 
+#[Copyable(resourceName: 'location.province', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+#[ORM\HasLifecycleCallbacks()]
 /**
  * @ORM\Entity(repositoryClass=ProvinceRepository::class)
- * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
  *     normalizationContext={"groups": {"read:provincecollection","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -24,6 +26,7 @@ use Doctrine\ORM\Mapping as ORM;
  *          },
  *         "post"={
  *             "method"="POST",
+ *             "validation_groups"={"Default","postValidation"},
  *             "path"="/location/provinces",
  *             "denormalization_context"={"groups":{"write:Province"}},
  *             "openapi_context"={
@@ -53,13 +56,13 @@ class Province
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:productor:house_keeping","read:provincecollection","read:citycollection","write:Territory","read:territorycollection"})
+     * @Groups({"read:productor:house_keeping","read:provincecollection","read:citycollection","write:Territory","read:territorycollection", "event:kafka"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:productor:house_keeping","write:Province","read:provincecollection","read:citycollection","write:Territory","read:territorycollection"})
+     * @Groups({"read:productor:house_keeping","write:Province","read:provincecollection","read:citycollection","write:Territory","read:territorycollection", "event:kafka"})
      */
     private $name;
 
@@ -77,6 +80,7 @@ class Province
     {
         $this->cities = new ArrayCollection();
         $this->territorries = new ArrayCollection();
+        
     }
 
     /*

@@ -2,11 +2,13 @@
 
 namespace App\Controller\Api;
 
+use ApiPlatform\Core\Filter\Validator\ValidatorInterface;
 use App\Entity\Productor;
 use App\Repository\ProductorRepository;
 use App\Serializer\UnexpectedValueException;
 use App\Validators\Exception\Exception;
 use App\Validators\Productor\Productor as ProductorProductor;
+use App\Validators\Util\Util;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface as ValidatorValidatorInterface;
 
 class ProductorController extends AbstractController
 {
@@ -47,7 +50,12 @@ class ProductorController extends AbstractController
     /**
      * @Route("/api/productors", methods={"POST"}, name="productor_crate")
      */
-    public function create(Request $request, ProductorProductor $productorValidator, EntityManagerInterface $em)
+    public function create(
+        Request $request, 
+        ProductorProductor $productorValidator, 
+        EntityManagerInterface $em,
+        ValidatorValidatorInterface $validator
+    )
     {
         //dd($this->repository->findAll());
         
@@ -117,8 +125,21 @@ class ProductorController extends AbstractController
                 $this->persistIfNotPersited($stockRaising, $em);
             }
 
+
+
             //$this->persistIfNotPersited($productor, $em);
             //dd("ok");
+
+            $errors = $validator->validate($productor);
+
+            if (count($errors) > 0) {
+                
+                return new JsonResponse(
+                    Util::tranformErrorsData($errors),
+                    422
+                );
+            }
+
 
             $em->flush();
 

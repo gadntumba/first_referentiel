@@ -7,21 +7,30 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiProperty;
 
-trait TimestampTrait{
+trait TimestampTraitCopy{
 
     use TimestampTraitBase;
-    
+
     /**
      * Set the value of createdAt
      *
      * @return  self
      */ 
-    #[ORM\PrePersist]
-    public function setCreatedAt()
+    public function setId(int $id)
     {
-        $this->createdAt = new \DateTime();
+        //dd($id);
+        $this->id = $id;
 
-        //dd($this->createdAt);
+        return $this;
+    }
+    /**
+     * Set the value of createdAt
+     *
+     * @return  self
+     */ 
+    public function setCreatedAt(\DateTimeInterface $createdAt)
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -31,11 +40,9 @@ trait TimestampTrait{
      *
      * @return  self
      */ 
-    #[ORM\PreUpdate]
-    #[ORM\PrePersist]
-    public function setUpdatedAt()
+    public function setUpdatedAt(\DateTimeInterface $updateAt = null)
     {
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = $updateAt;
 
         return $this;
     }
@@ -44,10 +51,9 @@ trait TimestampTrait{
      * Set the value of deletedAt
      * @return  self
      */
-    #[ORM\PreRemove]
-    public function setDeletedAt()
+    public function setDeletedAt(\DateTimeInterface $deletedAt = null)
     {
-        $this->deletedAt =  new \DateTime();
+        $this->deletedAt =  $deletedAt;
 
         return $this;
     }
@@ -56,11 +62,9 @@ trait TimestampTrait{
      * 
      * @return  self
      */
-    #[ORM\PrePersist]
-    public function setSlug()
+    public function setSlug(string $uuid)
     {
-        $uuid = Uuid::v6();
-        $this->slug = (string) $uuid;
+        $this->slug = $uuid;
         return $this;
     }
 }

@@ -7,9 +7,12 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\ProductorRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Utils\TimestampTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Mink67\KafkaConnect\Annotations\Copyable;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-
+#[Copyable(resourceName: 'producer.producer', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 /**
  * @ORM\Entity(repositoryClass=ProductorRepository::class)
  * @UniqueEntity(
@@ -25,10 +28,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Productor
 {
+    use TimestampTrait;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @Groups({"read:productor:level_0"})
+     * @Groups({"read:productor:level_0", "event:kafka"})
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -58,7 +62,7 @@ class Productor
     private $sexe;
 
     /**
-     * @ORM\Column(type="string", length=255, unique= true)
+     * @ORM\Column(type="string", length=255)
      * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
      * @Assert\Length(
      *  min = 10,
@@ -66,7 +70,6 @@ class Productor
      *)
      * @Assert\Regex(
      *      pattern="/\d+/",
-     *      match=false,
      *      message="Votre Nnuméro de téléphone doit contenir dix chiffres"
      * )
      */
@@ -80,7 +83,7 @@ class Productor
 
     /**
      * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
-     * @ORM\Column(type="string", length=255, unique= true)
+     * @ORM\Column(type="string", length=255)
      * @Assert\Length(
      *  min = 9,
      *  max = 9 
@@ -201,6 +204,7 @@ class Productor
         $this->fichingactivity = new ArrayCollection();
         $this->raisingactivity = new ArrayCollection();
         $this->smartphone = new ArrayCollection();
+        
     }
 
     public static function validationGroups(self $productor){
@@ -232,6 +236,7 @@ class Productor
     public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
+        
 
         return $this;
     }

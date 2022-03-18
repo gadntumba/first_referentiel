@@ -8,7 +8,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Mink67\KafkaConnect\Annotations\Copyable;
 
+#[Copyable(resourceName: 'location.sector', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 /**
  * @ORM\Entity(repositoryClass=SectorRepository::class)
  * @ORM\HasLifecycleCallbacks()
@@ -53,7 +55,7 @@ class Sector
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:productor:house_keeping","read:sectorcollection"})
+     * @Groups({"read:productor:house_keeping","read:sectorcollection", "event:kafka"})
      */
     private $id;
 
