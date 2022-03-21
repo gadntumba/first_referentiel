@@ -35,6 +35,21 @@ class ProductorRepository extends ServiceEntityRepository
         ;
     }
     */
+    /**
+    * @return Productor[] Returns an array of Productor objects
+    */
+    public function findBySmartphone(int $smartId)
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.smartphone', "s")
+            ->andWhere('s.id = :smart_id')
+            ->setParameter('smart_id', $smartId)
+            ->orderBy('p.id', 'ASC')
+            //->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     /*
     public function findOneBySomeField($value): ?Productor
