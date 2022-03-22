@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ccc974f52ca57453143f8cfcc8cf804f",
+    "content-hash": "51fd72e4fd08df5b53ad51d59236d43f",
     "packages": [
         {
             "name": "api-platform/core",
@@ -1904,16 +1904,16 @@
         },
         {
             "name": "mink67/encrypt_bundle",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/michee1367/encrypt_bundle.git",
-                "reference": "b84f9a80c637adbac79ca49c1fef202e17e6bfe1"
+                "reference": "115f46d1c9d9339c6fc5f26a359035a3dd942eda"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/michee1367/encrypt_bundle/zipball/b84f9a80c637adbac79ca49c1fef202e17e6bfe1",
-                "reference": "b84f9a80c637adbac79ca49c1fef202e17e6bfe1",
+                "url": "https://api.github.com/repos/michee1367/encrypt_bundle/zipball/115f46d1c9d9339c6fc5f26a359035a3dd942eda",
+                "reference": "115f46d1c9d9339c6fc5f26a359035a3dd942eda",
                 "shasum": ""
             },
             "require": {
@@ -1939,22 +1939,22 @@
             ],
             "support": {
                 "issues": "https://github.com/michee1367/encrypt_bundle/issues",
-                "source": "https://github.com/michee1367/encrypt_bundle/tree/1.0.0"
+                "source": "https://github.com/michee1367/encrypt_bundle/tree/1.0.1"
             },
-            "time": "2022-03-01T11:45:41+00:00"
+            "time": "2022-03-22T10:50:12+00:00"
         },
         {
             "name": "mink67/kafka_connect_bundle",
-            "version": "1.0.11",
+            "version": "1.0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/michee1367/kafka_bundle.git",
-                "reference": "ce59161d893e7fa9f6c6a1f155fe420a13e0c452"
+                "reference": "f3bfee2811f9cf08ee30cef3f9fc797e4ad1cebf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/michee1367/kafka_bundle/zipball/ce59161d893e7fa9f6c6a1f155fe420a13e0c452",
-                "reference": "ce59161d893e7fa9f6c6a1f155fe420a13e0c452",
+                "url": "https://api.github.com/repos/michee1367/kafka_bundle/zipball/f3bfee2811f9cf08ee30cef3f9fc797e4ad1cebf",
+                "reference": "f3bfee2811f9cf08ee30cef3f9fc797e4ad1cebf",
                 "shasum": ""
             },
             "require": {
@@ -1990,9 +1990,9 @@
             ],
             "support": {
                 "issues": "https://github.com/michee1367/kafka_bundle/issues",
-                "source": "https://github.com/michee1367/kafka_bundle/tree/1.0.11"
+                "source": "https://github.com/michee1367/kafka_bundle/tree/1.0.13"
             },
-            "time": "2022-03-18T12:23:23+00:00"
+            "time": "2022-03-22T11:05:49+00:00"
         },
         {
             "name": "nelmio/cors-bundle",

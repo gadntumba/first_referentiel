@@ -211,6 +211,30 @@ class ProductorController extends AbstractController
         return new JsonResponse($data, 200);
     }
 
+     /**
+     * @Route("/api/productors/smartphones/{smartphone}/nui", methods={"GET","HEAD"}, name="productor_smartphone_nui")
+     * 
+     */
+    public function nui(int $smartphone)
+    {
+        $productors = $this->repository->findBySmartphone($smartphone);
+
+        //dd($productors);
+
+        $nuis = array_map(
+            function (Productor $productor)
+            {
+                $nui = $productor->getNui();
+
+                return $nui;
+            },
+            $productors
+        );
+
+
+        return new JsonResponse($nuis);
+    }
+
 
     /**
      * @Route("/api/productors/{id}", methods={"GET","HEAD"}, name="productor_show")
@@ -219,6 +243,11 @@ class ProductorController extends AbstractController
     {
         $productor = $this->repository->find($id);
         //dd($productor);
+        if (is_null($productor)) {
+            return new JsonResponse([
+                "message" => "Not found"
+            ], 200);
+        }
         $itemArr = $this->transform($productor);
         return new JsonResponse($itemArr, 200);
         
@@ -279,28 +308,4 @@ class ProductorController extends AbstractController
         return $itemArr;
     }
 
-    /**
-     * @Route("/api/productors/{smartphone}/nui", methods={"GET","HEAD"}, name="productor_smartphone_nui")
-     * 
-     */
-    public function nui(int $smartphone)
-    {
-
-        $productors = $this->repository->findBySmartphone($smartphone);
-
-        //dd($productors);
-
-        $nuis = array_map(
-            function (Productor $productor)
-            {
-                $nui = $productor->getNui();
-
-                return $nui;
-            },
-            $productors
-        );
-
-
-        return new JsonResponse($nuis);
-    }
 }

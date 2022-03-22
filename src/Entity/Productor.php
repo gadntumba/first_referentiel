@@ -90,7 +90,6 @@ class Productor
      *)
      * @Assert\Regex(
      *      pattern="/\d+/",
-     *      match=false,
      *      message="Votre NUI ne peut pas contenir des lettres"
      * )
      */
