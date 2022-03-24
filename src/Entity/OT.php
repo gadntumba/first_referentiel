@@ -2,25 +2,52 @@
 
 namespace App\Entity;
 
+use App\Entity\Utils\TimestampTrait;
 use App\Repository\OTRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * @ORM\Entity(repositoryClass=OTRepository::class)
+ * @ApiResource(
+ *     normalizationContext={"groups": {"read:productor:ot","timestamp:read","slug:read"}},
+ *      collectionOperations={
+ *         "ot"={
+ *             "method"="GET",
+ *             "path"="/productors/othres/ot",
+ *             "openapi_context"={
+ *                  "summary"= "Voir les provinces"
+ *              }
+ *          }
+ *         
+ *      },
+ *      itemOperations={
+ *         "get"={
+ *             "method"="GET",
+ *             "path"="/productors/othres/ot/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Voir les provinces"
+ *              }
+ *          }
+ *      }
+ * )
  */
 class OT
 {
+    use TimestampTrait;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read:productor:ot"})
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $name;
 
@@ -29,28 +56,25 @@ class OT
      */
     private $monitors;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="ot")
-     */
-    private $user;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read:productor:ot"})
      */
     private $entitled;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $phoneNumber;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $rccm;
 
@@ -64,10 +88,16 @@ class OT
      */
     private $supervisors;
 
+    /**
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy="ot")
+     */
+    private $users;
+
     public function __construct()
     {
         $this->monitors = new ArrayCollection();
         $this->supervisors = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -117,17 +147,6 @@ class OT
         return $this;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
 
     public function getEntitled(): ?string
     {
@@ -211,6 +230,36 @@ class OT
     {
         if ($this->supervisors->removeElement($supervisor)) {
             $supervisor->removeOt($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->setOt($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getOt() === $this) {
+                $user->setOt(null);
+            }
         }
 
         return $this;
