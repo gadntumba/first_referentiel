@@ -9,6 +9,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTrait;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\HasLifecycleCallbacks()
@@ -19,15 +21,15 @@ use App\Entity\Utils\TimestampTrait;
  *             "method"="GET",
  *             "path"="/piece_identification_type",
  *             "openapi_context"={
- *                  "summary"= "Voir les niveaux d'études"
+ *                  "summary"= "Voir les types des pièces d'identités"
  *              }
  *          },
- *         "post"={
+ *         "post"={"validation_groups":{"Default","postValidation"},
  *             "method"="POST",
  *             "path"="/piece_identification_type",
  *             "denormalization_context"={"groups":{"write:piece_identification_type"}},
  *             "openapi_context"={
- *                  "summary"= "Ajouter un niveau d'étude"
+ *                  "summary"= "Ajouter un type de pièce d'identité"
  *              }
  *         }
  *      },
@@ -38,12 +40,17 @@ use App\Entity\Utils\TimestampTrait;
  *            "method"="PATCH",
  *             "path"="/piece_identification_type/{id}",
  *             "openapi_context"={
- *                  "summary"= "Modifier un niveau d'étude"
+ *                  "summary"= "Modifier un type de pièce d'identité"
  *              }
  *          } 
  *       }
  * )
  * @ORM\Entity(repositoryClass=PieceIdentificationTypeRepository::class)
+ * @UniqueEntity(
+ *     fields= "libelle",
+ *     errorPath="libelle",
+ *     message="Ce libelle existe déjà"
+ * )
  */
 class PieceIdentificationType
 {
@@ -60,6 +67,7 @@ class PieceIdentificationType
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull
      * @Groups({"read:productor:piece_of_id_data","write:piece_identification_type","read:piece_identification_type"})
      */
     private $libelle;
@@ -73,7 +81,9 @@ class PieceIdentificationType
     {
         $this->productors = new ArrayCollection();
     }
-
+    public static function validationGroups(self $pieceIdentificationType){
+        return ['create:PieceIdentificationType'];
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -81,6 +91,8 @@ class PieceIdentificationType
     /*
     * @Groups({"read:adresscollection"})
     */
+
+
     public function getIri(): string
     {
         return '/api/piece_identification_types/'. $this->id;

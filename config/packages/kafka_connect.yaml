@@ -24,7 +24,7 @@ kafka_connect:
     decryption_iv: '1234567891011121'
     decryption_key: '%env(resolve:DATABASE_URL)%'
 
-  default_topic_name: 'sync_rna_db'
+  #default_topic_name: 'sync_rna_db'
 
 
 mink67_encrypt:

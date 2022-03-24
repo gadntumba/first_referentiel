@@ -8,6 +8,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -52,6 +54,11 @@ use Doctrine\ORM\Mapping as ORM;
  *          } 
  *       }
  * )
+ * @UniqueEntity(
+ *     fields= "libelle",
+ *     errorPath="libelle",
+ *     message="Ce libelle existe déjà"
+ * )
  */
 class SourceOfSupplyActivity
 {
@@ -69,6 +76,12 @@ class SourceOfSupplyActivity
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"read:productor:activities_data","write:SourceOfSupplyActivity","read:sourcecollection"})
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *  min = 3,
+     *  max = 50,
+     *  groups={"postValidation"}  
+     *)
      */
     private $libelle;
 
@@ -91,6 +104,9 @@ class SourceOfSupplyActivity
     {
         $this->fichingActivities = new ArrayCollection();
         $this->stockRaisingActivities = new ArrayCollection();
+    }
+    public static function validationGroups(self $sourceOfSupplyActivity){
+        return ['create:SourceOfSupplyActivity'];
     }
 
     public function getId(): ?int

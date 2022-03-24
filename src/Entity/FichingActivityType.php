@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTrait;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -52,6 +53,11 @@ use Doctrine\ORM\Mapping as ORM;
  *       }
  * 
  * )
+ * @UniqueEntity(
+ *     fields= "libelle",
+ *     errorPath="libelle",
+ *     message="Ce libelle existe déjà"
+ * )
  */
 class FichingActivityType
 {
@@ -85,6 +91,9 @@ class FichingActivityType
     /*
     * @Groups({"read:fichingcollection"})
     */
+    public static function validationGroups(self $fichingActivityType){
+        return ['create:FichingActivityType'];
+    }
     public function getIri(): string
     {
         return '/api/fiching-activities/p/types/'. $this->id;

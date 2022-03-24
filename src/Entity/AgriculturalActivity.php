@@ -9,6 +9,7 @@ use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=AgriculturalActivityRepository::class)
@@ -49,6 +50,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              }
  *          } 
  *       } 
+ * )
+ * @UniqueEntity(
+ *     fields= "goal",
+ *     errorPath="goal",
+ *     message="Ce goal existe déjà"
  * )
  */
 class AgriculturalActivity
@@ -102,6 +108,10 @@ class AgriculturalActivity
     /*
     * @Groups({"read:agriculcollection"})
     */
+    
+    public static function validationGroups(self $agriculturalActivity){
+        return ['create:AgriculturalActivity'];
+    }
     public function getIri(): string
     {
         return '/api/agricultural-activities/'. $this->id;

@@ -9,6 +9,7 @@ use App\Repository\FichingActivityRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\Utils\TimestampTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping\OneToMany;
 
 /**
@@ -52,6 +53,11 @@ use Doctrine\ORM\Mapping\OneToMany;
  *              }
  *          } 
  *       } 
+ * )
+ * @UniqueEntity(
+ *     fields= "goal",
+ *     errorPath="goal",
+ *     message="Ce numéro goal existe déjà"
  * )
  */
 class FichingActivity
@@ -112,6 +118,9 @@ class FichingActivity
     /*
     * @Groups({"read:fichingacollection"})
     */
+    public static function validationGroups(self $fichingActivity){
+        return ['create:FichingActivity'];
+    }
     public function getIri(): string
     {
         return '/productors/fiching-activities'. $this->id;
