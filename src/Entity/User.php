@@ -70,14 +70,14 @@ class User
     private $monitor;
 
     /**
-     * @ORM\OneToMany(targetEntity=Ot::class, mappedBy="user")
+     * @ORM\ManyToOne(targetEntity=OT::class, inversedBy="users")
      */
     private $ot;
+
 
     public function __construct()
     {
         $this->monitor = new ArrayCollection();
-        $this->ot = new ArrayCollection();
         
     }
 
@@ -200,32 +200,14 @@ class User
         return $this;
     }
 
-    /**
-     * @return Collection<int, Ot>
-     */
-    public function getOt(): Collection
+    public function getOt(): ?OT
     {
         return $this->ot;
     }
 
-    public function addOt(Ot $ot): self
+    public function setOt(?OT $ot): self
     {
-        if (!$this->ot->contains($ot)) {
-            $this->ot[] = $ot;
-            $ot->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOt(Ot $ot): self
-    {
-        if ($this->ot->removeElement($ot)) {
-            // set the owning side to null (unless already changed)
-            if ($ot->getUser() === $this) {
-                $ot->setUser(null);
-            }
-        }
+        $this->ot = $ot;
 
         return $this;
     }

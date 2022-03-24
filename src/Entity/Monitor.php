@@ -11,24 +11,50 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=MonitorRepository::class)
+ * @ApiResource(
+ *     normalizationContext={"groups": {"read:productor:monitor","timestamp:read","slug:read"}},
+ *      collectionOperations={
+ *         "ot"={
+ *             "method"="GET",
+ *             "path"="/productors/othres/monitor",
+ *             "openapi_context"={
+ *                  "summary"= "Voir les moniteurs"
+ *              }
+ *          }
+ *         
+ *      },
+ *      itemOperations={
+ *         "get"={
+ *             "method"="GET",
+ *             "path"="/productors/othres/monitor/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Voir un moniteur"
+ *              }
+ *          }
+ *      }
+ * )
  */
 class Monitor
 {
+    use TimestampTrait;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups("read:monitorcollection","write:Monitor")
+     * @Groups({"read:productor:monitor","write:Monitor"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read:productor:monitor","write:Monitor"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read:productor:monitor","write:Monitor"})
      */
     private $phoneNumber;
 
@@ -38,11 +64,13 @@ class Monitor
     private $productors;
 
     /**
+     * @Groups({"read:productor:monitor","write:Monitor"})
      * @ORM\ManyToOne(targetEntity=OT::class, inversedBy="monitors")
      */
     private $ot;
 
     /**
+     * @Groups({"read:productor:monitor","write:Monitor"})
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="monitor")
      */
     private $user;
