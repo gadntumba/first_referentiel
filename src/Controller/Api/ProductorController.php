@@ -308,4 +308,27 @@ class ProductorController extends AbstractController
         return $itemArr;
     }
 
+    /**
+     * @Route("/api/productors/{imei}/nui", methods={"GET","HEAD"}, name="nuibyIMEI")
+     */
+    public function nuibyIMEI(string $imei)
+    {
+        $productors = $this->repository->findByImei($imei);
+
+        //dd($productors);
+
+        $nuis = array_map(
+            function (Productor $productor)
+            {
+                $nui = $productor->getNui();
+
+                return $nui;
+            },
+            $productors
+        );
+
+
+        return new JsonResponse($nuis);
+    }
+
 }
