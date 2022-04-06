@@ -61,7 +61,7 @@ class Sector
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:productor:house_keeping","write:Sector","read:sectorcollection"})
+     * @Groups({"read:productor:house_keeping","write:Sector","read:sectorcollection", "event:kafka"})
      */
     private $name;
 
@@ -71,7 +71,7 @@ class Sector
     private $addresses;
 
     /**
-     * @Groups({"read:productor:house_keeping","write:Sector","read:sectorcollection"})
+     * @Groups({"read:productor:house_keeping","write:Sector","read:sectorcollection", "event:kafka"})
      * @ORM\ManyToOne(targetEntity=Territorry::class, inversedBy="sectors")
      */
     private $territorry;

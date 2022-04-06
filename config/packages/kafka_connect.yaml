@@ -1,6 +1,6 @@
 kafka_connect:
   producer:
-    bootstrap_servers: "localhost:9093/"
+    bootstrap_servers: "%env(KAFKA_CONNECT_HOST)%"
     socket_timeout_ms: 50
     queue_buffering_max_messages: 1000
     max_in_flight_requests_per_connection: 1
@@ -9,7 +9,7 @@ kafka_connect:
       request_required_acks: -1
       request_timeout_ms: 5000
   consumer:
-    bootstrap_servers: "localhost:9093/"
+    bootstrap_servers: "%env(KAFKA_CONNECT_HOST)%"
     group_id: "consumer-highlevel"
     enable_partition_eof: "true"
     auto_offset_reset: "earliest"
@@ -25,7 +25,7 @@ kafka_connect:
     decryption_key: '%env(resolve:DATABASE_URL)%'
 
   default_topic_name: 'sync_rna_db'
-
+  prefix_channel: '%env(resolve:KAFKA_CONNECT_CHANNEL_PREFIX)%'
 
 mink67_encrypt:
   ciphering: 'AES-128-CTR'

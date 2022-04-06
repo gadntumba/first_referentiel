@@ -61,7 +61,13 @@ class City
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:productor:house_keeping","write:City","read:citycollection","read:towncollection"})
+     * @Groups({
+     *      "read:productor:house_keeping",
+     *      "write:City",
+     *      "read:citycollection",
+     *      "read:towncollection", 
+     *      "event:kafka"
+     * })
      */
     private $name;
 
@@ -71,7 +77,13 @@ class City
     private $towns;
 
     /**
-     * @Groups({"read:productor:house_keeping","write:City","read:citycollection","read:towncollection"})
+     * @Groups({
+     *      "read:productor:house_keeping",
+     *      "write:City",
+     *      "read:citycollection",
+     *      "read:towncollection",
+     *      "event:kafka"
+     * })
      * @ORM\ManyToOne(targetEntity=Province::class, inversedBy="cities")
      */
     private $province;
