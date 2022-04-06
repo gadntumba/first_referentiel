@@ -8,7 +8,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Mink67\KafkaConnect\Annotations\Copyable;
+
 
 #[Copyable(resourceName: 'location.province', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 #[ORM\HasLifecycleCallbacks()]
@@ -46,6 +49,11 @@ use Mink67\KafkaConnect\Annotations\Copyable;
  *          } 
  *       } 
  * )
+ * @UniqueEntity(
+ *     fields= "name",
+ *     errorPath="name",
+ *     message="Ce nom existe déjà"
+ * )
  */
 class Province
 {
@@ -75,6 +83,12 @@ class Province
      *      "read:citycollection",
      *      "read:territorycollection", 
      *      "event:kafka"})
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *  min = 3,
+     *  max = 50,
+     *  groups={"postValidation"}  
+     *)
      */
     private $name;
 
@@ -93,6 +107,9 @@ class Province
         $this->cities = new ArrayCollection();
         $this->territorries = new ArrayCollection();
         
+    }
+    public static function validationGroups(self $province){
+        return ['create:Province'];
     }
 
     /*

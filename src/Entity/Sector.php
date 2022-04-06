@@ -8,6 +8,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Mink67\KafkaConnect\Annotations\Copyable;
 
 #[Copyable(resourceName: 'location.sector', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
@@ -45,6 +47,11 @@ use Mink67\KafkaConnect\Annotations\Copyable;
  *          } 
  *       } 
  * )
+ * @UniqueEntity(
+ *     fields= "name",
+ *     errorPath="name",
+ *     message="Ce nom existe déjà"
+ * )
  */
 class Sector
 {
@@ -62,6 +69,12 @@ class Sector
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"read:productor:house_keeping","write:Sector","read:sectorcollection", "event:kafka"})
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *  min = 3,
+     *  max = 50,
+     *  groups={"postValidation"}  
+     *)
      */
     private $name;
 
@@ -79,6 +92,10 @@ class Sector
     public function __construct()
     {
         $this->addresses = new ArrayCollection();
+    }
+
+    public static function validationGroups(self $sector){
+        return ['create:Sector'];
     }
     /*
     * @Groups({"read:citycollection"})

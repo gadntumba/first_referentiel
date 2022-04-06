@@ -8,6 +8,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Mink67\KafkaConnect\Annotations\Copyable;
 
 #[Copyable(resourceName: 'location.city', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
@@ -44,6 +45,11 @@ use Mink67\KafkaConnect\Annotations\Copyable;
  *              }
  *          } 
  *       } 
+ * )
+ * @UniqueEntity(
+ *     fields= "name",
+ *     errorPath="name",
+ *     message="Ce nom existe déjà"
  * )
  */
 class City
@@ -103,6 +109,9 @@ class City
     /*
     * @Groups({"read:citycollection"})
     */
+    public static function validationGroups(self $city){
+        return ['create:City'];
+    }
     public function getIri(): string
     {
         return '/api/cities/'. $this->id;

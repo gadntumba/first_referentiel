@@ -8,6 +8,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -23,7 +26,7 @@ use Doctrine\ORM\Mapping as ORM;
  *                  "summary"= "Voir les niveaux d'études"
  *              }
  *          },
- *         "post"={
+ *         "post"={"validation_groups":{"Default","postValidation"},
  *             "method"="POST",
  *             "path"="/level-study",
  *             "denormalization_context"={"groups":{"write:LevelStudy"}},
@@ -44,7 +47,11 @@ use Doctrine\ORM\Mapping as ORM;
  *          } 
  *       }
  * )
- * 
+ * @UniqueEntity(
+ *     fields= "libelle",
+ *     errorPath="libelle",
+ *     message="Ce libelle existe déjà"
+ * )
  */
 class LevelStudy
 {
@@ -62,6 +69,17 @@ class LevelStudy
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"read:productor:personnal_id_data","write:LevelStudy","read:levelstudycollection"})
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *  min = 2,
+     *  max = 50,
+     *  groups={"postValidation"}  
+     *)
+     *@Assert\Length(
+     *  min = 2,
+     *  max = 50,
+     * groups={"putValidation"}
+     *)
      */
     private $libelle;
 
@@ -77,6 +95,10 @@ class LevelStudy
     /*
     * @Groups({"read:adresscollection"})
     */
+
+    public static function validationGroups(self $levelStudy){
+        return ['create:LevelStudy'];
+    }
     public function getIri(): string
     {
         return '/api/level_studies/'. $this->id;

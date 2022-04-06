@@ -51,6 +51,19 @@ class ProductorRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findByImei(string $imei)
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.smartphone', "s")
+            ->andWhere('s.imei = :smart_imei')
+            ->setParameter('smart_imei', $imei)
+            ->orderBy('p.id', 'ASC')
+            //->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     /*
     public function findOneBySomeField($value): ?Productor
     {

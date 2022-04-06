@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\Utils\TimestampTrait;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=HouseKeepingRepository::class)
@@ -33,6 +34,11 @@ use ApiPlatform\Core\Annotation\ApiResource;
  *              }
  *          }
  *      }
+ * )
+ * @UniqueEntity(
+ *     fields= "NIM",
+ *     errorPath="NIM",
+ *     message="Ce NIM existe déjà"
  * )
  */
 class HouseKeeping
@@ -78,6 +84,9 @@ class HouseKeeping
     public function __construct()
     {
         $this->productors = new ArrayCollection();
+    }
+    public static function validationGroups(self $houseKeeping){
+        return ['create:HouseKeeping'];
     }
 
     public function getId(): ?int

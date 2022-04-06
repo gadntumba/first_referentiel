@@ -305,7 +305,7 @@
             "ref": "25e3c964d3aee480b3acc3114ffb7940c89edfed"
         },
         "files": [
-            "config/packages/messenger.yaml"
+            "./config/packages/messenger.yaml"
         ]
     },
     "symfony/password-hasher": {

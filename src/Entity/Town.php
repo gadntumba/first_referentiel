@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Mink67\KafkaConnect\Annotations\Copyable;
 
@@ -45,6 +47,11 @@ use Mink67\KafkaConnect\Annotations\Copyable;
  *          } 
  *       } 
  * )
+ * @UniqueEntity(
+ *     fields= "name",
+ *     errorPath="name",
+ *     message="Ce nom existe déjà"
+ * )
  */
 class Town
 {
@@ -62,6 +69,12 @@ class Town
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"read:productor:house_keeping","write:Town","read:towncollection", "event:kafka"})
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *  min = 3,
+     *  max = 50,
+     *  groups={"postValidation"}  
+     *)
      */
     private $name;
 
@@ -81,6 +94,11 @@ class Town
         $this->addresses = new ArrayCollection();
         
     }
+
+    public static function validationGroups(self $town){
+        return ['create:Town'];
+    }
+
     /*
     * @Groups({"read:citycollection"})
     */

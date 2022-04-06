@@ -7,6 +7,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTrait;
 use App\Repository\StockRainsingActivityTypeRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -43,6 +45,11 @@ use Doctrine\ORM\Mapping as ORM;
  *          } 
  *       }
  * )
+ * @UniqueEntity(
+ *     fields= "libelle",
+ *     errorPath="libelle",
+ *     message="Ce libelle existe déjà"
+ * )
  */
 class StockRainsingActivityType
 {
@@ -60,6 +67,12 @@ class StockRainsingActivityType
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"read:productor:activities_data","read:stocktypecollection","read:StockRainsingActivityType"})
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *  min = 3,
+     *  max = 50,
+     *  groups={"postValidation"}  
+     *)
      */
     private $libelle;
 
@@ -71,6 +84,10 @@ class StockRainsingActivityType
     public function __construct()
     {
         $this->stockRaisingActivities = new ArrayCollection();
+    }
+
+    public static function validationGroups(self $stockRainsingActivityType){
+        return ['create:StockRainsingActivityType'];
     }
     /*
     * @Groups({"read:exploitedAreacollection"})

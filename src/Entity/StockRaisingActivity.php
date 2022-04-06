@@ -8,6 +8,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=StockRaisingActivityRepository::class)
@@ -49,6 +50,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          } 
  *       }
  * )
+ * @UniqueEntity(
+ *     fields= "goal",
+ *     errorPath="goal",
+ *     message="Ce goal existe déjà"
+ * )
  */
 class StockRaisingActivity
 {
@@ -75,6 +81,11 @@ class StockRaisingActivity
      * @Groups({"read:productor:activities_data","read:stockraisingcollection","white:stock-raising-activity"})
      * @Assert\NotNull
      * @Assert\Type("string")
+     * @Assert\Length(
+     *  min = 3,
+     *  max = 50,
+     *  groups={"postValidation"}  
+     *)
      */
     private $goal;
 
@@ -102,7 +113,9 @@ class StockRaisingActivity
         return $this->id;
     }
     
-
+    public static function validationGroups(self $stockRaisingActivity){
+        return ['create:StockRaisingActivity'];
+    }
     public function getActivityCreateDate(): ?\DateTimeInterface
     {
         return $this->activityCreateDate;
