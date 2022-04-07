@@ -309,6 +309,15 @@ class ProductorController extends AbstractController
                 
             );                
         }
+        //'timestamp:read'
+        $itemArr['timestamp'] = $this->normalizer->normalize(
+            $item, 
+            null, 
+            [
+                'groups' => ['timestamp:read']
+            ]
+            
+        );
 
         return $itemArr;
     }
