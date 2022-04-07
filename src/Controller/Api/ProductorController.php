@@ -75,7 +75,12 @@ class ProductorController extends AbstractController
             //dd($th);
             
             return new JsonResponse(
-                $th->getErrors(),
+                [
+                    "errors" => $th->getErrors(),
+                    "message" => $th->getMessage(),
+                    "code" => 422,
+                    "status" => 422,
+                ],
                 422
             );
         }

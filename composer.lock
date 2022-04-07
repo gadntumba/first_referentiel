@@ -1946,16 +1946,16 @@
         },
         {
             "name": "mink67/kafka_connect_bundle",
-            "version": "1.0.16",
+            "version": "1.0.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/michee1367/kafka_bundle.git",
-                "reference": "c33da082af4ba6bf3b3cd8c1fcdca85cab27c5b2"
+                "reference": "6302ab3e042853523c3f0d1a5965c4c28b1f033a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/michee1367/kafka_bundle/zipball/c33da082af4ba6bf3b3cd8c1fcdca85cab27c5b2",
-                "reference": "c33da082af4ba6bf3b3cd8c1fcdca85cab27c5b2",
+                "url": "https://api.github.com/repos/michee1367/kafka_bundle/zipball/6302ab3e042853523c3f0d1a5965c4c28b1f033a",
+                "reference": "6302ab3e042853523c3f0d1a5965c4c28b1f033a",
                 "shasum": ""
             },
             "require": {
@@ -1991,9 +1991,9 @@
             ],
             "support": {
                 "issues": "https://github.com/michee1367/kafka_bundle/issues",
-                "source": "https://github.com/michee1367/kafka_bundle/tree/1.0.16"
+                "source": "https://github.com/michee1367/kafka_bundle/tree/1.0.18"
             },
-            "time": "2022-04-04T09:45:06+00:00"
+            "time": "2022-04-05T13:52:28+00:00"
         },
         {
             "name": "nelmio/cors-bundle",
@@ -7273,16 +7273,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v3.3.9",
+            "version": "v3.3.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "6ff9b0e440fa66f97f207e181c41340ddfa5683d"
+                "reference": "8442df056c51b706793adf80a9fd363406dd3674"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/6ff9b0e440fa66f97f207e181c41340ddfa5683d",
-                "reference": "6ff9b0e440fa66f97f207e181c41340ddfa5683d",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/8442df056c51b706793adf80a9fd363406dd3674",
+                "reference": "8442df056c51b706793adf80a9fd363406dd3674",
                 "shasum": ""
             },
             "require": {
@@ -7333,7 +7333,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v3.3.9"
+                "source": "https://github.com/twigphp/Twig/tree/v3.3.10"
             },
             "funding": [
                 {
@@ -7345,7 +7345,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-25T09:37:52+00:00"
+            "time": "2022-04-06T06:47:41+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -7841,5 +7841,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.1.0"
 }

@@ -29,6 +29,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Productor
 {
     use TimestampTrait;
+    const GENRES = ['M', 'F'];
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -55,6 +56,7 @@ class Productor
      */
     private $lastName;
 
+    #[Assert\Choice(choices: Productor::GENRES, message: 'Choisir le genre valid.')]
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"read:productor:personnal_id_data","read:item","read:collection","write:Productor"})

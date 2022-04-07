@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter;
+use ApiPlatform\Core\Serializer\AbstractItemNormalizer;
 use App\Entity\City;
 use App\Entity\Province;
 use App\Entity\Sector;
@@ -39,7 +41,7 @@ class InsertAgromwindaPlacesCommand extends Command
     public function __construct(HttpClientInterface $clientHttp, EntityManagerInterface $em) {
         $this->clientHttp = $clientHttp;
         $this->em = $em;
-
+        
         parent::__construct();
     }
 
@@ -359,9 +361,6 @@ class InsertAgromwindaPlacesCommand extends Command
 
         }else {
             $sector = $this->em->getRepository(Sector::class)->find($param->getAppId());
-
-            //dd($sector);
-
         }
 
     }

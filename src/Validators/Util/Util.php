@@ -7,7 +7,6 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class Util {
 
-
     public static function tranformErrorsData(ConstraintViolationListInterface $data)
     {
         $res = [];
@@ -26,7 +25,12 @@ class Util {
                 $res[$path] =  isset($res[$path])? [$value, ... $res[$path]] : [$value];
             }
 
-            return $res;
+            return [
+                "errors" => $res,
+                "message" => (string) $data,
+                "code" => 422,
+                "status" => 422,
+            ];
         }
     }
 }
