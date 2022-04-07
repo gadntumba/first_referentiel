@@ -16,10 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Faker\Factory;
 
-#[AsCommand(
-    name: 'fake:create-ot',
-    description: 'Add a short description for your command',
-)]
+#[AsCommand(name: 'fake:create-ot', description: 'Add a short description for your command')]
 class FakeCreateOtCommand extends Command
 {
     /**
