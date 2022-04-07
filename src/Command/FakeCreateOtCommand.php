@@ -19,6 +19,10 @@ use Faker\Factory;
 #[AsCommand(name: 'fake:create-ot', description: 'Add a short description for your command')]
 class FakeCreateOtCommand extends Command
 {
+
+    protected static $defaultName = 'fake:create-ot';
+    protected static $defaultDescription = 'Add a short description for your command';
+
     /**
      * @var EntityManagerInterface
      */

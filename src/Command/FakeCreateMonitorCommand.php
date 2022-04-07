@@ -19,6 +19,10 @@ use Faker\Factory;
 #[AsCommand(name: 'fake:create-monitor', description: 'Add a short description for your command')]
 class FakeCreateMonitorCommand extends Command
 {
+
+    protected static $defaultName = 'fake:create-monitor';
+    protected static $defaultDescription = 'Add a short description for your command';
+
     /**
      * @var EntityManagerInterface
      */
