@@ -19,10 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-#[AsCommand(
-    name: 'app:insert-agromwinda-places',
-    description: 'Add a short description for your command',
-)]
+#[AsCommand(name: 'app:insert-agromwinda-places', description: 'Add a short description for your command')]
 class InsertAgromwindaPlacesCommand extends Command
 {
 
