@@ -15,6 +15,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[Copyable(resourceName: 'producer.producer', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 /**
  * @ORM\Entity(repositoryClass=ProductorRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @UniqueEntity(
  *     fields= "phoneNumber",
  *     errorPath="phoneNumber",
