@@ -13,10 +13,9 @@ trait TimestampTrait{
     
     /**
      * Set the value of createdAt
-     *
+     *@ORM\PrePersist
      * @return  self
      */ 
-    #[ORM\PrePersist]
     public function setCreatedAt()
     {
         $this->createdAt = new \DateTime();
@@ -28,11 +27,11 @@ trait TimestampTrait{
 
      /**
      * Set the value of updatedAt
+     *@ORM\PrePersist
+     *@ORM\PreUpdate
      *
      * @return  self
      */ 
-    #[ORM\PreUpdate]
-    #[ORM\PrePersist]
     public function setUpdatedAt()
     {
         $this->updatedAt = new \DateTime();
@@ -42,9 +41,9 @@ trait TimestampTrait{
 
     /**
      * Set the value of deletedAt
+     * @ORM\PreRemove
      * @return  self
      */
-    #[ORM\PreRemove]
     public function setDeletedAt()
     {
         $this->deletedAt =  new \DateTime();
@@ -53,10 +52,9 @@ trait TimestampTrait{
     }
 
     /**
-     * 
+     * @ORM\PrePersist
      * @return  self
      */
-    #[ORM\PrePersist]
     public function setSlug()
     {
         $uuid = Uuid::v6();

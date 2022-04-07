@@ -12,30 +12,31 @@ trait TimestampTraitBase{
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"timestamp:read"})
      */
-    #[Groups(["timestamp:read"])]
     #[ORM\Column(type: 'datetime')]
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"timestamp:read"})
+     * 
      */
-    #[Groups(["timestamp:read"])]
     #[ORM\Column(type: 'datetime')]
     private $updatedAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"timestamp:read"})
      */
-    #[Groups(["timestamp:read"])]
     #[ORM\Column(type: 'datetime', nullable:true)]
     private $deletedAt;
 
     /**
      * @ORM\Column(type="string", nullable=true, length=255)
+     * @Groups({"timestamp:read"})
      * 
      */
-    #[Groups(["slugger:read"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $slug;
 
