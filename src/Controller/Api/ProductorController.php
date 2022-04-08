@@ -266,7 +266,7 @@ class ProductorController extends AbstractController
 
         $data = array_reduce(
             $res,
-            function ( mixed $carry , mixed $item )
+            function ( array $carry , array $item )
             {
                 $carry[$item["me_date"]] = (int) $item["nbr"];
                 return $carry;
