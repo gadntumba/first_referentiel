@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Productor;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -50,6 +51,44 @@ class ProductorRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    /**
+    * @return array Returns an array of Productor objects
+    */
+    public function findWeekStats(DateTimeInterface $date)
+    {
+        $em = $this->getEntityManager();
+
+        $formatedDate = $date->format("Y-m-d");
+
+        $conn = $em->getConnection();
+        $tableName = $em->getClassMetadata(Productor::class)->getTableName();
+
+        $sql = "SELECT DATE_FORMAT(p.created_at, '%Y-%m-%d') me_date, COUNT(id) nbr 
+                    FROM $tableName p 
+                    WHERE  YEARWEEK(p.created_at) = YEARWEEK(:curr_date) OR 
+                            YEARWEEK(p.created_at)-1 = YEARWEEK(:curr_date) 
+                    GROUP BY me_date;
+        ";
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['curr_date' => $formatedDate]);
+        
+        $arrData = $resultSet->fetchAllAssociative();
+
+        //dd($arrData);
+
+        return $arrData;
+
+    }
+
+    ///**
+    // * Count all producers
+    // * @return int
+    // */
+    /*public function count()
+    {
+        
+    }*/
 
     public function findByImei(string $imei)
     {

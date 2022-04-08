@@ -9,6 +9,7 @@ use App\Serializer\UnexpectedValueException;
 use App\Validators\Exception\Exception;
 use App\Validators\Productor\Productor as ProductorProductor;
 use App\Validators\Util\Util;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -239,7 +240,120 @@ class ProductorController extends AbstractController
 
         return new JsonResponse($nuis);
     }
+    /**
+     * @Route("/api/productors/stats/count", methods={"GET","HEAD"}, name="productor_smartphone_stats_count")
+     */
+    public function statCount()
+    {
+        return new JsonResponse([
+            "status" => "200",
+            "data" => [
+                "count" => $this->repository->count([]),
+            ],
+        ]);
+        
+    }
+    /**
+     * @Route("/api/productors/stats/weeks", methods={"GET","HEAD"}, name="productor_smartphone_stats_week")
+     */
+    public function weekStat()
+    {
+        $now = new DateTime();
 
+        $res = $this->repository->findWeekStats($now);
+
+
+
+        $data = array_reduce(
+            $res,
+            function ( mixed $carry , mixed $item )
+            {
+                $carry[$item["me_date"]] = (int) $item["nbr"];
+                return $carry;
+            },
+            []
+        );
+
+        //dd($data);
+
+        $list = $this->listDaysWeek($now);
+
+        $datesThisWeek = array_map(
+            function (DateTime $date) use ($data)
+            {
+                $dateStr = $date->format("Y-m-d");
+                $label = $date->format("d/m");
+
+                $value = [
+                    "date" => $dateStr,
+                    "label" => $label,
+                    "count" => 0
+                ];
+
+                if (isset($data[$dateStr])) {
+                    $value["count"] = $data[$dateStr];
+                }
+
+                return $value;
+
+            },
+            $this->listDaysWeek($now)
+        );
+
+        $datePrevWeek = clone $now;
+        $datePrevWeek = $datePrevWeek->modify("-7 day");
+
+        //dd($datePrevWeek);
+
+        $datesPrevWeek = array_map(
+            function (DateTime $date) use ($data)
+            {
+                $dateStr = $date->format("Y-m-d");
+                $label = $date->format("d/m");
+
+                $value = [
+                    "date" => $dateStr,
+                    "label" => $label,
+                    "count" => 0
+                ];
+
+                if (isset($data[$dateStr])) {
+                    $value["count"] = $data[$dateStr];
+                }
+
+                return $value;
+
+            },
+            $this->listDaysWeek($datePrevWeek)
+        );
+
+        //dd($datesPrevWeek);
+
+        return new JsonResponse([
+            "status" => "200",
+            "data" => [
+                "datesThisWeek" => $datesThisWeek,
+                "datesPrevWeek" => $datesPrevWeek
+            ],
+        ]);
+
+    }
+    /**
+     * 
+     */
+    private function listDaysWeek(DateTime $date)
+    {
+        $numDay = $date->format("N");
+        $list = [];
+
+        for ($i=1-$numDay; $i <= 7-$numDay; $i++) { 
+            $dateClone = clone $date;
+            array_push($list, $dateClone->modify($i . " day"));
+        }
+
+        return $list;
+
+    }
 
     /**
      * @Route("/api/productors/{id}", methods={"GET","HEAD"}, name="productor_show")
