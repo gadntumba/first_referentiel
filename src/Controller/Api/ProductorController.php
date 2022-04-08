@@ -204,7 +204,7 @@ class ProductorController extends AbstractController
      */
     public function list()
     {        
-        $all = $this->repository->findAll();
+        $all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
         $data = [];
 
         //dd($all); "read:productor:level_0"
