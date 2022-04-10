@@ -2,7 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\AgriculturalActivity;
+use App\Entity\FichingActivity;
+use App\Entity\FichingActivityType;
 use App\Entity\Productor;
+use App\Entity\StockRaisingActivity;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -67,13 +71,88 @@ class ProductorRepository extends ServiceEntityRepository
         $sql = "SELECT DATE_FORMAT(p.created_at, '%Y-%m-%d') me_date, COUNT(id) nbr 
                     FROM $tableName p 
                     WHERE  YEARWEEK(p.created_at, 1) = YEARWEEK(:curr_date, 1) OR 
-                            YEARWEEK(p.created_at, 1)-1 = YEARWEEK(:curr_date, 1) 
+                            YEARWEEK(p.created_at, 1)-1 = YEARWEEK(:curr_date, 1)
                     GROUP BY me_date;
         ";
         $stmt = $conn->prepare($sql);
         $resultSet = $stmt->executeQuery(['curr_date' => $formatedDate]);
         
         $arrData = $resultSet->fetchAllAssociative();
+
+        //dd($arrData);
+
+        return $arrData;
+
+    }
+    /**
+    * @return int count a productor agricultor
+    */
+    public function countAgriculturalActivity()
+    {
+        $em = $this->getEntityManager();
+
+
+        $conn = $em->getConnection();
+        $tableName = $em->getClassMetadata(Productor::class)->getTableName();
+        $actityTableName = $em->getClassMetadata(AgriculturalActivity::class)->getTableName();
+
+        $sql = "SELECT count(p.id) nbr FROM $tableName p WHERE EXISTS (SELECT act.id FROM $actityTableName act);
+        ";
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery([]);
+        
+        $arrData = $resultSet->fetchAssociative();
+
+        //dd($arrData);
+
+        return $arrData;
+
+    }
+
+    /**
+    * @return int count a productor agricultor
+    */
+    public function countFichingActivity()
+    {
+        $em = $this->getEntityManager();
+
+        $conn = $em->getConnection();
+        $tableName = $em->getClassMetadata(Productor::class)->getTableName();
+        $actityTableName = $em->getClassMetadata(FichingActivity::class)->getTableName();
+
+        $sql = "SELECT count(p.id) nbr FROM $tableName p WHERE EXISTS (SELECT act.id FROM $actityTableName act);
+        ";
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery([]);
+        
+        $arrData = $resultSet->fetchAssociative();
+
+        //dd($arrData);
+
+        return $arrData;
+
+    }
+
+
+    /**
+    * @return int count a productor agricultor
+    */
+    public function countStockRaisingActivity()
+    {
+        $em = $this->getEntityManager();
+
+        
+
+        $conn = $em->getConnection();
+        $tableName = $em->getClassMetadata(Productor::class)->getTableName();
+        $actityTableName = $em->getClassMetadata(StockRaisingActivity::class)->getTableName();
+
+        $sql = "SELECT count(p.id) nbr FROM $tableName p WHERE EXISTS (SELECT act.id FROM $actityTableName act);
+        ";
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery([]);
+        
+        $arrData = $resultSet->fetchAssociative();
 
         //dd($arrData);
 

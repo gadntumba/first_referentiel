@@ -356,6 +356,47 @@ class ProductorController extends AbstractController
     }
 
     /**
+     * @Route("/api/productors/stats/count_farmer", methods={"GET","HEAD"}, name="productor_smartphone_stats_count_farmer")
+     * 
+     */
+    public function countFarmer()
+    {
+        $data = $this->repository->countAgriculturalActivity();
+
+        return new JsonResponse([
+            "data" => $data,
+            "code" => 200,
+        ]);
+    }
+    /**
+     * @Route("/api/productors/stats/count_sinner", methods={"GET","HEAD"}, name="productor_smartphone_stats_count_sinner")
+     * 
+     */
+    public function countSinner()
+    {
+        $data = $this->repository->countFichingActivity();
+
+        return new JsonResponse([
+            "data" => $data,
+            "code" => 200,
+        ]);
+    }
+
+    /**
+     * @Route("/api/productors/stats/count_breeder", methods={"GET","HEAD"}, name="productor_smartphone_stats_count_breeder")
+     * 
+     */
+    public function countBreeder()
+    {
+        $data = $this->repository->countStockRaisingActivity();
+
+        return new JsonResponse([
+            "data" => $data,
+            "code" => 200,
+        ]);
+    }
+
+    /**
      * @Route("/api/productors/{id}", methods={"GET","HEAD"}, name="productor_show")
      */
     public function show(Request $request, string $id)
