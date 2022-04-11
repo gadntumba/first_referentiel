@@ -71,7 +71,7 @@ class ProductorRepository extends ServiceEntityRepository
         $sql = "SELECT DATE_FORMAT(p.created_at, '%Y-%m-%d') me_date, COUNT(id) nbr 
                     FROM $tableName p 
                     WHERE  YEARWEEK(p.created_at, 1) = YEARWEEK(:curr_date, 1) OR 
-                            YEARWEEK(p.created_at, 1)-1 = YEARWEEK(:curr_date, 1)
+                            YEARWEEK(p.created_at, 1) = YEARWEEK(:curr_date, 1)-1
                     GROUP BY me_date;
         ";
         $stmt = $conn->prepare($sql);
