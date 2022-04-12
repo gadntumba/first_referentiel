@@ -206,7 +206,7 @@ class ProductorController extends AbstractController
     {        
         $all = $this->repository->customFindAll();
 
-        dd($all);
+        //dd($all);
 
         $data = [];
 
