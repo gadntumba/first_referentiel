@@ -205,6 +205,8 @@ class ProductorController extends AbstractController
     public function list()
     {        
         $all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
+        dd($all);
+
         $data = [];
 
         //dd($all); "read:productor:level_0"
@@ -402,7 +404,6 @@ class ProductorController extends AbstractController
     public function show(Request $request, string $id)
     {
         $productor = $this->repository->find($id);
-        dd($productor);
         if (is_null($productor)) {
             return new JsonResponse([
                 "message" => "Not found"
