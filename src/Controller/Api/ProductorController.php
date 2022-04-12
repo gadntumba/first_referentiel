@@ -209,7 +209,7 @@ class ProductorController extends AbstractController
 
         //dd($all); "read:productor:level_0"
         foreach ($all as $key => $item) {
-            $itemArr = $this->transform($item);
+            $itemArr = $this->transform($item, true);
             array_push($data, $itemArr);
         }
 
@@ -415,7 +415,7 @@ class ProductorController extends AbstractController
     /**
      * 
      */
-    private function transform(Productor $productor)
+    private function transform(Productor $productor, bool $short=false)
     {
         $item = $productor;
 
@@ -451,9 +451,11 @@ class ProductorController extends AbstractController
             ]
             
         );
+        //dd($short);
         if (
             method_exists($item, "getHousekeeping") &&
             !is_null($item->getHousekeeping())
+            && !$short
         ) {
             $itemArr['housekeeping'] = $this->normalizer->normalize(
                 $item->getHousekeeping(), 
