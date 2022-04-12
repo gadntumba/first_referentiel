@@ -443,14 +443,16 @@ class ProductorController extends AbstractController
             ]
             
         );
-        $itemArr['activityData'] = $this->normalizer->normalize(
-            $item, 
-            null, 
-            [
-                'groups' => ['read:productor:activities_data']
-            ]
-            
-        );
+        if (!$short) {
+            $itemArr['activityData'] = $this->normalizer->normalize(
+                $item, 
+                null, 
+                [
+                    'groups' => ['read:productor:activities_data']
+                ]
+                
+            );            
+        }
         //dd($short);
         if (
             method_exists($item, "getHousekeeping") &&
