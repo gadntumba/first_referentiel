@@ -41,6 +41,20 @@ class ProductorRepository extends ServiceEntityRepository
     }
     */
     /**
+     * 
+     */
+    public function customFindAll($limit = 30)
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.levelStudy', "l")
+            ->orderBy('p.name', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+        ;
+        
+    }
+    /**
     * @return Productor[] Returns an array of Productor objects
     */
     public function findBySmartphone(int $smartId)
