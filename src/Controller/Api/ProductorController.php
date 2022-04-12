@@ -443,7 +443,6 @@ class ProductorController extends AbstractController
             ]
             
         );
-        if (!$short) {
             $itemArr['activityData'] = $this->normalizer->normalize(
                 $item, 
                 null, 
@@ -452,7 +451,7 @@ class ProductorController extends AbstractController
                 ]
                 
             );            
-        }
+        
         //dd($short);
         if (
             method_exists($item, "getHousekeeping") &&
