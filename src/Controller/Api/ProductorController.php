@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use ApiPlatform\Core\DataProvider\PaginatorInterface;
 use ApiPlatform\Core\Filter\Validator\ValidatorInterface;
 use App\Entity\Productor;
 use App\Repository\ProductorRepository;
@@ -197,10 +198,10 @@ class ProductorController extends AbstractController
      * 
      */
     public function list()
-    {        
+    {     
+        
         $all = $this->repository->findAll();
         $data = [];
-
         //dd($all); "read:productor:level_0"
         foreach ($all as $key => $item) {
             $itemArr = $this->transform($item);
@@ -250,7 +251,8 @@ class ProductorController extends AbstractController
         }
         $itemArr = $this->transform($productor);
         return new JsonResponse($itemArr, 200);
-        
+
+    
     }
     /**
      * 

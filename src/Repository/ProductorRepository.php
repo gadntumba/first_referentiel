@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Repository;
-
 use App\Entity\Productor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Migrations\Query\Query;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @method Productor|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,6 +15,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ProductorRepository extends ServiceEntityRepository
 {
+    public const PAGINATOR_PER_PAGE = 30;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Productor::class);
@@ -75,4 +78,11 @@ class ProductorRepository extends ServiceEntityRepository
         ;
     }
     */
+
+     /**
+     * Checks if the passed value is valid.
+     *
+     * @param mixed $value The value that should be validated
+     */
+    
 }
