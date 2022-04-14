@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Repository;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 70662dc48a2f592a477aa920ef4b2f4db6b00149
 use App\Entity\AgriculturalActivity;
 use App\Entity\FichingActivity;
 use App\Entity\FichingActivityType;

@@ -351,6 +351,7 @@ class ProductorController extends AbstractController
             $dateClone = clone $date;
             array_push($list, $dateClone->modify($i . " day"));
         }
+<<<<<<< HEAD
 
         return $list;
 
@@ -377,6 +378,34 @@ class ProductorController extends AbstractController
     {
         $data = $this->repository->countFichingActivity();
 
+=======
+
+        return $list;
+
+    }
+
+    /**
+     * @Route("/api/productors/stats/count_farmer", methods={"GET","HEAD"}, name="productor_smartphone_stats_count_farmer")
+     * 
+     */
+    public function countFarmer()
+    {
+        $data = $this->repository->countAgriculturalActivity();
+
+        return new JsonResponse([
+            "data" => $data,
+            "code" => 200,
+        ]);
+    }
+    /**
+     * @Route("/api/productors/stats/count_sinner", methods={"GET","HEAD"}, name="productor_smartphone_stats_count_sinner")
+     * 
+     */
+    public function countSinner()
+    {
+        $data = $this->repository->countFichingActivity();
+
+>>>>>>> 70662dc48a2f592a477aa920ef4b2f4db6b00149
         return new JsonResponse([
             "data" => $data,
             "code" => 200,
