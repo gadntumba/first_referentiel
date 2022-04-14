@@ -68,7 +68,7 @@ class Town
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:productor:house_keeping","write:Town","read:towncollection"})
+     * @Groups({"read:productor:house_keeping","write:Town","read:towncollection", "event:kafka"})
      * @Assert\NotBlank
      * @Assert\Length(
      *  min = 3,
@@ -84,7 +84,7 @@ class Town
     private $addresses;
 
     /**
-     * @Groups({"read:productor:house_keeping","write:Town","read:towncollection"})
+     * @Groups({"read:productor:house_keeping","write:Town","read:towncollection", "event:kafka"})
      * @ORM\ManyToOne(targetEntity=City::class, inversedBy="towns")
      */
     private $city;

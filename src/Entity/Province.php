@@ -64,13 +64,25 @@ class Province
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:productor:house_keeping","read:provincecollection","read:citycollection","write:Territory","read:territorycollection", "event:kafka"})
+     * @Groups({
+     *      "read:productor:house_keeping",
+     *      "read:provincecollection",
+     *      "read:citycollection",
+     *      "write:Territory",
+     *      "read:territorycollection", 
+     *      "event:kafka"
+     * })
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:productor:house_keeping","write:Province","read:provincecollection","read:citycollection","write:Territory","read:territorycollection", "event:kafka"})
+     * @Groups({
+     *      "read:productor:house_keeping",
+     *      "write:Province","read:provincecollection",
+     *      "read:citycollection",
+     *      "read:territorycollection", 
+     *      "event:kafka"})
      * @Assert\NotBlank
      * @Assert\Length(
      *  min = 3,

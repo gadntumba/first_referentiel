@@ -15,6 +15,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[Copyable(resourceName: 'producer.producer', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 /**
  * @ORM\Entity(repositoryClass=ProductorRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @UniqueEntity(
  *     fields= "phoneNumber",
  *     errorPath="phoneNumber",
@@ -29,6 +30,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Productor
 {
     use TimestampTrait;
+    const GENRES = ['M', 'F'];
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -55,6 +57,7 @@ class Productor
      */
     private $lastName;
 
+    #[Assert\Choice(choices: Productor::GENRES, message: 'Choisir le genre valid.')]
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"read:productor:personnal_id_data","read:item","read:collection","write:Productor"})

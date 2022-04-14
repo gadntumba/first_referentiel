@@ -50,11 +50,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *          } 
  *       }
  * )
- * @UniqueEntity(
- *     fields= "goal",
- *     errorPath="goal",
- *     message="Ce goal existe déjà"
- * )
  */
 class StockRaisingActivity
 {

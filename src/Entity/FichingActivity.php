@@ -54,11 +54,6 @@ use Doctrine\ORM\Mapping\OneToMany;
  *          } 
  *       } 
  * )
- * @UniqueEntity(
- *     fields= "goal",
- *     errorPath="goal",
- *     message="Ce numéro goal existe déjà"
- * )
  */
 class FichingActivity
 {

@@ -2,7 +2,6 @@
 
 namespace App\Controller\Api;
 
-use ApiPlatform\Core\DataProvider\PaginatorInterface;
 use ApiPlatform\Core\Filter\Validator\ValidatorInterface;
 use App\Entity\Productor;
 use App\Repository\ProductorRepository;
@@ -10,6 +9,7 @@ use App\Serializer\UnexpectedValueException;
 use App\Validators\Exception\Exception;
 use App\Validators\Productor\Productor as ProductorProductor;
 use App\Validators\Util\Util;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,7 +34,7 @@ class ProductorController extends AbstractController
      * @var ProductorRepository
      */
     private $repository; //int
-
+    private $productor;
 
     public function __construct(
         DenormalizerInterface $denormalizer, 
@@ -76,7 +76,12 @@ class ProductorController extends AbstractController
             //dd($th);
             
             return new JsonResponse(
-                $th->getErrors(),
+                [
+                    "errors" => $th->getErrors(),
+                    "message" => $th->getMessage(),
+                    "code" => 422,
+                    "status" => 422,
+                ],
                 422
             );
         }
@@ -198,13 +203,14 @@ class ProductorController extends AbstractController
      * 
      */
     public function list()
-    {     
+    {        
+        $all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
         
-        $all = $this->repository->findAll();
         $data = [];
+
         //dd($all); "read:productor:level_0"
         foreach ($all as $key => $item) {
-            $itemArr = $this->transform($item);
+            $itemArr = $this->transform($item, true);
             array_push($data, $itemArr);
         }
 
@@ -235,7 +241,161 @@ class ProductorController extends AbstractController
 
         return new JsonResponse($nuis);
     }
+    /**
+     * @Route("/api/productors/stats/count", methods={"GET","HEAD"}, name="productor_smartphone_stats_count")
+     */
+    public function statCount()
+    {
+        return new JsonResponse([
+            "status" => "200",
+            "data" => [
+                "count" => $this->repository->count([]),
+            ],
+        ]);
+        
+    }
+    /**
+     * @Route("/api/productors/stats/weeks", methods={"GET","HEAD"}, name="productor_smartphone_stats_week")
+     */
+    public function weekStat()
+    {
+        $now = new DateTime();
 
+        $res = $this->repository->findWeekStats($now);
+
+
+
+        $data = array_reduce(
+            $res,
+            function ( array $carry , array $item )
+            {
+                $carry[$item["me_date"]] = (int) $item["nbr"];
+                return $carry;
+            },
+            []
+        );
+
+        //dd($data);
+
+        $list = $this->listDaysWeek($now);
+
+        $datesThisWeek = array_map(
+            function (DateTime $date) use ($data)
+            {
+                $dateStr = $date->format("Y-m-d");
+                $label = $date->format("d/m");
+
+                $value = [
+                    "date" => $dateStr,
+                    "label" => $label,
+                    "count" => 0
+                ];
+
+                if (isset($data[$dateStr])) {
+                    $value["count"] = $data[$dateStr];
+                }
+
+                return $value;
+
+            },
+            $this->listDaysWeek($now)
+        );
+
+        $datePrevWeek = clone $now;
+        $datePrevWeek = $datePrevWeek->modify("-7 day");
+
+        //dd($datePrevWeek);
+
+        $datesPrevWeek = array_map(
+            function (DateTime $date) use ($data)
+            {
+                $dateStr = $date->format("Y-m-d");
+                $label = $date->format("d/m");
+
+                $value = [
+                    "date" => $dateStr,
+                    "label" => $label,
+                    "count" => 0
+                ];
+
+                if (isset($data[$dateStr])) {
+                    $value["count"] = $data[$dateStr];
+                }
+
+                return $value;
+
+            },
+            $this->listDaysWeek($datePrevWeek)
+        );
+
+        //dd($datesPrevWeek);
+
+        return new JsonResponse([
+            "status" => "200",
+            "data" => [
+                "datesThisWeek" => $datesThisWeek,
+                "datesPrevWeek" => $datesPrevWeek
+            ],
+        ]);
+
+    }
+    /**
+     * 
+     */
+    private function listDaysWeek(DateTime $date)
+    {
+        $numDay = $date->format("N");
+        $list = [];
+
+        for ($i=1-$numDay; $i <= 7-$numDay; $i++) { 
+            $dateClone = clone $date;
+            array_push($list, $dateClone->modify($i . " day"));
+        }
+
+        return $list;
+
+    }
+
+    /**
+     * @Route("/api/productors/stats/count_farmer", methods={"GET","HEAD"}, name="productor_smartphone_stats_count_farmer")
+     * 
+     */
+    public function countFarmer()
+    {
+        $data = $this->repository->countAgriculturalActivity();
+
+        return new JsonResponse([
+            "data" => $data,
+            "code" => 200,
+        ]);
+    }
+    /**
+     * @Route("/api/productors/stats/count_sinner", methods={"GET","HEAD"}, name="productor_smartphone_stats_count_sinner")
+     * 
+     */
+    public function countSinner()
+    {
+        $data = $this->repository->countFichingActivity();
+
+        return new JsonResponse([
+            "data" => $data,
+            "code" => 200,
+        ]);
+    }
+
+    /**
+     * @Route("/api/productors/stats/count_breeder", methods={"GET","HEAD"}, name="productor_smartphone_stats_count_breeder")
+     * 
+     */
+    public function countBreeder()
+    {
+        $data = $this->repository->countStockRaisingActivity();
+
+        return new JsonResponse([
+            "data" => $data,
+            "code" => 200,
+        ]);
+    }
 
     /**
      * @Route("/api/productors/{id}", methods={"GET","HEAD"}, name="productor_show")
@@ -243,7 +403,6 @@ class ProductorController extends AbstractController
     public function show(Request $request, string $id)
     {
         $productor = $this->repository->find($id);
-        //dd($productor);
         if (is_null($productor)) {
             return new JsonResponse([
                 "message" => "Not found"
@@ -251,13 +410,12 @@ class ProductorController extends AbstractController
         }
         $itemArr = $this->transform($productor);
         return new JsonResponse($itemArr, 200);
-
-    
+        
     }
     /**
      * 
      */
-    private function transform(Productor $productor)
+    private function transform(Productor $productor, bool $short=false)
     {
         $item = $productor;
 
@@ -285,17 +443,20 @@ class ProductorController extends AbstractController
             ]
             
         );
-        $itemArr['activityData'] = $this->normalizer->normalize(
-            $item, 
-            null, 
-            [
-                'groups' => ['read:productor:activities_data']
-            ]
-            
-        );
+            $itemArr['activityData'] = $this->normalizer->normalize(
+                $item, 
+                null, 
+                [
+                    'groups' => ['read:productor:activities_data']
+                ]
+                
+            );            
+        
+        //dd($short);
         if (
             method_exists($item, "getHousekeeping") &&
             !is_null($item->getHousekeeping())
+            && !$short
         ) {
             $itemArr['housekeeping'] = $this->normalizer->normalize(
                 $item->getHousekeeping(), 
@@ -306,6 +467,15 @@ class ProductorController extends AbstractController
                 
             );                
         }
+        //'timestamp:read'
+        $itemArr['timestamp'] = $this->normalizer->normalize(
+            $item, 
+            null, 
+            [
+                'groups' => ['timestamp:read']
+            ]
+            
+        );
 
         return $itemArr;
     }
@@ -332,5 +502,36 @@ class ProductorController extends AbstractController
 
         return new JsonResponse($nuis);
     }
+
+    /**
+     * @Route("/api/ots/{id}/productors", methods="GET", name="productor_list_ot")
+     * 
+     */
+    public function list_ot()
+    {        
+        $all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
+        
+        $data = [];
+
+        
+        foreach ($all as $key => $item) {
+            $itemArr = $this->transform($item, true);
+            array_push($data, $itemArr);
+        }
+
+
+        return new JsonResponse($data, 200);
+    }
+
+    /**
+     *@Route(path="/api/ots/{id}/productors/count",name="ots.{id}.productors.count", methods="GET")
+     */
+    public function countProductor($id){
+        $productor= $this->productor->findAll();
+        return  new  JsonResponse([
+            "nbre"=>count($productor)
+        ]);
+       }
+
 
 }

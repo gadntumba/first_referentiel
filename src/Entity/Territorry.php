@@ -68,7 +68,13 @@ class Territorry
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:productor:house_keeping","write:Territory","read:territorycollection","read:sectorcollection"})
+     * @Groups({
+     *      "read:productor:house_keeping",
+     *      "write:Territory",
+     *      "read:territorycollection",
+     *      "read:sectorcollection", 
+     *      "event:kafka"
+     * })
      * @Assert\NotBlank
      * @Assert\Length(
      *  min = 3,
@@ -84,7 +90,7 @@ class Territorry
     private $sectors;
 
     /**
-     * @Groups({"read:productor:house_keeping","write:Territory","read:territorycollection"})
+     * @Groups({"read:productor:house_keeping","write:Territory","read:territorycollection", "event:kafka"})
      * @ORM\ManyToOne(targetEntity=Province::class, inversedBy="territorries")
      */
     private $province;
