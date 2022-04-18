@@ -88,6 +88,7 @@ class ProductorRepository extends ServiceEntityRepository
                             YEARWEEK(p.created_at, 1) = YEARWEEK(:curr_date, 1)-1
                     GROUP BY me_date;
         ";
+
         $stmt = $conn->prepare($sql);
         $resultSet = $stmt->executeQuery(['curr_date' => $formatedDate]);
         
@@ -98,6 +99,111 @@ class ProductorRepository extends ServiceEntityRepository
         return $arrData;
 
     }
+
+
+
+    /**
+    * @return array Returns an array of Productor objects
+    */
+    public function findWeekStatsAgricultiral(DateTimeInterface $date)
+    {
+        $em = $this->getEntityManager();
+
+        $formatedDate = $date->format("Y-m-d");
+
+        $conn = $em->getConnection();
+        $tableName = $em->getClassMetadata(Productor::class)->getTableName();
+        $otherTableName = $em->getClassMetadata(AgriculturalActivity::class)->getTableName();
+
+        
+
+        $sql = "SELECT DATE_FORMAT(p.created_at, '%Y-%m-%d') me_date, COUNT(p.id) nbr 
+                    FROM $tableName p 
+                    INNER JOIN $otherTableName o on o.productor_id = p.id 
+                    WHERE  YEARWEEK(p.created_at, 1) = YEARWEEK(:curr_date, 1) OR 
+                            YEARWEEK(p.created_at, 1) = YEARWEEK(:curr_date, 1)-1
+                    GROUP BY me_date;
+        ";
+        
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['curr_date' => $formatedDate]);
+        
+        $arrData = $resultSet->fetchAllAssociative();
+
+        //dd($arrData);
+
+        return $arrData;
+
+    }
+
+    /**
+    * @return array Returns an array of Productor objects
+    */
+    public function findWeekStatsStockRaisingActivity(DateTimeInterface $date)
+    {
+        $em = $this->getEntityManager();
+
+        $formatedDate = $date->format("Y-m-d");
+
+        $conn = $em->getConnection();
+        $tableName = $em->getClassMetadata(Productor::class)->getTableName();
+        $otherTableName = $em->getClassMetadata(StockRaisingActivity::class)->getTableName();
+
+        
+
+        $sql = "SELECT DATE_FORMAT(p.created_at, '%Y-%m-%d') me_date, COUNT(p.id) nbr 
+                    FROM $tableName p 
+                    INNER JOIN $otherTableName o on o.productor_id = p.id 
+                    WHERE  YEARWEEK(p.created_at, 1) = YEARWEEK(:curr_date, 1) OR 
+                            YEARWEEK(p.created_at, 1) = YEARWEEK(:curr_date, 1)-1
+                    GROUP BY me_date;
+        ";
+        
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['curr_date' => $formatedDate]);
+        
+        $arrData = $resultSet->fetchAllAssociative();
+
+        //dd($arrData);
+
+        return $arrData;
+
+    }
+
+    /**
+    * @return array Returns an array of Productor objects
+    */
+    public function findWeekStatsFichingActivity(DateTimeInterface $date)
+    {
+        $em = $this->getEntityManager();
+
+        $formatedDate = $date->format("Y-m-d");
+
+        $conn = $em->getConnection();
+        $tableName = $em->getClassMetadata(Productor::class)->getTableName();
+        $otherTableName = $em->getClassMetadata(FichingActivity::class)->getTableName();
+
+        
+
+        $sql = "SELECT DATE_FORMAT(p.created_at, '%Y-%m-%d') me_date, COUNT(p.id) nbr 
+                    FROM $tableName p 
+                    INNER JOIN $otherTableName o on o.productor_id = p.id 
+                    WHERE  YEARWEEK(p.created_at, 1) = YEARWEEK(:curr_date, 1) OR 
+                            YEARWEEK(p.created_at, 1) = YEARWEEK(:curr_date, 1)-1
+                    GROUP BY me_date;
+        ";
+        
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['curr_date' => $formatedDate]);
+        
+        $arrData = $resultSet->fetchAllAssociative();
+
+        //dd($arrData);
+
+        return $arrData;
+
+    }
+
     /**
     * @return int count a productor agricultor
     */

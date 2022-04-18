@@ -339,6 +339,254 @@ class ProductorController extends AbstractController
         ]);
 
     }
+
+    /**
+     * 
+     */
+    private function weekStatAgricultural()
+    {
+        $now = new DateTime();
+
+        $res = $this->repository->findWeekStatsAgricultiral($now);
+
+        $data = array_reduce(
+            $res,
+            function ( array $carry , array $item )
+            {
+                $carry[$item["me_date"]] = (int) $item["nbr"];
+                return $carry;
+            },
+            []
+        );
+
+        //dd($data);
+
+        $datesThisWeek = array_map(
+            function (DateTime $date) use ($data)
+            {
+                $dateStr = $date->format("Y-m-d");
+                $label = $date->format("d/m");
+
+                $value = [
+                    "date" => $dateStr,
+                    "label" => $label,
+                    "count" => 0
+                ];
+
+                if (isset($data[$dateStr])) {
+                    $value["count"] = $data[$dateStr];
+                }
+
+                return $value;
+
+            },
+            $this->listDaysWeek($now)
+        );
+
+        $datePrevWeek = clone $now;
+        $datePrevWeek = $datePrevWeek->modify("-7 day");
+
+        //dd($datePrevWeek);
+
+        $datesPrevWeek = array_map(
+            function (DateTime $date) use ($data)
+            {
+                $dateStr = $date->format("Y-m-d");
+                $label = $date->format("d/m");
+
+                $value = [
+                    "date" => $dateStr,
+                    "label" => $label,
+                    "count" => 0
+                ];
+
+                if (isset($data[$dateStr])) {
+                    $value["count"] = $data[$dateStr];
+                }
+
+                return $value;
+
+            },
+            $this->listDaysWeek($datePrevWeek)
+        );
+
+        return compact('datesThisWeek', 'datesPrevWeek');
+
+    }
+
+
+
+    /**
+     * 
+     */
+    private function weekStatStockRaisingActivity()
+    {
+        $now = new DateTime();
+
+        $res = $this->repository->findWeekStatsStockRaisingActivity($now);
+
+        $data = array_reduce(
+            $res,
+            function ( array $carry , array $item )
+            {
+                $carry[$item["me_date"]] = (int) $item["nbr"];
+                return $carry;
+            },
+            []
+        );
+
+        //dd($data);
+
+        $datesThisWeek = array_map(
+            function (DateTime $date) use ($data)
+            {
+                $dateStr = $date->format("Y-m-d");
+                $label = $date->format("d/m");
+
+                $value = [
+                    "date" => $dateStr,
+                    "label" => $label,
+                    "count" => 0
+                ];
+
+                if (isset($data[$dateStr])) {
+                    $value["count"] = $data[$dateStr];
+                }
+
+                return $value;
+
+            },
+            $this->listDaysWeek($now)
+        );
+
+        $datePrevWeek = clone $now;
+        $datePrevWeek = $datePrevWeek->modify("-7 day");
+
+        //dd($datePrevWeek);
+
+        $datesPrevWeek = array_map(
+            function (DateTime $date) use ($data)
+            {
+                $dateStr = $date->format("Y-m-d");
+                $label = $date->format("d/m");
+
+                $value = [
+                    "date" => $dateStr,
+                    "label" => $label,
+                    "count" => 0
+                ];
+
+                if (isset($data[$dateStr])) {
+                    $value["count"] = $data[$dateStr];
+                }
+
+                return $value;
+
+            },
+            $this->listDaysWeek($datePrevWeek)
+        );
+
+        return compact('datesThisWeek', 'datesPrevWeek');
+
+    }
+
+
+    /**
+     * 
+     */
+    private function weekStatFichingActivity()
+    {
+        $now = new DateTime();
+
+        $res = $this->repository->findWeekStatsFichingActivity($now);
+
+        $data = array_reduce(
+            $res,
+            function ( array $carry , array $item )
+            {
+                $carry[$item["me_date"]] = (int) $item["nbr"];
+                return $carry;
+            },
+            []
+        );
+
+        //dd($data);
+
+        $datesThisWeek = array_map(
+            function (DateTime $date) use ($data)
+            {
+                $dateStr = $date->format("Y-m-d");
+                $label = $date->format("d/m");
+
+                $value = [
+                    "date" => $dateStr,
+                    "label" => $label,
+                    "count" => 0
+                ];
+
+                if (isset($data[$dateStr])) {
+                    $value["count"] = $data[$dateStr];
+                }
+
+                return $value;
+
+            },
+            $this->listDaysWeek($now)
+        );
+
+        $datePrevWeek = clone $now;
+        $datePrevWeek = $datePrevWeek->modify("-7 day");
+
+        //dd($datePrevWeek);
+
+        $datesPrevWeek = array_map(
+            function (DateTime $date) use ($data)
+            {
+                $dateStr = $date->format("Y-m-d");
+                $label = $date->format("d/m");
+
+                $value = [
+                    "date" => $dateStr,
+                    "label" => $label,
+                    "count" => 0
+                ];
+
+                if (isset($data[$dateStr])) {
+                    $value["count"] = $data[$dateStr];
+                }
+
+                return $value;
+
+            },
+            $this->listDaysWeek($datePrevWeek)
+        );
+
+        return compact('datesThisWeek', 'datesPrevWeek');
+
+    }
+
+    
+
+
+
+    /**
+     * @Route("/api/productors/stats/weeks/activities", methods={"GET","HEAD"}, name="productor_smartphone_stats_week_activities")
+     */
+    public function weekStatActivities()
+    {
+
+        //dd($datesPrevWeek);
+
+        return new JsonResponse([
+            "status" => "200",
+            "data" => [
+                "weekStatAgricultural" => $this->weekStatAgricultural(),
+                "weekStatStockRaisingActivity" => $this->weekStatStockRaisingActivity(),
+                "weekStatFichingActivity" => $this->weekStatFichingActivity()
+            ],
+        ]);
+
+    }
     /**
      * 
      */
