@@ -19,7 +19,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
  *             "method"="GET",
  *             "path"="/productors/othres/ot",
  *             "openapi_context"={
- *                  "summary"= "Voir les provinces"
+ *                  "summary"= "Voir les OT"
  *              }
  *          }
  *         
@@ -29,7 +29,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
  *             "method"="GET",
  *             "path"="/productors/othres/ot/{id}",
  *             "openapi_context"={
- *                  "summary"= "Voir les provinces"
+ *                  "summary"= "Voir les OT"
  *              }
  *          }
  *      }

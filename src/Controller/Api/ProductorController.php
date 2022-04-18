@@ -34,7 +34,7 @@ class ProductorController extends AbstractController
      * @var ProductorRepository
      */
     private $repository; //int
-
+    private $productor;
 
     public function __construct(
         DenormalizerInterface $denormalizer, 
@@ -617,6 +617,7 @@ class ProductorController extends AbstractController
             "code" => 200,
         ]);
     }
+    
     /**
      * @Route("/api/productors/stats/count_sinner", methods={"GET","HEAD"}, name="productor_smartphone_stats_count_sinner")
      * 
@@ -750,5 +751,36 @@ class ProductorController extends AbstractController
 
         return new JsonResponse($nuis);
     }
+
+    /**
+     * @Route("/api/ots/{id}/productors", methods="GET", name="productor_list_ot")
+     * 
+     */
+    public function list_ot()
+    {        
+        $all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
+        
+        $data = [];
+
+        
+        foreach ($all as $key => $item) {
+            $itemArr = $this->transform($item, true);
+            array_push($data, $itemArr);
+        }
+
+
+        return new JsonResponse($data, 200);
+    }
+
+    /**
+     *@Route(path="/api/ots/{id}/productors/count",name="ots.{id}.productors.count", methods="GET")
+     */
+    public function countProductor($id){
+        $productor= $this->productor->findAll();
+        return  new  JsonResponse([
+            "nbre"=>count($productor)
+        ]);
+       }
+
 
 }

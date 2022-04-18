@@ -12,4 +12,5 @@ return [
     Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
     Mink67\Encrypt\Mink67EncryptBundle::class => ['all' => true],
     Mink67\KafkaConnect\KafkaConnectBundle::class => ['all' => true],
+    
 ];
