@@ -62,8 +62,18 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
             return $this->decorated->denormalize($data, $class, $format, $context);
 
         } catch (UnexpectedValueException $th) {
+            
             if (!isset($context["deserialization_path"]) || !is_string($context["deserialization_path"])) {
-                throw $th; 
+                $arrClass = explode("\\", $class);
+                $normalClass = array_pop($arrClass) ;
+                $arr = [
+                    "class" => $normalClass,
+                    "data" => $data,
+                ];
+                //dd($th);
+    
+                throw new SerializerUnexpectedValueException($arr);
+                
             }
             $jsonObject = new JsonObject();
             
