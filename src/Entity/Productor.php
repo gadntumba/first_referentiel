@@ -61,7 +61,7 @@ class Productor
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"read:productor:personnal_id_data","read:item","read:collection","write:Productor"})
-     * @Assert\Choice({"H", "F"})
+     * @Assert\Choice(choices=Productor::GENRES)
      */
     private $sexe;
 
