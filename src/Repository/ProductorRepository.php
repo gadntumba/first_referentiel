@@ -121,7 +121,7 @@ class ProductorRepository extends ServiceEntityRepository
 
         
 
-        $sql = "SELECT DATE_FORMAT(p.created_at, '%Y-%m-%d') me_date, COUNT(p.id) nbr 
+        $sql = "SELECT DATE_FORMAT(p.created_at, '%Y-%m-%d') me_date, COUNT(DISTINCT(p.id)) nbr 
                     FROM $tableName p 
                     INNER JOIN $otherTableName o on o.productor_id = p.id 
                     WHERE  YEARWEEK(p.created_at, 1) = YEARWEEK(:curr_date, 1) OR 
@@ -155,7 +155,7 @@ class ProductorRepository extends ServiceEntityRepository
 
         
 
-        $sql = "SELECT DATE_FORMAT(p.created_at, '%Y-%m-%d') me_date, COUNT(p.id) nbr 
+        $sql = "SELECT DATE_FORMAT(p.created_at, '%Y-%m-%d') me_date,  COUNT(DISTINCT(p.id)) nbr 
                     FROM $tableName p 
                     INNER JOIN $otherTableName o on o.productor_id = p.id 
                     WHERE  YEARWEEK(p.created_at, 1) = YEARWEEK(:curr_date, 1) OR 
@@ -189,7 +189,7 @@ class ProductorRepository extends ServiceEntityRepository
 
         
 
-        $sql = "SELECT DATE_FORMAT(p.created_at, '%Y-%m-%d') me_date, COUNT(p.id) nbr 
+        $sql = "SELECT DATE_FORMAT(p.created_at, '%Y-%m-%d') me_date, COUNT(DISTINCT(p.id)) nbr 
                     FROM $tableName p 
                     INNER JOIN $otherTableName o on o.productor_id = p.id 
                     WHERE  YEARWEEK(p.created_at, 1) = YEARWEEK(:curr_date, 1) OR 
@@ -220,7 +220,7 @@ class ProductorRepository extends ServiceEntityRepository
         $tableName = $em->getClassMetadata(Productor::class)->getTableName();
         $actityTableName = $em->getClassMetadata(AgriculturalActivity::class)->getTableName();
 
-        $sql = "SELECT count(p.id) nbr FROM $tableName p WHERE EXISTS (SELECT act.id FROM $actityTableName act);
+        $sql = "SELECT count(p.id) nbr FROM $tableName p WHERE p.id in (SELECT act.productor_id FROM $actityTableName act);
         ";
         $stmt = $conn->prepare($sql);
         $resultSet = $stmt->executeQuery([]);
@@ -244,7 +244,7 @@ class ProductorRepository extends ServiceEntityRepository
         $tableName = $em->getClassMetadata(Productor::class)->getTableName();
         $actityTableName = $em->getClassMetadata(FichingActivity::class)->getTableName();
 
-        $sql = "SELECT count(p.id) nbr FROM $tableName p WHERE EXISTS (SELECT act.id FROM $actityTableName act);
+        $sql = "SELECT count(p.id) nbr FROM $tableName p WHERE p.id in (SELECT act.productor_id FROM $actityTableName act);
         ";
         $stmt = $conn->prepare($sql);
         $resultSet = $stmt->executeQuery([]);
@@ -271,7 +271,7 @@ class ProductorRepository extends ServiceEntityRepository
         $tableName = $em->getClassMetadata(Productor::class)->getTableName();
         $actityTableName = $em->getClassMetadata(StockRaisingActivity::class)->getTableName();
 
-        $sql = "SELECT count(p.id) nbr FROM $tableName p WHERE EXISTS (SELECT act.id FROM $actityTableName act);
+        $sql = "SELECT count(p.id) nbr FROM $tableName p WHERE p.id in (SELECT act.productor_id FROM $actityTableName act);
         ";
         $stmt = $conn->prepare($sql);
         $resultSet = $stmt->executeQuery([]);
