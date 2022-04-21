@@ -8,8 +8,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Mink67\KafkaConnect\Annotations\Copy;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Utils\TimestampTraitCopy;
 
+#[Copy(resourceName: 'ot.ot', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 /**
  * @ORM\Entity(repositoryClass=OTRepository::class)
  * @ApiResource(
@@ -37,12 +40,11 @@ use ApiPlatform\Core\Annotation\ApiResource;
  */
 class OT
 {
-    use TimestampTrait;
+    use TimestampTraitCopy;
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:productor:ot"})
+     * @Groups({"read:productor:ot","event:kafka"})
      */
     private $id;
 
@@ -59,45 +61,63 @@ class OT
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read:productor:ot"})
+     * @Groups({"read:productor:ot","event:kafka"})
      */
     private $entitled;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read:productor:ot","event:kafka"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read:productor:ot","event:kafka"})
      */
     private $phoneNumber;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read:productor:ot","event:kafka"})
      */
     private $rccm;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read:productor:ot","event:kafka"})
      */
     private $goalRecordings;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Supervisor::class, mappedBy="ot")
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy="ot")
+     *@Groups({"read:otcollection","write:Ot","event:kafka"})
+     */
+    private $users;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Supervisor::class, mappedBy="ot")
      */
     private $supervisors;
 
     /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="ot")
+     * @ORM\OneToMany(targetEntity=Coordinator::class, mappedBy="ot")
      */
-    private $users;
+    private $coordinators;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Province::class, mappedBy="ot")
+     *@Groups({"read:otcollection","write:Ot","event:kafka"})
+     */
+    private $provinces;
 
     public function __construct()
     {
         $this->monitors = new ArrayCollection();
-        $this->supervisors = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->supervisors = new ArrayCollection();
+        $this->coordinators = new ArrayCollection();
+        $this->provinces = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -209,33 +229,6 @@ class OT
     }
 
     /**
-     * @return Collection<int, Supervisor>
-     */
-    public function getSupervisors(): Collection
-    {
-        return $this->supervisors;
-    }
-
-    public function addSupervisor(Supervisor $supervisor): self
-    {
-        if (!$this->supervisors->contains($supervisor)) {
-            $this->supervisors[] = $supervisor;
-            $supervisor->addOt($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSupervisor(Supervisor $supervisor): self
-    {
-        if ($this->supervisors->removeElement($supervisor)) {
-            $supervisor->removeOt($this);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, User>
      */
     public function getUsers(): Collection
@@ -259,6 +252,96 @@ class OT
             // set the owning side to null (unless already changed)
             if ($user->getOt() === $this) {
                 $user->setOt(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Supervisor>
+     */
+    public function getSupervisors(): Collection
+    {
+        return $this->supervisors;
+    }
+
+    public function addSupervisor(Supervisor $supervisor): self
+    {
+        if (!$this->supervisors->contains($supervisor)) {
+            $this->supervisors[] = $supervisor;
+            $supervisor->setOt($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSupervisor(Supervisor $supervisor): self
+    {
+        if ($this->supervisors->removeElement($supervisor)) {
+            // set the owning side to null (unless already changed)
+            if ($supervisor->getOt() === $this) {
+                $supervisor->setOt(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Coordinator>
+     */
+    public function getCoordinators(): Collection
+    {
+        return $this->coordinators;
+    }
+
+    public function addCoordinator(Coordinator $coordinator): self
+    {
+        if (!$this->coordinators->contains($coordinator)) {
+            $this->coordinators[] = $coordinator;
+            $coordinator->setOt($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCoordinator(Coordinator $coordinator): self
+    {
+        if ($this->coordinators->removeElement($coordinator)) {
+            // set the owning side to null (unless already changed)
+            if ($coordinator->getOt() === $this) {
+                $coordinator->setOt(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Province>
+     */
+    public function getProvinces(): Collection
+    {
+        return $this->provinces;
+    }
+
+    public function addProvince(Province $province): self
+    {
+        if (!$this->provinces->contains($province)) {
+            $this->provinces[] = $province;
+            $province->setOt($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProvince(Province $province): self
+    {
+        if ($this->provinces->removeElement($province)) {
+            // set the owning side to null (unless already changed)
+            if ($province->getOt() === $this) {
+                $province->setOt(null);
             }
         }
 

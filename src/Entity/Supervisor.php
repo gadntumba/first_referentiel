@@ -6,47 +6,66 @@ use App\Repository\SupervisorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Mink67\KafkaConnect\Annotations\Copy;
+use App\Entity\Utils\TimestampTraitCopy;
 
+#[Copy(resourceName: 'ot.supervisor', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 /**
  * @ORM\Entity(repositoryClass=SupervisorRepository::class)
+ * @ApiResource()
  */
 class Supervisor
 {
+    use TimestampTraitCopy;
+
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *@Groups({"read:supervisorcollection","read:feedbackcollection","event:kafka"})
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $createdAt;
 
     /**
      * @ORM\Column(type="integer")
+     *@Groups({"read:supervisorcollection","read:feedbackcollection","event:kafka"})
      */
     private $goalRecordings;
 
     /**
      * @ORM\ManyToOne(targetEntity=City::class, inversedBy="supervisors")
+     *@Groups({"read:supervisorcollection","read:feedbackcollection","event:kafka"})
      */
     private $city;
 
     /**
      * @ORM\ManyToOne(targetEntity=Territorry::class, inversedBy="supervisors")
+     *@Groups({"read:supervisorcollection","read:feedbackcollection","event:kafka"})
      */
     private $territory;
 
     /**
-     * @ORM\ManyToMany(targetEntity=OT::class, inversedBy="supervisors")
+     * @ORM\ManyToOne(targetEntity=OT::class, inversedBy="supervisors")
+     *@Groups({"read:supervisorcollection","read:feedbackcollection","event:kafka"})
      */
     private $ot;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="supervisors")
+     *@Groups({"read:supervisorcollection","read:feedbackcollection","event:kafka"})
+     */
+    private $user;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Monitor::class, mappedBy="supervisorPost")
+     */
+    private $monitors;
+
+
     public function __construct()
     {
-        $this->ot = new ArrayCollection();
+        $this->monitors = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -102,26 +121,56 @@ class Supervisor
         return $this;
     }
 
-    /**
-     * @return Collection<int, OT>
-     */
-    public function getOt(): Collection
+    public function getOt(): ?OT
     {
         return $this->ot;
     }
 
-    public function addOt(OT $ot): self
+    public function setOt(?OT $ot): self
     {
-        if (!$this->ot->contains($ot)) {
-            $this->ot[] = $ot;
+        $this->ot = $ot;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Monitor>
+     */
+    public function getMonitors(): Collection
+    {
+        return $this->monitors;
+    }
+
+    public function addMonitor(Monitor $monitor): self
+    {
+        if (!$this->monitors->contains($monitor)) {
+            $this->monitors[] = $monitor;
+            $monitor->setSupervisorPost($this);
         }
 
         return $this;
     }
 
-    public function removeOt(OT $ot): self
+    public function removeMonitor(Monitor $monitor): self
     {
-        $this->ot->removeElement($ot);
+        if ($this->monitors->removeElement($monitor)) {
+            // set the owning side to null (unless already changed)
+            if ($monitor->getSupervisorPost() === $this) {
+                $monitor->setSupervisorPost(null);
+            }
+        }
 
         return $this;
     }

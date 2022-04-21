@@ -8,7 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Mink67\KafkaConnect\Annotations\Copy;
+use App\Entity\Utils\TimestampTraitCopy;
 
+
+#[Copy(resourceName: 'ot.monitor', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 /**
  * @ORM\Entity(repositoryClass=MonitorRepository::class)
  * @ApiResource(
@@ -36,27 +40,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Monitor
 {
-    use TimestampTrait;
+    use TimestampTraitCopy;
     
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read:productor:monitor","write:Monitor"})
+     * @Groups({"read:productor:monitor","write:Monitor","event:kafka"})
      */
     private $id;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"read:productor:monitor","write:Monitor"})
-     */
-    private $name;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"read:productor:monitor","write:Monitor"})
-     */
-    private $phoneNumber;
 
     /**
      * @ORM\OneToMany(targetEntity=Productor::class, mappedBy="monitor")
@@ -64,16 +55,28 @@ class Monitor
     private $productors;
 
     /**
-     * @Groups({"read:productor:monitor","write:Monitor"})
+     * @Groups({"read:productor:monitor","write:Monitor","event:kafka"})
      * @ORM\ManyToOne(targetEntity=OT::class, inversedBy="monitors")
      */
     private $ot;
 
     /**
-     * @Groups({"read:productor:monitor","write:Monitor"})
+     * @Groups({"read:productor:monitor","write:Monitor","event:kafka"})
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="monitor")
      */
     private $user;
+
+    /**
+     * @Groups({"read:productor:monitor","write:Monitor","event:kafka"})
+     * @ORM\Column(type="integer")
+     */
+    private $goalRecordings;
+
+    /**
+     * @Groups({"read:productor:monitor","write:Monitor","event:kafka"})
+     * @ORM\ManyToOne(targetEntity=Supervisor::class, inversedBy="monitors")
+     */
+    private $supervisorPost;
 
     public function __construct()
     {
@@ -159,6 +162,30 @@ class Monitor
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getGoalRecordings(): ?int
+    {
+        return $this->goalRecordings;
+    }
+
+    public function setGoalRecordings(int $goalRecordings): self
+    {
+        $this->goalRecordings = $goalRecordings;
+
+        return $this;
+    }
+
+    public function getSupervisorPost(): ?Supervisor
+    {
+        return $this->supervisorPost;
+    }
+
+    public function setSupervisorPost(?Supervisor $supervisorPost): self
+    {
+        $this->supervisorPost = $supervisorPost;
 
         return $this;
     }

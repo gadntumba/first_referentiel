@@ -265,8 +265,6 @@ class ProductorRepository extends ServiceEntityRepository
     {
         $em = $this->getEntityManager();
 
-        
-
         $conn = $em->getConnection();
         $tableName = $em->getClassMetadata(Productor::class)->getTableName();
         $actityTableName = $em->getClassMetadata(StockRaisingActivity::class)->getTableName();

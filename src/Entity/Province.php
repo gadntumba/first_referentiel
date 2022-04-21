@@ -102,6 +102,11 @@ class Province
      */
     private $territorries;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=OT::class, inversedBy="provinces")
+     */
+    private $ot;
+
     public function __construct()
     {
         $this->cities = new ArrayCollection();
@@ -193,6 +198,18 @@ class Province
                 $territorry->setProvince(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOt(): ?OT
+    {
+        return $this->ot;
+    }
+
+    public function setOt(?OT $ot): self
+    {
+        $this->ot = $ot;
 
         return $this;
     }

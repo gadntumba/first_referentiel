@@ -9,9 +9,11 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 use Mink67\KafkaConnect\Annotations\Copy;
+use ApiPlatform\Core\Annotation\ApiResource;
 
 #[Copy(resourceName: 'user.user', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 /**
+ *@ApiResource()
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
 class User
@@ -74,10 +76,22 @@ class User
      */
     private $ot;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Supervisor::class, mappedBy="user")
+     */
+    private $supervisors;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Coordinator::class, mappedBy="user")
+     */
+    private $coordinators;
+
 
     public function __construct()
     {
         $this->monitor = new ArrayCollection();
+        $this->supervisors = new ArrayCollection();
+        $this->coordinators = new ArrayCollection();
         
     }
 
@@ -208,6 +222,66 @@ class User
     public function setOt(?OT $ot): self
     {
         $this->ot = $ot;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Supervisor>
+     */
+    public function getSupervisors(): Collection
+    {
+        return $this->supervisors;
+    }
+
+    public function addSupervisor(Supervisor $supervisor): self
+    {
+        if (!$this->supervisors->contains($supervisor)) {
+            $this->supervisors[] = $supervisor;
+            $supervisor->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSupervisor(Supervisor $supervisor): self
+    {
+        if ($this->supervisors->removeElement($supervisor)) {
+            // set the owning side to null (unless already changed)
+            if ($supervisor->getUser() === $this) {
+                $supervisor->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Coordinator>
+     */
+    public function getCoordinators(): Collection
+    {
+        return $this->coordinators;
+    }
+
+    public function addCoordinator(Coordinator $coordinator): self
+    {
+        if (!$this->coordinators->contains($coordinator)) {
+            $this->coordinators[] = $coordinator;
+            $coordinator->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCoordinator(Coordinator $coordinator): self
+    {
+        if ($this->coordinators->removeElement($coordinator)) {
+            // set the owning side to null (unless already changed)
+            if ($coordinator->getUser() === $this) {
+                $coordinator->setUser(null);
+            }
+        }
 
         return $this;
     }
