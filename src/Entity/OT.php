@@ -84,7 +84,7 @@ class OT
     private $rccm;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="integer", length=255)
      * @Groups({"read:productor:ot","event:kafka"})
      */
     private $goalRecordings;
