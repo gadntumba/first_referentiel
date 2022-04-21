@@ -11,10 +11,14 @@ use App\Entity\Utils\TimestampTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Mink67\KafkaConnect\Annotations\Copyable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Entity\File as EmbeddedFile;
 
 #[Copyable(resourceName: 'producer.producer', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 /**
  * @ORM\Entity(repositoryClass=ProductorRepository::class)
+ * @Vich\Uploadable
  * @ORM\HasLifecycleCallbacks()
  * @UniqueEntity(
  *     fields= "phoneNumber",
@@ -173,6 +177,7 @@ class Productor
     /**
      * @ORM\Column(type="blob")
      * @Groups({"read:collection","write:Productor"})
+     * @var blob|null
      */
     private $photoPieceOfIdentification;
 
@@ -191,6 +196,7 @@ class Productor
     /**
      * @ORM\Column(type="blob")
      * @Groups({"read:collection","write:Productor"})
+     * 
      */
     private $incumbentPhoto;
 
@@ -199,6 +205,12 @@ class Productor
      * @ORM\ManyToOne(targetEntity=PieceIdentificationType::class, inversedBy="productors")
      */
     private $typePieceOfIdentification;
+    /**
+     * 
+     * @Vich\UploadableField(mapping="productor_image", fileNameProperty="photoPieceOfIdentification")
+     * @var File|null
+     */
+    private $imageFile;
 
     public function __construct()
     {
@@ -525,7 +537,7 @@ class Productor
     {
         return $this->numberPieceOfIdentification;
     }
-
+    
     public function setNumberPieceOfIdentification(string $numberPieceOfIdentification): self
     {
         $this->numberPieceOfIdentification = $numberPieceOfIdentification;
@@ -537,12 +549,18 @@ class Productor
     {
         return $this->photoPieceOfIdentification;
     }
-
-    public function setPhotoPieceOfIdentification(string $photoPieceOfIdentification): self
+    /**
+     *@param File|UploadedFile|null $photoPieceOfIdentification
+     */
+    public function setPhotoPieceOfIdentification(?File $photoPieceOfIdentification = null): void
     {
         $this->photoPieceOfIdentification = $photoPieceOfIdentification;
 
-        return $this;
+        if (null !== $photoPieceOfIdentification) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
     }
 
     public function getHouseholdSize(): ?int
@@ -574,11 +592,18 @@ class Productor
         return $this->incumbentPhoto;
     }
 
-    public function setIncumbentPhoto($incumbentPhoto): self
+    /**
+     *@param File|UploadedFile|null $incumbentPhoto
+     */
+    public function setIncumbentPhoto(?File $incumbentPhoto = null): void
     {
         $this->incumbentPhoto = $incumbentPhoto;
 
-        return $this;
+        if (null !==$incumbentPhoto ) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
     }
 
     public function getTypePieceOfIdentification(): ?PieceIdentificationType
@@ -592,4 +617,24 @@ class Productor
 
         return $this;
     }
-}
+    /**
+     *@return null|File
+     */
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param null|File $imageFile
+     * @return Productor
+     */
+    public function setImageFile(?File $imageFile):Productor
+    {
+        $this->imageFile = $imageFile;
+
+        return $this;
+        }
+    }
+
+

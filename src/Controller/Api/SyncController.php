@@ -10,10 +10,12 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 class SyncController extends AbstractController
 {
     /**
-     * 
+     * @var NormalizerInterface
      */
-    public function __construct(NormalizerInterface $normaliser) {
-        $this->normaliser = $normaliser;
+    private $normalizer;
+
+    public function __construct(NormalizerInterface $normalizer) {
+        $this->normalizer = $normalizer;
     }
     #[Route('/api/sync', name: 'app_api_sync')]
     public function index(): Response

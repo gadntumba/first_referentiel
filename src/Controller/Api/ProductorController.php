@@ -20,6 +20,8 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface as ValidatorValidatorInterface;
 
+use App\Entity\OT;
+
 class ProductorController extends AbstractController
 {
     /**
@@ -217,6 +219,14 @@ class ProductorController extends AbstractController
 
         return new JsonResponse($data, 200);
     }
+    /**
+     *@Route("/api/files/productors/{id}", methods= "GET", name= "files_productors")
+     */
+    public function setFile(Request $request){
+    $request->files->get('images');
+    
+    }
+    
 
      /**
      * @Route("/api/productors/smartphones/{smartphone}/nui", methods={"GET","HEAD"}, name="productor_smartphone_nui")
@@ -505,11 +515,11 @@ class ProductorController extends AbstractController
     }
 
     /**
-     * @Route("/api/ots/{id}/productors", methods="GET", name="productor_list_ot")
-     * 
+     * @Route("/api/ots/{id}/productors", methods="GET", name="productor_list_ot") 
      */
     public function list_ot()
-    {        
+    {      
+        //Route pour récupérer la liste des producteurs de l'OT  
         $all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
         
         $data = [];
@@ -524,13 +534,21 @@ class ProductorController extends AbstractController
         return new JsonResponse($data, 200);
     }
 
+
+    
     /**
      *@Route(path="/api/ots/{id}/productors/count",name="ots.{id}.productors.count", methods="GET")
      */
-    public function countProductor($id){
-        $productor= $this->productor->findAll();
+    public function countProductor($id_ot):JsonResponse
+    {
+      //Route pour récupérer le nombre des producteurs de l'OT.
+      $ot=  $this->getDoctrine()->getRepository(OT::class)->findOneBy([
+            "id"=>$id_ot
+        ]);
+       
+        $nbre=count( $ot->getProductor());
         return  new  JsonResponse([
-            "nbre"=>count($productor)
+            "nbre"=>$nbre
         ]);
        }
 

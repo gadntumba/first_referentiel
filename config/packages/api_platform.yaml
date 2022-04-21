@@ -8,6 +8,7 @@ api_platform:
         yaml:     ['application/x-yaml']
         csv:      ['text/csv']
         html:     ['text/html']
+        multipart: ['multipart/form-data']
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
     patch_formats:
