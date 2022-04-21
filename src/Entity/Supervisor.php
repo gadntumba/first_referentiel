@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Mink67\KafkaConnect\Annotations\Copy;
+use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTraitCopy;
 
 #[Copy(resourceName: 'ot.supervisor', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
