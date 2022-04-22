@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use ApiPlatform\Core\Filter\Validator\ValidatorInterface;
 use App\Entity\Productor;
+use App\Repository\OTRepository;
 use App\Repository\ProductorRepository;
 use App\Serializer\UnexpectedValueException;
 use App\Validators\Exception\Exception;
@@ -36,15 +37,23 @@ class ProductorController extends AbstractController
     private $repository; //int
     private $productor;
 
+    /**
+     * @var OTRepository
+     */
+    private $oTRepository;
+    
+
     public function __construct(
         DenormalizerInterface $denormalizer, 
         ProductorRepository $repository,
-        NormalizerInterface $normalizer
+        NormalizerInterface $normalizer,
+        OTRepository $oTRepository
     )
     {
         $this->denormalizer = $denormalizer;
         $this->normalizer = $normalizer;
         $this->repository = $repository;
+        $this->oTRepository = $oTRepository;
         
     }
 
@@ -756,9 +765,10 @@ class ProductorController extends AbstractController
      * @Route("/api/ots/{id}/productors", methods="GET", name="productor_list_ot")
      * 
      */
-    public function list_ot()
-    {        
-        $all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
+    public function list_ot($id)
+    {
+
+        $all = $this->repository->findBy();
         
         $data = [];
 
@@ -771,16 +781,6 @@ class ProductorController extends AbstractController
 
         return new JsonResponse($data, 200);
     }
-
-    /**
-     *@Route(path="/api/ots/{id}/productors/count",name="ots.{id}.productors.count", methods="GET")
-     */
-    public function countProductor($id){
-        $productor= $this->productor->findAll();
-        return  new  JsonResponse([
-            "nbre"=>count($productor)
-        ]);
-       }
 
 
 }

@@ -5,8 +5,11 @@ namespace App\Repository;
 use App\Entity\AgriculturalActivity;
 use App\Entity\FichingActivity;
 use App\Entity\FichingActivityType;
+use App\Entity\Monitor;
+use App\Entity\OT;
 use App\Entity\Productor;
 use App\Entity\StockRaisingActivity;
+use App\Entity\Supervisor;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Migrations\Query\Query;
@@ -45,19 +48,81 @@ class ProductorRepository extends ServiceEntityRepository
     }
     */
     /**
+     * @return Productor[] Returns an array of Productor objects
      * 
      */
     public function customFindAll($limit = 30)
     {
         return $this->createQueryBuilder('p')
             ->join('p.levelStudy', "l")
-            ->orderBy('p.name', 'DESC')
+            ->orderBy('p.createdAt', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult()
         ;
         
     }
+
+
+    /**
+     * @return Productor[] Returns an array of Productor objects
+     * 
+     */
+    public function findByOt(OT $ot, $limit = 30)
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.monitor', "m")
+            ->join('m.ot', "o")
+            ->andWhere('o.id = :otID')
+            ->setParameter('otID', $ot->getId())
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+        ;
+        
+    }
+
+
+    /**
+     * @return Productor[] Returns an array of Productor objects
+     * 
+     */
+    public function findByMonitor(Monitor $monitor, $limit = 30)
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.monitor', "m")
+            ->andWhere('m.id = :monitorId')
+            ->setParameter('monitorId', $monitor->getId())
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+        ;
+        
+    }
+
+
+    /**
+     * @return Productor[] Returns an array of Productor objects
+     * 
+     */
+    public function findBySupervisor(Supervisor $supervisor, $limit = 30)
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.monitor', "m")
+            ->join('m.supervisor', "s")
+            ->andWhere('s.id = :supervisorID')
+            ->setParameter('supervisorID', $supervisor->getId())
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+        ;
+        
+    }
+
+
     /**
     * @return Productor[] Returns an array of Productor objects
     */
@@ -302,6 +367,99 @@ class ProductorRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    /**
+    * @return int count a productor agricultor
+    */
+    public function countByMonitor(Monitor $monitor)
+    {
+        $em = $this->getEntityManager();
+
+        $monitorId = $monitor->getId();
+        $conn = $em->getConnection();
+        $tableName = $em->getClassMetadata(Productor::class)->getTableName();
+        $monitorTableName = $em->getClassMetadata(Monitor::class)->getTableName();
+
+        $sql = "SELECT count(p.id) nbr 
+                    FROM $tableName p 
+                    INNER JOIN $monitorTableName o ON o.id = p.monitor_id
+                    WHERE p.monitor_id = :monitorId
+                ;
+        ";
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(["monitorId" => $monitorId]);
+        
+        $arrData = $resultSet->fetchAssociative();
+
+        //dd($arrData);
+
+        return $arrData;
+
+    }
+
+
+    /**
+    * @return int count a productor agricultor
+    */
+    public function countByOT(OT $ot)
+    {
+        $em = $this->getEntityManager();
+
+        $otId = $ot->getId();
+        $conn = $em->getConnection();
+        $tableName = $em->getClassMetadata(Productor::class)->getTableName();
+        $monitorTableName = $em->getClassMetadata(Monitor::class)->getTableName();
+        $otTableName = $em->getClassMetadata(OT::class)->getTableName();
+
+        $sql = "SELECT count(p.id) nbr 
+                    FROM $tableName p 
+                    INNER JOIN $monitorTableName m ON m.id = p.monitor_id
+                    INNER JOIN $otTableName o ON o.id = m.ot_id
+                    WHERE m.ot_id = :otId
+                ;
+        ";
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(["otId" => $otId]);
+        
+        $arrData = $resultSet->fetchAssociative();
+
+        //dd($arrData);
+
+        return $arrData;
+
+    }
+
+
+    /**
+    * @return int count a productor agricultor
+    */
+    public function countBySupervisor(Supervisor $supervisor)
+    {
+        $em = $this->getEntityManager();
+
+        $supervisorId = $supervisor->getId();
+        $conn = $em->getConnection();
+        $tableName = $em->getClassMetadata(Productor::class)->getTableName();
+        $monitorTableName = $em->getClassMetadata(Monitor::class)->getTableName();
+        $supervisorTableName = $em->getClassMetadata(Supervisor::class)->getTableName();
+
+        $sql = "SELECT count(p.id) nbr 
+                    FROM $tableName p 
+                    INNER JOIN $monitorTableName m ON m.id = p.monitor_id
+                    INNER JOIN $supervisorTableName s ON s.id = m.supervisor_id
+                    WHERE m.supervisor_id = :supervisorId
+                ;
+        ";
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(["supervisorId" => $supervisorId]);
+        
+        $arrData = $resultSet->fetchAssociative();
+
+        //dd($arrData);
+
+        return $arrData;
+
     }
 
     /*
