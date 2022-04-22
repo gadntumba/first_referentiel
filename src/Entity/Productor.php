@@ -30,6 +30,46 @@ use Vich\UploaderBundle\Entity\File as EmbeddedFile;
  *     errorPath="nui",
  *     message="Ce NUI existe déjà"
  * )
+ * @ApiResource(
+ *     normalizationContext={"groups": {"read:productor:personnal_id_data","read:item","read:collection","write:Productor"}},
+ *         collectionOperations={
+ *         "productor-vue"={
+ *             "method"="GET",
+ *             "path"="/productors",
+ *             "openapi_context"={
+ *                  "summary"= "Voir les producteurs"
+ *              }
+ *          },
+ *         "post"={
+ *             "method"="POST",
+ *             "validation_groups"={"Default","postValidation"},
+ *             "path"="/productors",
+ *             "denormalization_context"={"groups":{"write:Productor"}},
+ *             "openapi_context"={
+ *                  "summary"= "Ajouter un producteur"
+ *              }
+ *         }
+ *      },
+ *      itemOperations={
+ *         "get",
+ *         "productor-update"={
+ *            "denormalization_context"={"groups":{"write:Productor"}},
+ *            "method"="PATCH",
+ *             "path"="/productors/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "Modifier un producteur"
+ *              }
+ *          },
+ *          "image"={
+ *             "method"="POST",
+ *             "path"="/images/productors/{id}",
+ *             "deserialize"="false",
+ *             "controller"="ProductorImageController::class"
+ *          }
+ *      
+ *       }
+ * 
+ * )
  */
 class Productor
 {
@@ -176,7 +216,7 @@ class Productor
 
     /**
      * @ORM\Column(type="blob")
-     * @Groups({"read:collection","write:Productor"})
+     * @Groups({"read:collection","write:Productor", "read:productor:piece_of_id_data"})
      * @var blob|null
      */
     private $photoPieceOfIdentification;
