@@ -223,8 +223,12 @@ class ProductorController extends AbstractController
      *@Route("/api/files/productors/{id}", methods= "GET", name= "files_productors")
      */
     public function setFile(Request $request){
-    $file = $request->files->get('file');
-    dd($file);
+        $productor = $request->attributes->get('data');
+        
+        $productor->setImageFile($request->files->get('imageFile'));
+        $productor->setUpdatedAt(new \DateTime());
+        
+        return $productor;
     }
     
 
