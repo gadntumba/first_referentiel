@@ -16,6 +16,7 @@ class ProductorImageController extends AbstractController
         if (!($productor instanceof Productor)) {
             throw new \RuntimeException('Article entendu');
         }
+        
         $productor->setImageFile($request->files->get('imageFile'));
         $productor->setUpdatedAt(new \DateTime());
         

@@ -227,7 +227,6 @@ class ProductorController extends AbstractController
         
         $productor->setImageFile($request->files->get('imageFile'));
         $productor->setUpdatedAt(new \DateTime());
-        
         return $productor;
     }
     
