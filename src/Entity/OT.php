@@ -18,6 +18,7 @@ use App\Entity\Utils\TimestampTraitCopy;
  * @ApiResource(
  *     normalizationContext={"groups": {"read:productor:ot","timestamp:read","slug:read"}},
  *      collectionOperations={
+ *         "get",
  *         "ot"={
  *             "method"="GET",
  *             "path"="/productors/othres/ot",
@@ -28,7 +29,8 @@ use App\Entity\Utils\TimestampTraitCopy;
  *         
  *      },
  *      itemOperations={
- *         "get"={
+ *         "get",
+ *         "get-producer"={
  *             "method"="GET",
  *             "path"="/productors/othres/ot/{id}",
  *             "openapi_context"={
@@ -346,5 +348,13 @@ class OT
         }
 
         return $this;
+    }
+
+    /**
+     * 
+     */
+    public function __toString()    
+    {
+        return $this->getEntitled(). " " . $this->getId();
     }
 }

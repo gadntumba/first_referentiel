@@ -38,7 +38,13 @@ use Mink67\KafkaConnect\Annotations\Copyable;
  *         }
  *      },
  *      itemOperations={
- *         "get",
+ *         "get"={
+ *             "method"="GET",
+ *             "path"="/location/provinces/{id}",
+ *             "openapi_context"={
+ *                  "summary"= "voir une province"
+ *              }
+ *          },
  *         "province-update"={
  *            "denormalization_context"={"groups":{"write:Province"}},
  *            "method"="PATCH",
@@ -103,7 +109,7 @@ class Province
     private $territorries;
 
     /**
-     * @ORM\ManyToOne(targetEntity=OT::class, inversedBy="provinces")
+     * @ORM\ManyToOne(targetEntity=OT::class, inversedBy="provinces", cascade={"persist"})
      */
     private $ot;
 

@@ -67,7 +67,7 @@ class User
     private $productor;
 
     /**
-     * @ORM\OneToMany(targetEntity=Monitor::class, mappedBy="user")
+     * @ORM\OneToMany(targetEntity=Monitor::class, mappedBy="user", cascade={"persist"})
      */
     private $monitor;
 
@@ -77,12 +77,12 @@ class User
     private $ot;
 
     /**
-     * @ORM\OneToMany(targetEntity=Supervisor::class, mappedBy="user")
+     * @ORM\OneToMany(targetEntity=Supervisor::class, mappedBy="user", cascade={"persist"})
      */
     private $supervisors;
 
     /**
-     * @ORM\OneToMany(targetEntity=Coordinator::class, mappedBy="user")
+     * @ORM\OneToMany(targetEntity=Coordinator::class, mappedBy="user", cascade={"persist"})
      */
     private $coordinators;
 

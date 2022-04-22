@@ -95,7 +95,7 @@ class City
     private $province;
 
     /**
-     * @ORM\OneToMany(targetEntity=Supervisor::class, mappedBy="city")
+     * @ORM\OneToMany(targetEntity=Supervisor::class, mappedBy="city", cascade={"persist"})
      */
     private $supervisors;
 

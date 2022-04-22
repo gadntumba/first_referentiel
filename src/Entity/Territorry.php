@@ -96,7 +96,7 @@ class Territorry
     private $province;
 
     /**
-     * @ORM\OneToMany(targetEntity=Supervisor::class, mappedBy="territory")
+     * @ORM\OneToMany(targetEntity=Supervisor::class, mappedBy="territory", cascade={"persist"})
      */
     private $supervisors;
 
