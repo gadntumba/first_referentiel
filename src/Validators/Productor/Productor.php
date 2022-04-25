@@ -9,8 +9,11 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use App\Entity\HouseKeeping;
 use App\Entity\Productor as EntityProductor;
+use App\Services\FileUploader;
 use App\Validators\Exception\Exception;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -37,25 +40,38 @@ class Productor {
      */
     private $validator; //HouseKeeping
     /**
-     * @var float
+     * @var FileUploader
+     */
+    private $fileUploader; //HouseKeeping
+    /**
      * @Assert\NotNull
      * @Assert\Type("float")
      */
     private $latitude;
 
     /**
-     * @var float
      * @Assert\NotNull
      * @Assert\Type("float")
      */
     private $longitude;
 
     /**
-     * @var float
      * @Assert\NotNull
      * @Assert\Type("float")
      */
     private $altitude;
+
+    /**
+     * @Assert\File()
+     * @Assert\NotNull
+     */
+    private $photoPieceOfIdentification;
+
+    /**
+     * @Assert\File()
+     * @Assert\NotNull
+     */
+    private $incumbentPhoto;
 
 
     public function __construct(
@@ -63,7 +79,8 @@ class Productor {
         PersonnalIdentityData $personnalIdentityData,
         PieceOfIdentificationData $pieceOfIdentificationData,
         ActivityData $activityData,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        FileUploader $fileUploader
     )
     {
         $this->denormalizer = $denormalizer;
@@ -71,6 +88,7 @@ class Productor {
         $this->pieceOfIdentificationData = $pieceOfIdentificationData;
         $this->activityData = $activityData;
         $this->validator = $validator;
+        $this->fileUploader = $fileUploader;
     }
 
     /**
@@ -309,7 +327,7 @@ class Productor {
         $productor->setFirstName($persIdenProduct->getFirstName());
         $productor->setLastName($persIdenProduct->getLastName());
         $productor->setSexe($persIdenProduct->getSexe());
-        $productor->setIncumbentPhoto($persIdenProduct->getPhoto());
+        $productor->setIncumbentPhoto($this->getPathFile($this->getIncumbentPhoto()));
         $productor->setPhoneNumber($persIdenProduct->getPhone());
         $productor->setPhoneNumber($persIdenProduct->getPhone());
         $productor->setBirthdate($persIdenProduct->getBirthday());
@@ -328,9 +346,20 @@ class Productor {
 
         $productor->setNumberPieceOfIdentification($pieceOfIdentificationData->getPieceId());
         $productor->setTypePieceOfIdentification($pieceOfIdentificationData->getPieceIdentificationType());
-        $productor->setPhotoPieceOfIdentification($pieceOfIdentificationData->getPhoto());
+        $productor->setPhotoPieceOfIdentification($this->getPathFile($this->getPhotoPieceOfIdentification()));
 
         return $productor;
+    }
+    /**
+     * 
+     */
+    private function getPathFile($uploadedFile)
+    {
+        if (!$uploadedFile) {
+            throw new BadRequestHttpException(' is required');
+        }
+
+        return $this->fileUploader->upload($uploadedFile);
     }
 
     public function addActivities(EntityProductor $productor)
@@ -369,42 +398,84 @@ class Productor {
         return $this->getActivityData()->getFichings();
     }
 
-    public function getLatitude(): ?float
+    public function getLatitude()
     {
         return $this->latitude;
     }
 
-    public function setLatitude(float $latitude): self
+    public function setLatitude($latitude): self
     {
-        $this->latitude = $latitude;
+        //dd($latitude);
+        $this->latitude = floatval($latitude);
 
         return $this;
     }
 
-    public function getLongitude(): ?float
+    public function getLongitude()
     {
         return $this->longitude;
     }
 
-    public function setLongitude(float $longitude): self
+    public function setLongitude($longitude): self
     {
-        $this->longitude = $longitude;
+        $this->longitude = floatval($longitude);
+        
 
         return $this;
     }
 
-    public function getAltitude(): ?float
+    public function getAltitude()
     {
         return $this->altitude;
     }
 
-    public function setAltitude(float $altitude): self
+    public function setAltitude( $altitude): self
     {
-        $this->altitude = $altitude;
+        $this->altitude = floatval($altitude);
 
         return $this;
     }
 
 
 
+
+    /**
+     * Get the value of photoPieceOfIdentification
+     */ 
+    public function getPhotoPieceOfIdentification()
+    {
+        return $this->photoPieceOfIdentification;
+    }
+
+    /**
+     * Set the value of photoPieceOfIdentification
+     *
+     * @return  self
+     */ 
+    public function setPhotoPieceOfIdentification($photoPieceOfIdentification)
+    {
+        $this->photoPieceOfIdentification = $photoPieceOfIdentification;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of incumbentPhoto
+     */ 
+    public function getIncumbentPhoto()
+    {
+        return $this->incumbentPhoto;
+    }
+
+    /**
+     * Set the value of incumbentPhoto
+     *
+     * @return  self
+     */ 
+    public function setIncumbentPhoto($incumbentPhoto)
+    {
+        $this->incumbentPhoto = $incumbentPhoto;
+
+        return $this;
+    }
 }

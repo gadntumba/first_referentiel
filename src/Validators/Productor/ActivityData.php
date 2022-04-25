@@ -12,9 +12,9 @@ use App\Entity\Productor as EntityProductor;
 
 class ActivityData {
 
-    private $agriculturals; //array( Agriculturals )
-    private $stockRaisings; //array( StockRaisings )
-    private $fichings; //array( Fichings )
+    private $agriculturals = []; //array( Agriculturals )
+    private $stockRaisings = []; //array( StockRaisings )
+    private $fichings = []; //array( Fichings )
     /**
      * @var DenormalizerInterface
      */
@@ -147,6 +147,9 @@ class ActivityData {
     {
 
         $actitvies = $this->getAgriculturals();
+        if (is_null($actitvies)) {
+            return $errors;
+        }
 
         foreach ($actitvies as $key => $activity) {
 
@@ -175,6 +178,9 @@ class ActivityData {
     {
 
         $actitvies = $this->getStockRaisings();
+        if (is_null($actitvies)) {
+            return $errors;
+        }
 
         foreach ($actitvies as $key => $activity) {
 
@@ -199,6 +205,9 @@ class ActivityData {
     {
 
         $actitvies = $this->getFichings();
+        if (is_null($actitvies)) {
+            return $errors;
+        }
 
         foreach ($actitvies as $key => $activity) {
 

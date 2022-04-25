@@ -171,7 +171,7 @@ class Productor
     private $numberPieceOfIdentification;
 
     /**
-     * @ORM\Column(type="blob")
+     * @ORM\Column(type="string")
      * @Groups({"read:collection","write:Productor"})
      */
     private $photoPieceOfIdentification;
@@ -189,7 +189,7 @@ class Productor
     private $deletedAt;
 
     /**
-     * @ORM\Column(type="blob")
+     * @ORM\Column(type="string")
      * @Groups({"read:collection","write:Productor"})
      */
     private $incumbentPhoto;

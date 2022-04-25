@@ -49,7 +49,6 @@ class PersonnalIdentityData {
      */
     private $nui; //String
     /**
-     * @Assert\NotNull
      */
     private $photo; //String
     /**
@@ -60,7 +59,6 @@ class PersonnalIdentityData {
     /**
      * @Assert\NotNull
      * @Assert\Type("int")
-     * @var int
      */
     private $householdSize; //int
 
@@ -270,9 +268,9 @@ public function setLevelStudy(LevelStudy $levelStudy)
   *
   * @return  self
   */ 
- public function setHouseholdSize($householdSize)
+ public function setHouseholdSize( string $householdSize)
  {
-  $this->householdSize = $householdSize;
+  $this->householdSize = (int) $householdSize;
 
   return $this;
  }

@@ -82,6 +82,7 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
                 [
                     "code" => "aaafggfg-fhhfhfh-kgkgjgjgj-oruru",
                     "message" => "Invalid iri",
+                    "data" => $data,
                 ]
             );
             $arr = json_decode($jsonObject->getJson(), true);

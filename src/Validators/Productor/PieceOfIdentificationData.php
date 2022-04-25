@@ -20,7 +20,6 @@ class PieceOfIdentificationData {
     */
     private $pieceId; //String
     /**
-     * @Assert\NotNull
      * 
      */
     private $photo; //String

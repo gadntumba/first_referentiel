@@ -75,11 +75,13 @@ class ProductorController extends AbstractController
         try {
             
             $productorValidator = $this->denormalizer->denormalize(
-                $this->getRequestParams($request),
+                $this->getRequestParams($request, true),
                 ProductorProductor::class,
                 null,
                 [AbstractNormalizer::OBJECT_TO_POPULATE => $productorValidator]
             );
+            //dd($request->files->all());
+            //dd($productorValidator);
         } catch (UnexpectedValueException $th) {
             //throw $th;
             //dd($th);
@@ -94,6 +96,10 @@ class ProductorController extends AbstractController
                 422
             );
         }
+
+
+
+
         try {
             $productorValidator->validate();
             $productor = new Productor();
@@ -192,17 +198,22 @@ class ProductorController extends AbstractController
     /**
      * 
      */
-    private function getRequestParams(Request $request)
+    private function getRequestParams(Request $request, bool $addFiles = false)
     {
         $data = json_decode($request->getContent(), true);
 
         if(is_null($data)){
 
-            $data = $request->request->all();   
+            $data = $request->request->all();  
+            
 
         }else{
 
         }
+
+        if ($addFiles) {
+            $data = array_merge($data, $request->files->all());
+        } 
 
         return $data;
         
