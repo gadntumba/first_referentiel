@@ -33,6 +33,8 @@ class FileUploader
         try {
             $file->move($this->getuploadPath(), $fileName);
         } catch (FileException $e) {
+            throw $e;
+            
             // ... handle exception if something happens during file upload
         }
  
