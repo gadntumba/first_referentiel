@@ -81,9 +81,15 @@ class StockRainsingActivityType
      */
     private $stockRaisingActivities;
 
+    /**
+     * @ORM\OneToMany(targetEntity=StockRaisingActivitySubType::class, mappedBy="stockRainsingActivityType")
+     */
+    private $stockRaisingActivitySubType;
+
     public function __construct()
     {
         $this->stockRaisingActivities = new ArrayCollection();
+        $this->stockRaisingActivitySubType = new ArrayCollection();
     }
 
     public static function validationGroups(self $stockRainsingActivityType){
@@ -138,6 +144,36 @@ class StockRainsingActivityType
             // set the owning side to null (unless already changed)
             if ($stockRaisingActivity->getStockRainsingActivityType() === $this) {
                 $stockRaisingActivity->setStockRainsingActivityType(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, StockRaisingActivitySubType>
+     */
+    public function getStockRaisingActivitySubType(): Collection
+    {
+        return $this->stockRaisingActivitySubType;
+    }
+
+    public function addStockRaisingActivitySubType(StockRaisingActivitySubType $stockRaisingActivitySubType): self
+    {
+        if (!$this->stockRaisingActivitySubType->contains($stockRaisingActivitySubType)) {
+            $this->stockRaisingActivitySubType[] = $stockRaisingActivitySubType;
+            $stockRaisingActivitySubType->setStockRainsingActivityType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStockRaisingActivitySubType(StockRaisingActivitySubType $stockRaisingActivitySubType): self
+    {
+        if ($this->stockRaisingActivitySubType->removeElement($stockRaisingActivitySubType)) {
+            // set the owning side to null (unless already changed)
+            if ($stockRaisingActivitySubType->getStockRainsingActivityType() === $this) {
+                $stockRaisingActivitySubType->setStockRainsingActivityType(null);
             }
         }
 

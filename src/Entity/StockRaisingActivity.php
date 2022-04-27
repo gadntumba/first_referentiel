@@ -103,6 +103,11 @@ class StockRaisingActivity
      */
     private $sourceOfSupplyActivity;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=StockRaisingActivitySubType::class, inversedBy="stockRaisingActivities")
+     */
+    private $stockRaisingActivitySubType;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -167,6 +172,18 @@ class StockRaisingActivity
     public function setSourceOfSupplyActivity(?SourceOfSupplyActivity $sourceOfSupplyActivity): self
     {
         $this->sourceOfSupplyActivity = $sourceOfSupplyActivity;
+
+        return $this;
+    }
+
+    public function getStockRaisingActivitySubType(): ?StockRaisingActivitySubType
+    {
+        return $this->stockRaisingActivitySubType;
+    }
+
+    public function setStockRaisingActivitySubType(?StockRaisingActivitySubType $stockRaisingActivitySubType): self
+    {
+        $this->stockRaisingActivitySubType = $stockRaisingActivitySubType;
 
         return $this;
     }

@@ -99,6 +99,11 @@ class AgriculturalActivity
      */
     private $adress;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=AgriculturalActivityType::class, inversedBy="agriculturalActivities")
+     */
+    private $agriculturalActivityType;
+
 
     /*
     * @Groups({"read:agriculcollection"})
@@ -174,6 +179,18 @@ class AgriculturalActivity
     public function setAdress(?Address $adress): self
     {
         $this->adress = $adress;
+
+        return $this;
+    }
+
+    public function getAgriculturalActivityType(): ?AgriculturalActivityType
+    {
+        return $this->agriculturalActivityType;
+    }
+
+    public function setAgriculturalActivityType(?AgriculturalActivityType $agriculturalActivityType): self
+    {
+        $this->agriculturalActivityType = $agriculturalActivityType;
 
         return $this;
     }
