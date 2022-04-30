@@ -142,6 +142,9 @@
     "mink67/kafka_connect_bundle": {
         "version": "1.0.13"
     },
+    "monolog/monolog": {
+        "version": "2.5.0"
+    },
     "nelmio/cors-bundle": {
         "version": "2.2",
         "recipe": {
@@ -316,6 +319,21 @@
     },
     "symfony/mime": {
         "version": "v5.4.7"
+    },
+    "symfony/monolog-bridge": {
+        "version": "v5.4.3"
+    },
+    "symfony/monolog-bundle": {
+        "version": "3.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "3.7",
+            "ref": "213676c4ec929f046dfde5ea8e97625b81bc0578"
+        },
+        "files": [
+            "config/packages/monolog.yaml"
+        ]
     },
     "symfony/password-hasher": {
         "version": "v6.0.3"

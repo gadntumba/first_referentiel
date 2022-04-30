@@ -47,6 +47,7 @@ class ActivityData {
     //dd($agriculturals);
     
     foreach ($agriculturals as $key => $agricultural) {
+            //dd($agricultural);
         
             $agricultural = $this->denormalizer->denormalize($agricultural, AgriculturalActivity::class, null, []);
                 

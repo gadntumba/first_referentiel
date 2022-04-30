@@ -12,6 +12,7 @@ use App\Validators\Productor\Productor as ProductorProductor;
 use App\Validators\Util\Util;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -64,18 +65,26 @@ class ProductorController extends AbstractController
         Request $request, 
         ProductorProductor $productorValidator, 
         EntityManagerInterface $em,
-        ValidatorValidatorInterface $validator
+        ValidatorValidatorInterface $validator,
+        LoggerInterface $logger
     )
     {
         //dd($this->repository->findAll());
+
+        //dd($this->getRequestParams($request, true));
         
         /**
          * @var ProductorProductor
          */
         try {
+            $requestData = $this->getRequestParams($request, true);
+
+            $logger->info('############### Start data json productor #########');
+            $logger->info(\json_encode($requestData));
+            $logger->info('########## End Data jso productor ##########');
             
             $productorValidator = $this->denormalizer->denormalize(
-                $this->getRequestParams($request, true),
+                $requestData,
                 ProductorProductor::class,
                 null,
                 [AbstractNormalizer::OBJECT_TO_POPULATE => $productorValidator]
