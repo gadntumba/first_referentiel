@@ -37,7 +37,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *            "method"="GET",
  *             "path"="/stock-raising-activities/{id}",
  *             "openapi_context"={
- *                  "summary"= "Modifier une activité d'elevage"
+ *                  "summary"= "Voir une activité d'elevage"
  *              }
  *          } ,
  *         "stock-raising-activities-update"={
@@ -103,6 +103,12 @@ class StockRaisingActivity
      */
     private $sourceOfSupplyActivity;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=StockRaisingActivitySubType::class, inversedBy="stockRaisingActivities")
+     * @Groups({"read:productor:activities_data","read:stockraisingcollection","white:stock-raising-activity"})
+     */
+    private $stockRaisingActivitySubType;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -167,6 +173,18 @@ class StockRaisingActivity
     public function setSourceOfSupplyActivity(?SourceOfSupplyActivity $sourceOfSupplyActivity): self
     {
         $this->sourceOfSupplyActivity = $sourceOfSupplyActivity;
+
+        return $this;
+    }
+
+    public function getStockRaisingActivitySubType(): ?StockRaisingActivitySubType
+    {
+        return $this->stockRaisingActivitySubType;
+    }
+
+    public function setStockRaisingActivitySubType(?StockRaisingActivitySubType $stockRaisingActivitySubType): self
+    {
+        $this->stockRaisingActivitySubType = $stockRaisingActivitySubType;
 
         return $this;
     }

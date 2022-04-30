@@ -34,13 +34,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *         }
  *      },
  *      itemOperations={
- *         "get"={
- *            "method"="GET",
- *             "path"="/agricultural-activities/{id}",
- *             "openapi_context"={
- *                  "summary"= "Modifier une activité agricole"
- *              }
- *          } ,
+ *         "get",
  *         "agricultural-activities-update"={
  *            "denormalization_context"={"groups":{"write:AgriculturalActivity"}},
  *            "method"="PATCH",
@@ -98,6 +92,12 @@ class AgriculturalActivity
      * @ORM\ManyToOne(targetEntity=Address::class, inversedBy="agriculturalActivities")
      */
     private $adress;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=AgriculturalActivityType::class, inversedBy="agriculturalActivities")
+     * @Groups({"read:productor:activities_data","write:AgriculturalActivity","read:agriculcollection"})
+     */
+    private $agriculturalActivityType;
 
 
     /*
@@ -174,6 +174,18 @@ class AgriculturalActivity
     public function setAdress(?Address $adress): self
     {
         $this->adress = $adress;
+
+        return $this;
+    }
+
+    public function getAgriculturalActivityType(): ?AgriculturalActivityType
+    {
+        return $this->agriculturalActivityType;
+    }
+
+    public function setAgriculturalActivityType(?AgriculturalActivityType $agriculturalActivityType): self
+    {
+        $this->agriculturalActivityType = $agriculturalActivityType;
 
         return $this;
     }
