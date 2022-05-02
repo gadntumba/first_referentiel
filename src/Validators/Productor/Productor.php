@@ -74,13 +74,17 @@ class Productor {
     private $altitude;
 
     /**
-     * @Assert\File()
+     * @Assert\File(
+     *  maxSize: '10M'
+     * )
      * @Assert\NotNull
      */
     private $photoPieceOfIdentification;
 
     /**
-     * @Assert\File()
+     * @Assert\File(
+     *  maxSize: '10M'
+     * )
      * @Assert\NotNull
      */
     private $incumbentPhoto;
