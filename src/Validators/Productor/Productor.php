@@ -26,7 +26,14 @@ class Productor {
      * @var PieceOfIdentificationData
      */
     private $pieceOfIdentificationData; //PieceOfIdentificationData
+    /**
+     * @var array
+     */
     private $activityData; //ActivityData
+    /**
+     * 
+     */
+    private $activityDataEntity; //ActivityData
     private $monitor; //Monitor
     /**
      * @var DenormalizerInterface
@@ -83,7 +90,7 @@ class Productor {
         DenormalizerInterface $denormalizer,
         PersonnalIdentityData $personnalIdentityData,
         PieceOfIdentificationData $pieceOfIdentificationData,
-        ActivityData $activityData,
+        ActivityData $activityDataEntity,
         ValidatorInterface $validator,
         LoggerInterface $logger,
         FileUploader $fileUploader
@@ -92,10 +99,11 @@ class Productor {
         $this->denormalizer = $denormalizer;
         $this->personnalIdentityData = $personnalIdentityData;
         $this->pieceOfIdentificationData = $pieceOfIdentificationData;
-        $this->activityData = $activityData;
+        $this->activityDataEntity = $activityDataEntity;
         $this->validator = $validator;
         $this->fileUploader = $fileUploader;
         $this->logger = $logger;
+        //dd($activityData);
     }
 
     /**
@@ -158,6 +166,13 @@ class Productor {
     {
         return $this->activityData;
     }
+    /**
+     * Get the value of activityData
+     */ 
+    public function getActivityDataEntity()
+    {
+        return $this->activityDataEntity;
+    }
 
     /**
      * Set the value of activityData
@@ -166,24 +181,27 @@ class Productor {
      */ 
     public function setActivityData($activityData)
     {
+        /*dd($activityData);
         
         if (!is_array($activityData)) {
             $this->logger->info(serialize($activityData));
             throw new BadRequestHttpException("activityData must be array type");            
-        }
+        }*/
+        $this->activityData = $activityData;
 
-        $activityData = $this->denormalizer->denormalize(
+
+        $activityDataEntity = $this->denormalizer->denormalize(
             $activityData, 
             ActivityData::class, 
             null, 
-            [AbstractNormalizer::OBJECT_TO_POPULATE => $this->activityData]
+            [AbstractNormalizer::OBJECT_TO_POPULATE => $this->activityDataEntity]
         );
 
-        if (!($activityData instanceof ActivityData)) {
+        if (!($activityDataEntity instanceof ActivityData)) {
             throw new \Exception("Not supported yet");
         }
 
-        $this->activityData = $activityData;
+        $this->activityDataEntity = $activityDataEntity;
 
         return $this;
     }
@@ -307,7 +325,7 @@ class Productor {
         
         }
 
-        $errorsTmp = $this->getActivityData()->validate();
+        $errorsTmp = $this->getActivityDataEntity()->validate();
         //validate activity data
         if (isset($errorsTmp["activities"])) {
 
@@ -378,9 +396,9 @@ class Productor {
     public function addActivities(EntityProductor $productor)
     {
         //dd("hrhrhrhr");
-        $productor = $this->getActivityData()->addAgricuturalsActivities($productor);
-        $productor = $this->getActivityData()->addFichingsActivities($productor);
-        $productor = $this->getActivityData()->addStockRaisingsActivities($productor);
+        $productor = $this->getActivityDataEntity()->addAgricuturalsActivities($productor);
+        $productor = $this->getActivityDataEntity()->addFichingsActivities($productor);
+        $productor = $this->getActivityDataEntity()->addStockRaisingsActivities($productor);
 
         return $productor;
         
@@ -392,7 +410,7 @@ class Productor {
     */ 
     public function getStockRaisings()
     {
-        return $this->getActivityData()->getStockRaisings();
+        return $this->getActivityDataEntity()->getStockRaisings();
     }
 
     /**
@@ -400,7 +418,7 @@ class Productor {
     */ 
     public function getAgriculturals()
     {
-        return $this->getActivityData()->getAgriculturals();
+        return $this->getActivityDataEntity()->getAgriculturals();
     }
 
     /**
@@ -408,7 +426,7 @@ class Productor {
     */ 
     public function getFichings()
     {
-        return $this->getActivityData()->getFichings();
+        return $this->getActivityDataEntity()->getFichings();
     }
 
     public function getLatitude()

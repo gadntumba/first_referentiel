@@ -19,8 +19,12 @@ class ActivityData {
      * @var DenormalizerInterface
      */
     private $denormalizer; //int
+    
 
-    public function __construct(DenormalizerInterface $denormalizer, ValidatorInterface $validator)
+    public function __construct(
+        DenormalizerInterface $denormalizer, 
+        ValidatorInterface $validator
+    )
     {
         $this->denormalizer = $denormalizer;
         $this->validator = $validator;
