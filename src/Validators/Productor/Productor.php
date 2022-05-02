@@ -11,6 +11,7 @@ use App\Entity\HouseKeeping;
 use App\Entity\Productor as EntityProductor;
 use App\Services\FileUploader;
 use App\Validators\Exception\Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -43,6 +44,10 @@ class Productor {
      * @var FileUploader
      */
     private $fileUploader; //HouseKeeping
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
     /**
      * @Assert\NotNull
      * @Assert\Type("float")
@@ -80,6 +85,7 @@ class Productor {
         PieceOfIdentificationData $pieceOfIdentificationData,
         ActivityData $activityData,
         ValidatorInterface $validator,
+        LoggerInterface $logger,
         FileUploader $fileUploader
     )
     {
@@ -89,6 +95,7 @@ class Productor {
         $this->activityData = $activityData;
         $this->validator = $validator;
         $this->fileUploader = $fileUploader;
+        $this->logger = $logger;
     }
 
     /**
@@ -157,8 +164,14 @@ class Productor {
      *
      * @return  self
      */ 
-    public function setActivityData(array $activityData)
+    public function setActivityData($activityData)
     {
+        
+        if (!is_array($activityData)) {
+            $this->logger->info(serialize($activityData));
+            throw new BadRequestHttpException("activityData must be array type");            
+        }
+
         $activityData = $this->denormalizer->denormalize(
             $activityData, 
             ActivityData::class, 
@@ -435,8 +448,6 @@ class Productor {
 
         return $this;
     }
-
-
 
 
     /**
