@@ -75,7 +75,7 @@ class Productor {
 
     /**
      * @Assert\File(
-     *  maxSize: '10M'
+     *  maxSize="10M"
      * )
      * @Assert\NotNull
      */
@@ -83,7 +83,7 @@ class Productor {
 
     /**
      * @Assert\File(
-     *  maxSize: '10M'
+     *  maxSize="10M"
      * )
      * @Assert\NotNull
      */
