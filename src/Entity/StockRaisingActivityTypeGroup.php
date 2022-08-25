@@ -8,13 +8,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Utils\TimestampTrait;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: StockRaisingActivityTypeGroupRepository::class)]
 #[ORM\HasLifecycleCallbacks()]
 #[ApiResource(
-    normalizationContext={"groups": {"read:stockRaisingGroup","timestamp:read","slug:read"}})
-]
+    normalizationContext:["groups" => ["read:stockRaisingGroup","timestamp:read","slug:read"]]
+ )]
 class StockRaisingActivityTypeGroup
 {
     use TimestampTrait;
@@ -27,6 +28,7 @@ class StockRaisingActivityTypeGroup
 
     #[ORM\Column(length: 255, nullable: false)]
     #[Groups(["read:stockRaisingGroup"])]
+    #[Assert\NotNull]
     private ?string $wording;
 
     #[ORM\OneToMany(mappedBy: 'stockRaisingActivityTypeGroup', targetEntity: StockRainsingActivityType::class)]
