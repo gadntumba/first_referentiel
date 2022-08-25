@@ -106,10 +106,11 @@ class AgriculturalActivity
     #[ORM\ManyToOne(targetEntity:AgriculturalActivityType::class, inversedBy:"agriculturalActivities")]
     private $agriculturalActivityType;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: "integer", nullable: true)]
     #[Assert\NotNull]
     #[Groups(["read:productor:activities_data","write:AgriculturalActivity","read:agriculcollection"])]
-    private ?\DateTimeInterface $createdActivityDate = null;
+    #[Assert\GreaterThanOrEqual(value: 1885)]
+    private ?int $createdActivityYear = null;
 
 
     /*
@@ -201,14 +202,14 @@ class AgriculturalActivity
         return $this;
     }
 
-    public function getCreatedActivityDate(): ?\DateTimeInterface
+    public function getCreatedActivityYear()
     {
-        return $this->createdActivityDate;
+        return $this->createdActivityYear;
     }
 
-    public function setCreatedActivityDate(?\DateTimeInterface $createdActivityDate): self
+    public function setCreatedActivityYear( $createdActivityYear): self
     {
-        $this->createdActivityDate = $createdActivityDate;
+        $this->createdActivityYear = $createdActivityYear;
 
         return $this;
     }

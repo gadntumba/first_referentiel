@@ -68,9 +68,10 @@ class StockRaisingActivity
      * 
      * @Groups({"read:productor:activities_data","read:stockraisingcollection","white:stock-raising-activity"})
      * @Assert\NotNull
+     *@Assert\GreaterThanOrEqual(value: 1885)
      */
     #[ORM\Column(type:"integer")]
-    private $activityCreateDate;
+    private $activityCreateYear;
 
     /**
      * 
@@ -123,14 +124,14 @@ class StockRaisingActivity
     public static function validationGroups(self $stockRaisingActivity){
         return ['create:StockRaisingActivity'];
     }
-    public function getActivityCreateDate(): ?\DateTimeInterface
+    public function getActivityCreateYear()
     {
-        return $this->activityCreateDate;
+        return $this->activityCreateYear;
     }
 
-    public function setActivityCreateDate(\DateTimeInterface $createDate): self
+    public function setActivityCreateYear($createYear): self
     {
-        $this->activityCreateDate = $createDate;
+        $this->activityCreateYear = $createYear;
 
         return $this;
     }

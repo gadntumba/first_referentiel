@@ -73,10 +73,11 @@ class FichingActivity
      * 
      * @Groups({"read:productor:activities_data","read:fichingacollection","write:FichingActivity"})
      * @Assert\NotNull
+     *@Assert\GreaterThanOrEqual(value: 1885)
      * 
      */
-    #[ORM\Column(type:"date")]
-    private $activityCreateDate;
+    #[ORM\Column(type:"integer")]
+    private $createdActivityYear;
 
     /**
      * 
@@ -133,14 +134,14 @@ class FichingActivity
         return $this->id;
     }
 
-    public function getActivityCreateDate(): ?\DateTimeInterface
+    public function getCreatedActivityYear()
     {
-        return $this->activityCreateDate;
+        return $this->createdActivityYear;
     }
 
-    public function setActivityCreateDate(\DateTimeInterface $createdate): self
+    public function setCreatedActivityYear( $createdYear): self
     {
-        $this->activityCreateDate = $createdate;
+        $this->createdActivityYear = $createdYear;
 
         return $this;
     }
