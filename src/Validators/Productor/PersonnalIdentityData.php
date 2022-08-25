@@ -268,7 +268,7 @@ public function setLevelStudy(LevelStudy $levelStudy)
   *
   * @return  self
   */ 
- public function setHouseholdSize( string $householdSize)
+ public function setHouseholdSize($householdSize)
  {
   $this->householdSize = (int) $householdSize;
 

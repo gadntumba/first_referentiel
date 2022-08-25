@@ -1,6 +1,7 @@
 <?php
 namespace App\Validators\Productor;
 
+use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\AgriculturalActivity;
 use App\Entity\FichingActivity;
 use App\Entity\PieceIdentificationType;
@@ -16,6 +17,10 @@ class ActivityData {
     private $stockRaisings = []; //array( StockRaisings )
     private $fichings = []; //array( Fichings )
     /**
+    * @var IriConverterInterface
+    */
+    private $iriConverter;
+    /**
      * @var DenormalizerInterface
      */
     private $denormalizer; //int
@@ -23,11 +28,13 @@ class ActivityData {
 
     public function __construct(
         DenormalizerInterface $denormalizer, 
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        IriConverterInterface $iriConverter
     )
     {
         $this->denormalizer = $denormalizer;
         $this->validator = $validator;
+        $this->iriConverter = $iriConverter;
     }
 
 
@@ -50,14 +57,20 @@ class ActivityData {
 
     //dd($agriculturals);
     
-    foreach ($agriculturals as $key => $agricultural) {
-            //dd($agricultural);
+    foreach ($agriculturals as $key => $value) {
+            //dump($value);
+            //dump($value["sourceOfSupplyActivity"]);
         
-            $agricultural = $this->denormalizer->denormalize($agricultural, AgriculturalActivity::class, null, []);
+            $agricultural = $this->denormalizer->denormalize($value, AgriculturalActivity::class, null, ["groups" =>["write:AgriculturalActivity"]]);
                 
             if (!($agricultural instanceof AgriculturalActivity)) {
                 throw new \Exception("Not supported yet");
             }
+            //dump(is_null($agricultural->getAgriculturalActivityType()) );
+            
+            //dump("ok");
+
+
 
             array_push($newAgriculturals, $agricultural );
     }
@@ -256,6 +269,7 @@ class ActivityData {
     public function addFichingsActivities(EntityProductor $productor)
     {
         $activities = $this->getFichings();
+        //dd($activities);
 
         foreach ($activities as $key => $activity) {
             
@@ -263,8 +277,10 @@ class ActivityData {
 
                 $activity->setProductor($productor);
             }
+            //dd($activity);
 
         }
+
         return $productor;
     }
     /**

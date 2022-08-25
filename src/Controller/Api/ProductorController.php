@@ -132,6 +132,7 @@ class ProductorController extends AbstractController
             $this->persistIfNotPersited($address, $em);
             $this->persistIfNotPersited($housekeeping, $em);
             //dd($productor);
+            //$em->persist($housekeeping);
             $this->persistIfNotPersited($productor, $em);
 
             $agriculturals = $productorValidator->getAgriculturals();
@@ -156,10 +157,6 @@ class ProductorController extends AbstractController
             }
 
 
-
-            //$this->persistIfNotPersited($productor, $em);
-            //dd("ok");
-
             $errors = $validator->validate($productor);
 
             if (count($errors) > 0) {
@@ -170,7 +167,7 @@ class ProductorController extends AbstractController
                 );
             }
 
-
+            //dd($productor);
             $em->flush();
 
             $itemArr = $this->transform($productor);

@@ -77,7 +77,7 @@ class FichingActivity
      */
     #[Assert\NotNull()]
     #[Assert\GreaterThanOrEqual(value: 1885)]
-    #[ORM\Column(type:"integer", nullable: false)]  
+    #[ORM\Column(type:"string", nullable: false)]  
     private $createdActivityYear = null;
 
     /**

@@ -106,19 +106,14 @@ class AgriculturalActivity
     #[ORM\ManyToOne(targetEntity:AgriculturalActivityType::class, inversedBy:"agriculturalActivities")]
     private $agriculturalActivityType;
 
-    #[ORM\Column(type: "integer", nullable: true)]
+    #[ORM\Column(type: "string", nullable: true)]
     #[Assert\NotNull]
     #[Groups(["read:productor:activities_data","write:AgriculturalActivity","read:agriculcollection"])]
     #[Assert\GreaterThanOrEqual(value: 1885)]
-    private ?int $createdActivityYear = null;
+    private $createdActivityYear = null;
 
 
-    /*
-    * @Groups({"read:agriculcollection"})
-    */
-    public static function validationGroups(self $agriculturalActivity){
-        return ['create:AgriculturalActivity'];
-    }
+    
     public function getIri(): string
     {
         return '/api/agricultural-activities/'. $this->id;
@@ -197,6 +192,7 @@ class AgriculturalActivity
 
     public function setAgriculturalActivityType(?AgriculturalActivityType $agriculturalActivityType): self
     {
+        //dd($agriculturalActivityType);
         $this->agriculturalActivityType = $agriculturalActivityType;
 
         return $this;

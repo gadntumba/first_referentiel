@@ -69,10 +69,10 @@ class StockRaisingActivity
      * @Groups({"read:productor:activities_data","read:stockraisingcollection","white:stock-raising-activity"})
      * 
      */
-    #[ORM\Column(type:"integer")]
+    #[ORM\Column(type:"string")]
     #[Assert\NotNull]
     #[Assert\GreaterThanOrEqual(value: 1885)]
-    private $activityCreateYear = null;
+    private $createdActivityYear = null;
 
     /**
      * 
@@ -125,14 +125,14 @@ class StockRaisingActivity
     public static function validationGroups(self $stockRaisingActivity){
         return ['create:StockRaisingActivity'];
     }
-    public function getActivityCreateYear()
+    public function getCreatedActivityYear()
     {
-        return $this->activityCreateYear;
+        return $this->createdActivityYear;
     }
 
-    public function setActivityCreateYear($createYear): self
+    public function setCreatedActivityYear($createYear): self
     {
-        $this->activityCreateYear = $createYear;
+        $this->createdActivityYear = $createYear;
 
         return $this;
     }
