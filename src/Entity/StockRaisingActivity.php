@@ -67,11 +67,12 @@ class StockRaisingActivity
     /**
      * 
      * @Groups({"read:productor:activities_data","read:stockraisingcollection","white:stock-raising-activity"})
-     * @Assert\NotNull
-     *@Assert\GreaterThanOrEqual(value: 1885)
+     * 
      */
     #[ORM\Column(type:"integer")]
-    private $activityCreateYear;
+    #[Assert\NotNull]
+    #[Assert\GreaterThanOrEqual(value: 1885)]
+    private $activityCreateYear = null;
 
     /**
      * 

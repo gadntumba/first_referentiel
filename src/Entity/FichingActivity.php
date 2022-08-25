@@ -72,12 +72,13 @@ class FichingActivity
     /**
      * 
      * @Groups({"read:productor:activities_data","read:fichingacollection","write:FichingActivity"})
-     * @Assert\NotNull
-     *@Assert\GreaterThanOrEqual(value: 1885)
+     * 
      * 
      */
-    #[ORM\Column(type:"integer")]
-    private $createdActivityYear;
+    #[Assert\NotNull()]
+    #[Assert\GreaterThanOrEqual(value: 1885)]
+    #[ORM\Column(type:"integer", nullable: false)]  
+    private $createdActivityYear = null;
 
     /**
      * 
