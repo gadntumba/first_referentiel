@@ -14,7 +14,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: StockRaisingActivityTypeGroupRepository::class)]
 #[ORM\HasLifecycleCallbacks()]
 #[ApiResource(
-    normalizationContext:["groups" => ["read:stockRaisingGroup","timestamp:read","slug:read"]]
+    normalizationContext:["groups" => ["read:stockRaisingGroup","timestamp:read","slug:read"]],
+    denormalizationContext:["groups" => ["write:stockRaisingGroup"]]
  )]
 class StockRaisingActivityTypeGroup
 {
@@ -23,11 +24,11 @@ class StockRaisingActivityTypeGroup
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["read:stockRaisingGroup"])]
+    #[Groups(["read:stocktypecollection","read:stockRaisingGroup"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: false)]
-    #[Groups(["read:stockRaisingGroup"])]
+    #[Groups(["read:stocktypecollection","read:stockRaisingGroup", "write:stockRaisingGroup"])]
     #[Assert\NotNull]
     private ?string $wording;
 

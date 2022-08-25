@@ -93,7 +93,7 @@ class StockRainsingActivityType
     private $stockRaisingActivitySubType;
 
     #[ORM\ManyToOne(inversedBy: 'stockRainsingActivityTypes')]
-    #[Groups(["read:productor:activities_data","read:stockRaisingGroup","read:stocktypecollection","read:StockRainsingActivityType"])]
+    #[Groups(["read:productor:activities_data","read:stocktypecollection","read:StockRainsingActivityType"])]
     private ?StockRaisingActivityTypeGroup $stockRaisingActivityTypeGroup = null;
 
     public function __construct()
