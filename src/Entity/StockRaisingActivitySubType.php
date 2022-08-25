@@ -9,9 +9,9 @@ use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity(repositoryClass:StockRaisingActivitySubTypeRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=StockRaisingActivitySubTypeRepository::class)
- * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
  *      normalizationContext={"groups": {"read:stockraisingsubcollection","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -55,27 +55,30 @@ class StockRaisingActivitySubType
     use TimestampTrait;
 
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"read:productor:activities_data","read:stockraisingsubcollection"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:activities_data","write:StockRaisingActivitySubType","read:stockraisingsubcollection"})
      */
+    #[ORM\Column(type:"string", length:255)]
     private $libelle;
 
     /**
-     * @ORM\ManyToOne(targetEntity=StockRainsingActivityType::class, inversedBy="stockRaisingActivitySubType")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:StockRainsingActivityType::class, inversedBy:"stockRaisingActivitySubType")]
     private $stockRainsingActivityType;
 
     /**
-     * @ORM\OneToMany(targetEntity=StockRaisingActivity::class, mappedBy="stockRaisingActivitySubType")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:StockRaisingActivity::class, mappedBy:"stockRaisingActivitySubType")]
     private $stockRaisingActivities;
 
     public function __construct()

@@ -15,8 +15,9 @@ use Mink67\KafkaConnect\Annotations\Copyable;
 
 #[Copyable(resourceName: 'location.province', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 #[ORM\HasLifecycleCallbacks()]
+#[ORM\Entity(repositoryClass:ProvinceRepository::class)]
 /**
- * @ORM\Entity(repositoryClass=ProvinceRepository::class)
+ * 
  * @ApiResource(
  *     normalizationContext={"groups": {"read:provincecollection","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -67,9 +68,9 @@ class Province
     use TimestampTrait;
     
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * 
+     * 
+     * 
      * @Groups({
      *      "read:productor:house_keeping",
      *      "read:provincecollection",
@@ -79,10 +80,13 @@ class Province
      *      "event:kafka"
      * })
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({
      *      "read:productor:house_keeping",
      *      "write:Province","read:provincecollection",
@@ -96,21 +100,25 @@ class Province
      *  groups={"postValidation"}  
      *)
      */
+    #[ORM\Column(type:"string", length:255)]
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=City::class, mappedBy="province")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:City::class, mappedBy:"province")]
     private $cities;
 
     /**
-     * @ORM\OneToMany(targetEntity=Territorry::class, mappedBy="province")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Territorry::class, mappedBy:"province")]
     private $territorries;
 
     /**
-     * @ORM\ManyToOne(targetEntity=OT::class, inversedBy="provinces", cascade={"persist"})
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:OT::class, inversedBy:"provinces", cascade:["persist"])]
     private $ot;
 
     public function __construct()

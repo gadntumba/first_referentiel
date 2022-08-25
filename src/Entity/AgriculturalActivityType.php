@@ -9,9 +9,11 @@ use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity(repositoryClass:AgriculturalActivityTypeRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=AgriculturalActivityTypeRepository::class)
- * @ORM\HasLifecycleCallbacks()
+ * 
+ * 
  * @ApiResource(
  *      normalizationContext={"groups": {"read:agricultypecollection","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -50,22 +52,27 @@ class AgriculturalActivityType
     use TimestampTrait;
 
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * 
+     * 
+     * 
      * @Groups({"read:productor:activities_data","read:agricultypecollection"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:activities_data","write:AgriculturalActivityType","read:agricultypecollection"})
      */
+    #[ORM\Column(type:"string", length:255)]
     private $libelle;
 
     /**
-     * @ORM\OneToMany(targetEntity=AgriculturalActivity::class, mappedBy="agriculturalActivityType")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:AgriculturalActivity::class, mappedBy:"agriculturalActivityType")]
     private $agriculturalActivities;
 
     public function __construct()

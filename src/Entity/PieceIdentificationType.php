@@ -12,8 +12,10 @@ use App\Entity\Utils\TimestampTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[ORM\HasLifecycleCallbacks()]
+#[ORM\Entity(repositoryClass:PieceIdentificationTypeRepository::class)]
 /**
- * @ORM\HasLifecycleCallbacks()
+ * 
  * @ApiResource(
  *      normalizationContext={"groups": {"read:piece_identification_type","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -58,23 +60,25 @@ class PieceIdentificationType
     use TimestampTrait;
     
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"read:productor:piece_of_id_data","read:piece_identification_type"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Assert\NotNull
      * @Groups({"read:productor:piece_of_id_data","write:piece_identification_type","read:piece_identification_type"})
      */
+    #[ORM\Column(type:"string", length:255)]
     private $libelle;
 
     /**
-     * @ORM\OneToMany(targetEntity=Productor::class, mappedBy="typePieceOfIdentification")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Productor::class, mappedBy:"typePieceOfIdentification")]
     private $productors;
 
     public function __construct()

@@ -12,9 +12,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity(repositoryClass:SourceOfSupplyActivityRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=SourceOfSupplyActivityRepository::class)
- * @ORM\HasLifecycleCallbacks()
+ * 
  * @ApiResource(
  *      normalizationContext={"groups": {"read:sourcecollection","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -66,15 +67,15 @@ class SourceOfSupplyActivity
     use TimestampTrait;
     
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"read:productor:activities_data","read:sourcecollection"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:activities_data","write:SourceOfSupplyActivity","read:sourcecollection"})
      * @Assert\NotBlank
      * @Assert\Length(
@@ -83,21 +84,25 @@ class SourceOfSupplyActivity
      *  groups={"postValidation"}  
      *)
      */
+    #[ORM\Column(type:"string", length:255)]
     private $libelle;
 
     /**
-     * @ORM\OneToMany(targetEntity=FichingActivity::class, mappedBy="sourceOfSupplyActivity")
+     * 
      * 
      */
+    #[ORM\OneToMany(targetEntity:FichingActivity::class, mappedBy:"sourceOfSupplyActivity")]
     private $fichingActivities;
 
     /**
-     * @ORM\OneToMany(targetEntity=StockRaisingActivity::class, mappedBy="sourceOfSupplyActivity")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:StockRaisingActivity::class, mappedBy:"sourceOfSupplyActivity")]
     private $stockRaisingActivities;
     /**
-     * @ORM\OneToMany(targetEntity=AgriculturalActivity::class, mappedBy="sourceOfSupplyActivity")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:AgriculturalActivity::class, mappedBy:"sourceOfSupplyActivity")]
     private $agriculturalActivities;
 
     public function __construct()

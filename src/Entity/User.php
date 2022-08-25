@@ -12,78 +12,92 @@ use Mink67\KafkaConnect\Annotations\Copy;
 use ApiPlatform\Core\Annotation\ApiResource;
 
 #[Copy(resourceName: 'user.user', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+#[ORM\Entity(repositoryClass:UserRepository::class)]
 /**
  *@ApiResource()
- * @ORM\Entity(repositoryClass=UserRepository::class)
+ * 
  */
 class User
 {
     use TimestampTraitCopy;
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
+     * 
+     * 
      */
+    #[ORM\Id]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
      *@Groups({"read:usercollection", "event:kafka"})
-     * @ORM\Column(type="string", length=255)
+     * 
      */
+    #[ORM\Column(type:"string", length:255)]
     private $name;
 
     /**
      *@Groups({"read:usercollection", "event:kafka"})
-     * @ORM\Column(type="string", length=255)
+     *
      */
+    #[ORM\Column(type:"string", length:255)]
     private $firstName;
 
     /**
      *@Groups({"read:usercollection", "event:kafka"})
-     * @ORM\Column(type="string", length=255)
+     * 
      */
+    #[ORM\Column(type:"string", length:255)]
     private $lastName;
 
     /**
      *@Groups({"read:usercollection", "event:kafka"})
-     * @ORM\Column(type="string", length=255)
+     * 
      */
+    #[ORM\Column(type:"string", length:255)]
     private $sexe;
 
     /**
      *@Groups({"read:usercollection", "event:kafka"})
-     * @ORM\Column(type="string", length=255)
+     * 
      */
+    #[ORM\Column(type:"string", length:255)]
     private $phoneNumber;
 
     /**
      *@Groups({"read:usercollection", "event:kafka"})
-     * @ORM\Column(type="string", length=255, nullable="true")
+     * 
      */
+    #[ORM\Column(type:"string", length:255, nullable:"true")]
     private $email;
 
     /**
-     * @ORM\OneToOne(targetEntity=Productor::class, cascade={"persist", "remove"})
+     * 
      */
+    #[ORM\OneToOne(targetEntity:Productor::class, cascade:["persist", "remove"])]
     private $productor;
 
     /**
-     * @ORM\OneToMany(targetEntity=Monitor::class, mappedBy="user", cascade={"persist"})
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Monitor::class, mappedBy:"user", cascade:["persist"])]
     private $monitor;
 
     /**
-     * @ORM\ManyToOne(targetEntity=OT::class, inversedBy="users")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:OT::class, inversedBy:"users")]
     private $ot;
 
     /**
-     * @ORM\OneToMany(targetEntity=Supervisor::class, mappedBy="user", cascade={"persist"})
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Supervisor::class, mappedBy:"user", cascade:["persist"])]
     private $supervisors;
 
     /**
-     * @ORM\OneToMany(targetEntity=Coordinator::class, mappedBy="user", cascade={"persist"})
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Coordinator::class, mappedBy:"user", cascade:["persist"])]
     private $coordinators;
 
 

@@ -12,9 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping\OneToMany;
 
+#[ORM\Entity(repositoryClass:FichingActivityRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=FichingActivityRepository::class)
- * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
  *      normalizationContext={"groups": {"read:fichingacollection","timestamp:read","slug:read"}},
  *      denormalizationContext={"groups":{"write:FichingActivity"}},
@@ -61,53 +61,60 @@ class FichingActivity
     use TimestampTrait;
     
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * 
      * @Groups({"read:productor:activities_data","read:fichingacollection"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="date")
+     * 
      * @Groups({"read:productor:activities_data","read:fichingacollection","write:FichingActivity"})
      * @Assert\NotNull
      * 
      */
+    #[ORM\Column(type:"date")]
     private $activityCreateDate;
 
     /**
-     * @ORM\Column(type="text")
+     * 
      * @Groups({"read:productor:activities_data","write:FichingActivity","read:fichingacollection"})
-     * @Assert\NotNull
+     * 
      * @Assert\Type("string")
      */
+    #[ORM\Column(type:"text")]
     private $goal;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Productor::class, inversedBy="fichingactivity")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:Productor::class, inversedBy:"fichingactivity")]
     private $productor;
 
     /**
      * @Groups({"read:productor:activities_data","write:FichingActivity","read:fichingacollection"})
-     * @ORM\ManyToOne(targetEntity=SourceOfSupplyActivity::class, inversedBy="fichingActivities")
+     * 
      * @Assert\NotNull
      * 
      */
+    #[ORM\ManyToOne(targetEntity:SourceOfSupplyActivity::class, inversedBy:"fichingActivities")]
     private $sourceOfSupplyActivity;
 
     /**
-     * @ORM\OneToOne(targetEntity=Address::class, cascade={"persist", "remove"})
+     * 
      */
+    #[ORM\OneToOne(targetEntity:Address::class, cascade:["persist", "remove"])]
     private $address;
 
     /**
      * @Groups({"read:productor:activities_data","write:FichingActivity"})
-     * @ORM\ManyToOne(targetEntity=FichingActivityType::class, inversedBy="fichingActivities")
+     * 
      * @Assert\NotNull
      * 
      */
+    #[ORM\ManyToOne(targetEntity:FichingActivityType::class, inversedBy:"fichingActivities")]
     private $fichingActivityType;
 
     /*

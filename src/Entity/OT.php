@@ -13,8 +13,9 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Utils\TimestampTraitCopy;
 
 #[Copy(resourceName: 'ot.ot', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+#[ORM\Entity(repositoryClass:OTRepository::class)]
 /**
- * @ORM\Entity(repositoryClass=OTRepository::class)
+ * 
  * @ApiResource(
  *     normalizationContext={"groups": {"read:productor:ot","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -44,73 +45,87 @@ class OT
 {
     use TimestampTraitCopy;
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @Groups({"read:productor:ot","event:kafka"})
+     * 
+     * 
+     * 
      */
+    #[ORM\Id]
+    #[ORM\Column(type:"integer")]
+    #[Groups(["read:productor:ot","event:kafka"])]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * 
      */
+    #[ORM\Column(type:"string", length:255, nullable:true)]
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Monitor::class, mappedBy="ot")
+     * 
      */
+    #[ORM\OneToMany(targetEntity: Monitor::class, mappedBy:"ot")]
     private $monitors;
 
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:ot","event:kafka"})
      */
+    #[ORM\Column(type:"string", length:255)]
     private $entitled;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * 
      * @Groups({"read:productor:ot","event:kafka"})
      */
+    #[ORM\Column(type:"string", length:255, nullable:true)]
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * 
      * @Groups({"read:productor:ot","event:kafka"})
      */
+    #[ORM\Column(type:"string", length:255, nullable:true)]
     private $phoneNumber;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * 
      * @Groups({"read:productor:ot","event:kafka"})
      */
+    #[ORM\Column(type:"string", length:255, nullable:true)]
     private $rccm;
 
     /**
-     * @ORM\Column(type="integer", length=255)
+     * 
      * @Groups({"read:productor:ot","event:kafka"})
      */
+    #[ORM\Column(type:"integer", length:255)]
     private $goalRecordings;
 
     /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="ot")
+     * 
      *@Groups({"read:otcollection","write:Ot","event:kafka"})
      */
+    #[ORM\OneToMany(targetEntity:User::class, mappedBy:"ot")]
     private $users;
 
     /**
-     * @ORM\OneToMany(targetEntity=Supervisor::class, mappedBy="ot")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Supervisor::class, mappedBy:"ot")]
     private $supervisors;
 
     /**
-     * @ORM\OneToMany(targetEntity=Coordinator::class, mappedBy="ot")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Coordinator::class, mappedBy:"ot")]
     private $coordinators;
 
     /**
-     * @ORM\OneToMany(targetEntity=Province::class, mappedBy="ot")
+     * 
      *@Groups({"read:otcollection","write:Ot","event:kafka"})
      */
+    #[ORM\OneToMany(targetEntity:Province::class, mappedBy:"ot")]
     private $provinces;
 
     public function __construct()

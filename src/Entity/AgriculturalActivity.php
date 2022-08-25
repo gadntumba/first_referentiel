@@ -1,9 +1,10 @@
-    <?php
+<?php
 
 namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\AgriculturalActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
@@ -11,9 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[ORM\Entity(repositoryClass:AgriculturalActivityRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=AgriculturalActivityRepository::class)
- * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
  *      normalizationContext={"groups": {"read:agriculcollection","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -52,58 +53,68 @@ class AgriculturalActivity
     use TimestampTrait;
 
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"read:productor:activities_data","read:agriculcollection"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     
 
     /**
-     * @ORM\Column(type="text")
      * @Groups({"read:productor:activities_data","write:AgriculturalActivity","read:agriculcollection"})
-     * @Assert\NotNull
+     * 
      * @Assert\Type("string")
      */
+    #[ORM\Column(type:"text", nullable: true)]
     private $goal;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Productor::class, inversedBy="AgriculturalActivity")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:Productor::class, inversedBy:"AgriculturalActivity")]
     private $productor;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ExploitedArea::class, inversedBy="agriculturalActivities")
+     * 
      * @Groups({"read:productor:activities_data","write:AgriculturalActivity","read:agriculcollection"})
      * @Assert\NotNull
      */
+    #[ORM\ManyToOne(targetEntity:ExploitedArea::class, inversedBy:"agriculturalActivities")]
     private $exploitedArea;
 
     /**
-     * @ORM\ManyToOne(targetEntity=SourceOfSupplyActivity::class)
+     * 
      * @Groups({"read:productor:activities_data","write:AgriculturalActivity","read:agriculcollection"})
      * @Assert\NotNull
      */
+    #[ORM\ManyToOne(targetEntity: SourceOfSupplyActivity::class)]
     private $sourceOfSupplyActivity;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Address::class, inversedBy="agriculturalActivities")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:Address::class, inversedBy:"agriculturalActivities")]
     private $adress;
 
     /**
-     * @ORM\ManyToOne(targetEntity=AgriculturalActivityType::class, inversedBy="agriculturalActivities")
+     * 
      * @Groups({"read:productor:activities_data","write:AgriculturalActivity","read:agriculcollection"})
+     * @Assert\NotNull
      */
+    #[ORM\ManyToOne(targetEntity:AgriculturalActivityType::class, inversedBy:"agriculturalActivities")]
     private $agriculturalActivityType;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Assert\NotNull]
+    #[Groups(["read:productor:activities_data","write:AgriculturalActivity","read:agriculcollection"])]
+    private ?\DateTimeInterface $createdActivityDate = null;
 
 
     /*
     * @Groups({"read:agriculcollection"})
     */
-    
     public static function validationGroups(self $agriculturalActivity){
         return ['create:AgriculturalActivity'];
     }
@@ -186,6 +197,18 @@ class AgriculturalActivity
     public function setAgriculturalActivityType(?AgriculturalActivityType $agriculturalActivityType): self
     {
         $this->agriculturalActivityType = $agriculturalActivityType;
+
+        return $this;
+    }
+
+    public function getCreatedActivityDate(): ?\DateTimeInterface
+    {
+        return $this->createdActivityDate;
+    }
+
+    public function setCreatedActivityDate(?\DateTimeInterface $createdActivityDate): self
+    {
+        $this->createdActivityDate = $createdActivityDate;
 
         return $this;
     }

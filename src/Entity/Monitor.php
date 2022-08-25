@@ -14,7 +14,7 @@ use App\Entity\Utils\TimestampTraitCopy;
 
 #[Copy(resourceName: 'ot.monitor', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 /**
- * @ORM\Entity(repositoryClass=MonitorRepository::class)
+ * 
  * @ApiResource(
  *     normalizationContext={"groups": {"read:productor:monitor","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -38,44 +38,52 @@ use App\Entity\Utils\TimestampTraitCopy;
  *      }
  * )
  */
+#[ORM\Entity(repositoryClass:MonitorRepository::class)]
 class Monitor
 {
     use TimestampTraitCopy;
     
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
+     * 
+     * 
      * @Groups({"read:productor:monitor","write:Monitor","event:kafka"})
      */
+    #[ORM\Id]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\OneToMany(targetEntity=Productor::class, mappedBy="monitor")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Productor::class, mappedBy:"monitor")]
     private $productors;
 
     /**
      * @Groups({"read:productor:monitor","write:Monitor","event:kafka"})
-     * @ORM\ManyToOne(targetEntity=OT::class, inversedBy="monitors")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:OT::class, inversedBy:"monitors")]
     private $ot;
 
     /**
      * @Groups({"read:productor:monitor","write:Monitor","event:kafka"})
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="monitor")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:User::class, inversedBy:"monitor")]
     private $user;
 
     /**
      * @Groups({"read:productor:monitor","write:Monitor","event:kafka"})
-     * @ORM\Column(type="integer")
+     * 
      */
+    #[ORM\Column(type:"integer")]
     private $goalRecordings;
 
     /**
      * @Groups({"read:productor:monitor","write:Monitor","event:kafka"})
-     * @ORM\ManyToOne(targetEntity=Supervisor::class, inversedBy="monitors")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:Supervisor::class, inversedBy:"monitors")]
     private $supervisorPost;
 
     public function __construct()

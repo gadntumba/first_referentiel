@@ -11,9 +11,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity(repositoryClass:StockRainsingActivityTypeRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=StockRainsingActivityTypeRepository::class)
- * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
  *      normalizationContext={"groups": {"read:stocktypecollection","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -57,16 +57,19 @@ class StockRainsingActivityType
     use TimestampTrait;
     
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @Groups({"read:productor:activities_data","read:stocktypecollection"})
+     * 
+     * 
+     * 
+     * @Groups({"read:stockRaisingGroup","read:productor:activities_data","read:stocktypecollection","read:stockRaisingGroup"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"read:productor:activities_data","read:stocktypecollection","read:StockRainsingActivityType"})
+     * 
+     * @Groups({"read:stockRaisingGroup","read:productor:activities_data","read:stockRaisingGroup","read:stocktypecollection","read:StockRainsingActivityType"})
      * @Assert\NotBlank
      * @Assert\Length(
      *  min = 3,
@@ -74,17 +77,24 @@ class StockRainsingActivityType
      *  groups={"postValidation"}  
      *)
      */
+    #[ORM\Column(type:"string", length:255)]
     private $libelle;
 
     /**
-     * @ORM\OneToMany(targetEntity=StockRaisingActivity::class, mappedBy="stockRainsingActivityType")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:StockRaisingActivity::class, mappedBy:"stockRainsingActivityType")]
     private $stockRaisingActivities;
 
     /**
-     * @ORM\OneToMany(targetEntity=StockRaisingActivitySubType::class, mappedBy="stockRainsingActivityType")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:StockRaisingActivitySubType::class, mappedBy:"stockRainsingActivityType")]
     private $stockRaisingActivitySubType;
+
+    #[ORM\ManyToOne(inversedBy: 'stockRainsingActivityTypes')]
+    #[Groups(["read:productor:activities_data","read:stockRaisingGroup","read:stocktypecollection","read:StockRainsingActivityType"])]
+    private ?StockRaisingActivityTypeGroup $stockRaisingActivityTypeGroup = null;
 
     public function __construct()
     {
@@ -176,6 +186,18 @@ class StockRainsingActivityType
                 $stockRaisingActivitySubType->setStockRainsingActivityType(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStockRaisingActivityTypeGroup(): ?StockRaisingActivityTypeGroup
+    {
+        return $this->stockRaisingActivityTypeGroup;
+    }
+
+    public function setStockRaisingActivityTypeGroup(?StockRaisingActivityTypeGroup $stockRaisingActivityTypeGroup): self
+    {
+        $this->stockRaisingActivityTypeGroup = $stockRaisingActivityTypeGroup;
 
         return $this;
     }

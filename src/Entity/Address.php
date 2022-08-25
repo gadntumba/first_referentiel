@@ -10,77 +10,87 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- *@ORM\Entity(repositoryClass=AddressRepository::class)
+ *
  *
  */
+#[ORM\Entity(repositoryClass:AddressRepository::class)]
 class Address
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
      * @Groups({"read:adresscollection"})
-     * @ORM\Column(type="integer")
      * @Groups({"read:productor:house_keeping"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:house_keeping","read:adresscollection"})
      * @Assert\NotNull
      * @Assert\Type("string")
      */
+    #[ORM\Column(type:"string", length:255)]
     private $line;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
+     * 
      * @Groups({"read:adresscollection"})
      * 
      * @Assert\Type("float")
      */
+    #[ORM\Column(type:"float", nullable:true)]
     private $latitude;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
+     * 
      * 
      * @Assert\Type("float")
      * @Groups({"read:adresscollection"})
      */
+    #[ORM\Column(type:"float", nullable:true)]
     private $longitude;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
+     * 
      * 
      * @Assert\Type("float")
      * @Groups({"read:adresscollection"})
      */
+    #[ORM\Column(type:"float", nullable:true)]
     private $altitude;
 
     /**
-     * @ORM\OneToMany(targetEntity=AgriculturalActivity::class, mappedBy="adress")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:AgriculturalActivity::class, mappedBy:"adress")]
     private $agriculturalActivities;
 
     /**
-     * @ORM\OneToOne(targetEntity=StockRaisingActivity::class, cascade={"persist", "remove"})
+     * 
      */
+    #[ORM\OneToOne(targetEntity:StockRaisingActivity::class, cascade:["persist", "remove"])]
     private $stockRaisInActivity;
 
     /**
-     * @ORM\OneToOne(targetEntity=HouseKeeping::class, cascade={"persist", "remove"})
+     * 
      */
+    #[ORM\OneToOne(targetEntity:HouseKeeping::class, cascade:["persist", "remove"])]
     private $houseKeeping;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Town::class, inversedBy="addresses")
+     * 
      * @Groups({"read:productor:house_keeping","read:adresscollection"})
      */
+    #[ORM\ManyToOne(targetEntity:Town::class, inversedBy:"addresses")]
     private $town;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Sector::class, inversedBy="addresses")
+     * 
      * @Groups({"read:productor:house_keeping","read:adresscollection"})
      */
+    #[ORM\ManyToOne(targetEntity:Sector::class, inversedBy:"addresses")]
     private $sector;
 
     public function __construct()

@@ -13,9 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Mink67\KafkaConnect\Annotations\Copyable;
 
 #[Copyable(resourceName: 'location.town', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+#[ORM\Entity(repositoryClass:TownRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=TownRepository::class)
- * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
  *      normalizationContext={"groups": {"read:towncollection","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -59,15 +59,16 @@ class Town
     use TimestampTrait;
     
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * 
      * @Groups({"read:productor:house_keeping","read:towncollection","event:kafka"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:house_keeping","write:Town","read:towncollection", "event:kafka"})
      * @Assert\NotBlank
      * @Assert\Length(
@@ -76,17 +77,20 @@ class Town
      *  groups={"postValidation"}  
      *)
      */
+    #[ORM\Column(type:"string", length:255)]
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Address::class, mappedBy="town")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Address::class, mappedBy:"town")]
     private $addresses;
 
     /**
      * @Groups({"read:productor:house_keeping","write:Town","read:towncollection", "event:kafka"})
-     * @ORM\ManyToOne(targetEntity=City::class, inversedBy="towns")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:City::class, inversedBy:"towns")]
     private $city;
 
     public function __construct()

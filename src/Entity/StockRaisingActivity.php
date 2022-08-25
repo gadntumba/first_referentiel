@@ -10,9 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[ORM\Entity(repositoryClass:StockRaisingActivityRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=StockRaisingActivityRepository::class)
- * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
  *      normalizationContext={"groups": {"read:stockraisingcollection","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -57,24 +57,25 @@ class StockRaisingActivity
     use TimestampTrait;
     
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"read:productor:activities_data","read:stockrasingcollection"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="date")
+     * 
      * @Groups({"read:productor:activities_data","read:stockraisingcollection","white:stock-raising-activity"})
      * @Assert\NotNull
      */
+    #[ORM\Column(type:"integer")]
     private $activityCreateDate;
 
     /**
-     * @ORM\Column(type="text")
+     * 
      * @Groups({"read:productor:activities_data","read:stockraisingcollection","white:stock-raising-activity"})
-     * @Assert\NotNull
+     * 
      * @Assert\Type("string")
      * @Assert\Length(
      *  min = 3,
@@ -82,31 +83,36 @@ class StockRaisingActivity
      *  groups={"postValidation"}  
      *)
      */
+    #[ORM\Column(type:"text")]
     private $goal;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Productor::class, inversedBy="raisingactivity")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:Productor::class, inversedBy:"raisingactivity")]
     private $productor;
 
     /**
      * @Groups({"read:productor:activities_data","read:stockraisingcollection","white:stock-raising-activity"})
-     * @ORM\ManyToOne(targetEntity=StockRainsingActivityType::class, inversedBy="stockRaisingActivities")
+     * 
      * @Assert\NotNull
      */
+    #[ORM\ManyToOne(targetEntity:StockRainsingActivityType::class, inversedBy:"stockRaisingActivities")]
     private $stockRainsingActivityType;
 
     /**
      * @Groups({"read:productor:activities_data","read:stockraisingcollection","white:stock-raising-activity"})
-     * @ORM\ManyToOne(targetEntity=SourceOfSupplyActivity::class, inversedBy="stockRaisingActivities")
+     * 
      * @Assert\NotNull
      */
+    #[ORM\ManyToOne(targetEntity:SourceOfSupplyActivity::class, inversedBy:"stockRaisingActivities")]
     private $sourceOfSupplyActivity;
 
     /**
-     * @ORM\ManyToOne(targetEntity=StockRaisingActivitySubType::class, inversedBy="stockRaisingActivities")
+     * 
      * @Groups({"read:productor:activities_data","read:stockraisingcollection","white:stock-raising-activity"})
      */
+    #[ORM\ManyToOne(targetEntity:StockRaisingActivitySubType::class, inversedBy:"stockRaisingActivities")]
     private $stockRaisingActivitySubType;
 
     public function getId(): ?int

@@ -13,9 +13,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Mink67\KafkaConnect\Annotations\Copyable;
 
 #[Copyable(resourceName: 'location.territory', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+#[ORM\Entity(repositoryClass:TerritorryRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=TerritorryRepository::class)
- * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
  *      normalizationContext={"groups": {"read:territorycollection","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -59,15 +59,15 @@ class Territorry
     use TimestampTrait;
     
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"read:productor:house_keeping","read:territorycollection","read:sectorcollection", "event:kafka"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({
      *      "read:productor:house_keeping",
      *      "write:Territory",
@@ -82,22 +82,26 @@ class Territorry
      *  groups={"postValidation"}  
      *)
      */
+    #[ORM\Column(type:"string", length:255)]
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Sector::class, mappedBy="territorry")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Sector::class, mappedBy:"territorry")]
     private $sectors;
 
     /**
      * @Groups({"read:productor:house_keeping","write:Territory","read:territorycollection", "event:kafka"})
-     * @ORM\ManyToOne(targetEntity=Province::class, inversedBy="territorries")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:Province::class, inversedBy:"territorries")]
     private $province;
 
     /**
-     * @ORM\OneToMany(targetEntity=Supervisor::class, mappedBy="territory", cascade={"persist"})
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Supervisor::class, mappedBy:"territory", cascade:["persist"])]
     private $supervisors;
 
     public function __construct()

@@ -13,9 +13,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity(repositoryClass:LevelStudyRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=LevelStudyRepository::class)
- * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
  *      normalizationContext={"groups": {"read:levelstudycollection","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -59,15 +59,15 @@ class LevelStudy
     use TimestampTrait;
     
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"read:productor:personnal_id_data","read:levelstudycollection"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:personnal_id_data","write:LevelStudy","read:levelstudycollection"})
      * @Assert\NotBlank
      * @Assert\Length(
@@ -81,11 +81,13 @@ class LevelStudy
      * groups={"putValidation"}
      *)
      */
+    #[ORM\Column(type:"string", length:255)]
     private $libelle;
 
     /**
-     * @ORM\OneToMany(targetEntity=Productor::class, mappedBy="LevelStudy")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Productor::class, mappedBy:"LevelStudy")]
     private $productors;
 
     public function __construct()

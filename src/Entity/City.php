@@ -12,9 +12,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Mink67\KafkaConnect\Annotations\Copyable;
 
 #[Copyable(resourceName: 'location.city', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+#[ORM\Entity(repositoryClass:CityRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=CityRepository::class)
- * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
  *      normalizationContext={"groups": {"read:citycollection","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -58,11 +58,12 @@ class City
     use TimestampTrait;
     
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * 
      * @Groups({"read:productor:house_keeping","read:citycollection","read:towncollection", "event:kafka"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
@@ -78,8 +79,9 @@ class City
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Town::class, mappedBy="city")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Town::class, mappedBy:"city")]
     private $towns;
 
     /**
@@ -90,13 +92,15 @@ class City
      *      "read:towncollection",
      *      "event:kafka"
      * })
-     * @ORM\ManyToOne(targetEntity=Province::class, inversedBy="cities")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:Province::class, inversedBy:"cities")]
     private $province;
 
     /**
-     * @ORM\OneToMany(targetEntity=Supervisor::class, mappedBy="city", cascade={"persist"})
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Supervisor::class, mappedBy:"city", cascade:["persist"])]
     private $supervisors;
 
     public function __construct()

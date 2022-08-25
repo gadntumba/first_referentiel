@@ -13,9 +13,11 @@ use Mink67\KafkaConnect\Annotations\Copyable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[Copyable(resourceName: 'producer.producer', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+#[ORM\Entity(repositoryClass:ProductorRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=ProductorRepository::class)
- * @ORM\HasLifecycleCallbacks()
+ * 
+ * 
  * @UniqueEntity(
  *     fields= "phoneNumber",
  *     errorPath="phoneNumber",
@@ -32,41 +34,48 @@ class Productor
     use TimestampTrait;
     const GENRES = ['M', 'F'];
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
+     * 
+     * 
      * @Groups({"read:productor:level_0", "event:kafka"})
-     * @ORM\Column(type="integer")
+     * 
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
      */
+    #[ORM\Column(type:"string", length:255)]
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:personnal_id_data","read:collection","write:Productor"})
      */
+    #[ORM\Column(type:"string", length:255)]
     private $firstName;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:personnal_id_data","write:Productor","read:item","read:collection"})
      */
+    #[ORM\Column(type:"string", length:255)]
     private $lastName;
 
     #[Assert\Choice(choices: Productor::GENRES, message: 'Choisir le genre valid.')]
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:personnal_id_data","read:item","read:collection","write:Productor"})
      * @Assert\Choice(choices=Productor::GENRES)
      */
+    #[ORM\Column(type:"string", length:255)]
     private $sexe;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
      * @Assert\Length(
      *  min = 10,
@@ -77,17 +86,19 @@ class Productor
      *      message="Votre Nnuméro de téléphone doit contenir dix chiffres"
      * )
      */
+    #[ORM\Column(type:"string", length:255)]
     private $phoneNumber;
 
     /**
-     * @ORM\Column(type="date")
+     * 
      * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
      */
+    #[ORM\Column(type:"date")]
     private $birthdate;
 
     /**
      * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Assert\Length(
      *  min = 9,
      *  max = 9 
@@ -97,107 +108,125 @@ class Productor
      *      message="Votre NUI ne peut pas contenir des lettres"
      * )
      */
+    #[ORM\Column(type:"string", length:255)]
     private $nui;
 
     /**
-     * @ORM\ManyToOne(targetEntity=LevelStudy::class, inversedBy="productors")
+     * 
      * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
      */
+    #[ORM\ManyToOne(targetEntity:LevelStudy::class, inversedBy:"productors")]
     private $levelStudy;
 
     /**
-     * @ORM\OneToMany(targetEntity=AgriculturalActivity::class, mappedBy="productor")
+     * 
      * @Groups({"read:productor:activities_data","read:collection","write:Productor"})
      */
+    #[ORM\OneToMany(targetEntity:AgriculturalActivity::class, mappedBy:"productor")]
     private $AgriculturalActivity;
 
     /**
-     * @ORM\OneToMany(targetEntity=NFC::class, mappedBy="productor")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:NFC::class, mappedBy:"productor")]
     private $nfc;
 
     /**
-     * @ORM\OneToMany(targetEntity=FichingActivity::class, mappedBy="productor")
+     * 
      * @Groups({"read:productor:activities_data","read:collection","write:Productor"})
      */
+    #[ORM\OneToMany(targetEntity:FichingActivity::class, mappedBy:"productor")]
     private $fichingactivity;
 
     /**
-     * @ORM\OneToMany(targetEntity=StockRaisingActivity::class, mappedBy="productor")
+     * 
      * @Groups({"read:productor:activities_data","read:collection","write:Productor"})
      */
+    #[ORM\OneToMany(targetEntity:StockRaisingActivity::class, mappedBy:"productor")]
     private $raisingactivity;
 
     /**
-     * @ORM\ManyToOne(targetEntity=HouseKeeping::class, inversedBy="productors")
+     * 
      * @Groups({"read:productor:house_keeping","read:collection","write:Productor"})
      */
+    #[ORM\ManyToOne(targetEntity:HouseKeeping::class, inversedBy:"productors")]
     private $housekeeping;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Smartphone::class, inversedBy="productors")
+     * 
      */
+    #[ORM\ManyToMany(targetEntity:Smartphone::class, inversedBy:"productors")]
     private $smartphone;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Monitor::class, inversedBy="productors")
+     * 
      * @Groups({"read:collection","write:Productor"})
      */
+    #[ORM\ManyToOne(targetEntity:Monitor::class, inversedBy:"productors")]
     private $monitor;
 
     /**
-     * @ORM\Column(type="float")
+     * 
      * @Groups({"read:productor:level_0","read:collection","write:Productor"})
      */
+    #[ORM\Column(type:"float")]
     private $latitude;
 
     /**
-     * @ORM\Column(type="float")
+     * 
      * @Groups({"read:productor:level_0","read:collection","write:Productor"})
      */
+    #[ORM\Column(type:"float")]
     private $longitude;
 
     /**
-     * @ORM\Column(type="float")
+     * 
      * @Groups({"read:productor:level_0","read:collection","write:Productor"})
      */
+    #[ORM\Column(type:"float")]
     private $altitude;
 
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:piece_of_id_data","read:collection","write:Productor"})
      */
+    #[ORM\Column(type:"string", length:255)]
     private $numberPieceOfIdentification;
 
     /**
-     * @ORM\Column(type="string")
+     * 
      * @Groups({"read:collection","write:Productor"})
      */
+    #[ORM\Column(type:"string")]
     private $photoPieceOfIdentification;
 
     /**
-     * @ORM\Column(type="integer")
+     * 
      * @Groups({"read:productor:personnal_id_data","read:collection","write:Productor"})
      */
+    #[ORM\Column(type:"integer")]
     private $householdSize;
 
     /**
-     * @ORM\Column(type="date", nullable=true)
+     * 
      * @Groups({"read:collection","write:Productor"})
      */
+    #[ORM\Column(type:"date", nullable:true)]
     private $deletedAt;
 
     /**
-     * @ORM\Column(type="string")
+     * 
      * @Groups({"read:collection","write:Productor"})
      */
+    #[ORM\Column(type:"string")]
     private $incumbentPhoto;
 
     /**
      * @Groups({"read:productor:piece_of_id_data"})
-     * @ORM\ManyToOne(targetEntity=PieceIdentificationType::class, inversedBy="productors")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:PieceIdentificationType::class, inversedBy:"productors")]
     private $typePieceOfIdentification;
 
     public function __construct()

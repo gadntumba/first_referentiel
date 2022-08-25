@@ -10,8 +10,9 @@ use App\Entity\Utils\TimestampTraitCopy;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[Copy(resourceName: 'ot.coordinator', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+#[ORM\Entity(repositoryClass:CoordinatorRepository::class)]
 /**
- * @ORM\Entity(repositoryClass=CoordinatorRepository::class)
+ * 
  * @ApiResource()
  */
 class Coordinator
@@ -20,21 +21,25 @@ class Coordinator
     
     #[Groups(["event:kafka"])]
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
+     * 
+     * 
      */
+    #[ORM\Id]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="coordinators")
+     * 
      */
     #[Groups(["event:kafka"])]
+    #[ORM\ManyToOne(targetEntity:User::class, inversedBy:"coordinators")]
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity=OT::class, inversedBy="coordinators")
+     * 
      */
     #[Groups(["event:kafka"])]
+    #[ORM\ManyToOne(targetEntity:OT::class, inversedBy:"coordinators")]
     private $ot;
 
     public function getId(): ?int

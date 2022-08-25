@@ -11,9 +11,11 @@ use App\Entity\Utils\TimestampTrait;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[ORM\Entity(repositoryClass:HouseKeepingRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=HouseKeepingRepository::class)
- * @ORM\HasLifecycleCallbacks()
+ * 
+ * 
  * @ApiResource(
  *      normalizationContext={"groups": {"read:housecollection","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -47,38 +49,45 @@ class HouseKeeping
     use TimestampTrait;
     
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
+     * 
+     * 
      * @Groups({"read:productor:house_keeping","read:housecollection"})
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:house_keeping","read:housecollection"})
      * @Assert\NotNull
      * @Assert\Type("string")
      */
+    #[ORM\Column(type:"string", length:255)]
     private $NIM;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * 
      * @Assert\Type("string")
      * @Groups({"read:productor:house_keeping","read:housecollection"})
      */
+    #[ORM\Column(type:"string", length:255, nullable:true)]
     private $reference;
 
     /**
-     * @ORM\OneToMany(targetEntity=Productor::class, mappedBy="housekeeping")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Productor::class, mappedBy:"housekeeping")]
     private $productors;
 
     /**
      * @Assert\NotNull
      * @Groups({"read:productor:house_keeping","read:housecollection"})
-     * @ORM\OneToOne(targetEntity=Address::class, cascade={"persist", "remove"})
+     * 
      */
+    #[ORM\OneToOne(targetEntity:Address::class, cascade:["persist", "remove"])]
     private $address;
 
     public function __construct()

@@ -13,9 +13,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Mink67\KafkaConnect\Annotations\Copyable;
 
 #[Copyable(resourceName: 'location.sector', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+#[ORM\Entity(repositoryClass:SectorRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=SectorRepository::class)
- * @ORM\HasLifecycleCallbacks()
+ * 
+ * 
  * @ApiResource(
  *      normalizationContext={"groups": {"read:sectorcollection","timestamp:read","slug:read"}},
  *      collectionOperations={
@@ -59,15 +61,15 @@ class Sector
     use TimestampTrait;
     
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"read:productor:house_keeping","read:sectorcollection", "event:kafka"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:house_keeping","write:Sector","read:sectorcollection", "event:kafka"})
      * @Assert\NotBlank
      * @Assert\Length(
@@ -76,17 +78,20 @@ class Sector
      *  groups={"postValidation"}  
      *)
      */
+    #[ORM\Column(type:"string", length:255)]
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Address::class, mappedBy="sector")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Address::class, mappedBy:"sector")]
     private $addresses;
 
     /**
      * @Groups({"read:productor:house_keeping","write:Sector","read:sectorcollection", "event:kafka"})
-     * @ORM\ManyToOne(targetEntity=Territorry::class, inversedBy="sectors")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:Territorry::class, inversedBy:"sectors")]
     private $territorry;
 
     public function __construct()

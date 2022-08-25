@@ -6,45 +6,50 @@ use App\Repository\NFCRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=NFCRepository::class)
+ * 
  */
+#[ORM\Entity(repositoryClass:NFCRepository::class)]
 class NFC
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="json")
+     * 
      */
+    #[ORM\Column(type:"json")]
     private $metadata = [];
 
     /**
-     * @ORM\ManyToOne(targetEntity=Productor::class, inversedBy="nfc")
+     * 
      */
+    #[ORM\ManyToOne(targetEntity:Productor::class, inversedBy:"nfc")]
     private $productor;
 
     /**
-     * @ORM\Column(type="date")
+     * 
      */
+    #[ORM\Column(type:"date")]
     private $createdAt;
 
     /**
-     * @ORM\Column(type="float")
+     * 
      */
+    #[ORM\Column(type:"float")]
     private $longitude;
 
     /**
-     * @ORM\Column(type="float")
      */
+    #[ORM\Column(type:"float")]
     private $latitude;
 
     /**
-     * @ORM\Column(type="float")
      */
+    #[ORM\Column(type:"float")]
     private $altitude;
 
     public function getId(): ?int

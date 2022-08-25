@@ -11,9 +11,11 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity(repositoryClass:FichingActivityTypeRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 /**
- * @ORM\Entity(repositoryClass=FichingActivityTypeRepository::class)
- * @ORM\HasLifecycleCallbacks()
+ * 
+ * 
  * @ApiResource(
  *      denormalizationContext={"groups":{"write:FichingActivity"}},
  *      normalizationContext={"groups": {"read:fichingcollection","timestamp:read","slug:read"}},
@@ -65,22 +67,27 @@ class FichingActivityType
     use TimestampTrait;
     
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * 
+     * 
+     * 
      * @Groups({"read:productor:activities_data","read:fichingcollection", "write:FichingActivity"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type:"integer")]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * 
      * @Groups({"read:productor:activities_data","read:fichingcollection","read:FichingActivityType"})
      */
+    #[ORM\Column(type:"string", length:255)]
     private $libelle;
 
     /**
-     * @ORM\OneToMany(targetEntity=FichingActivity::class, mappedBy="fichingActivityType")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:FichingActivity::class, mappedBy:"fichingActivityType")]
     private $fichingActivities;
 
     public function __construct()

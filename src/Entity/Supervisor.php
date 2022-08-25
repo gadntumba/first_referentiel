@@ -12,8 +12,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use App\Entity\Utils\TimestampTraitCopy;
 
 #[Copy(resourceName: 'ot.supervisor', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+#[ORM\Entity(repositoryClass:SupervisorRepository::class)]
 /**
- * @ORM\Entity(repositoryClass=SupervisorRepository::class)
+ * 
  * @ApiResource()
  */
 class Supervisor
@@ -21,46 +22,54 @@ class Supervisor
     use TimestampTraitCopy;
 
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
+     * 
+     * 
      *@Groups({"read:supervisorcollection","read:feedbackcollection","event:kafka"})
      */
+    #[ORM\Id]
+    #[ORM\Column(type:"integer")]
     private $id;
 
 
     /**
-     * @ORM\Column(type="integer")
+     * 
      *@Groups({"read:supervisorcollection","read:feedbackcollection","event:kafka"})
      */
+    #[ORM\Column(type:"integer")]
     private $goalRecordings;
 
     /**
-     * @ORM\ManyToOne(targetEntity=City::class, inversedBy="supervisors")
+     * 
      *@Groups({"read:supervisorcollection","read:feedbackcollection","event:kafka"})
      */
+    #[ORM\ManyToOne(targetEntity:City::class, inversedBy:"supervisors")]
     private $city;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Territorry::class, inversedBy="supervisors")
+     * 
      *@Groups({"read:supervisorcollection","read:feedbackcollection","event:kafka"})
      */
+    #[ORM\ManyToOne(targetEntity:Territorry::class, inversedBy:"supervisors")]
     private $territory;
 
     /**
-     * @ORM\ManyToOne(targetEntity=OT::class, inversedBy="supervisors")
+     * 
      *@Groups({"read:supervisorcollection","read:feedbackcollection","event:kafka"})
      */
+    #[ORM\ManyToOne(targetEntity:OT::class, inversedBy:"supervisors")]
     private $ot;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="supervisors")
+     * 
      *@Groups({"read:supervisorcollection","read:feedbackcollection","event:kafka"})
      */
+    #[ORM\ManyToOne(targetEntity:User::class, inversedBy:"supervisors")]
     private $user;
 
     /**
-     * @ORM\OneToMany(targetEntity=Monitor::class, mappedBy="supervisorPost")
+     * 
      */
+    #[ORM\OneToMany(targetEntity:Monitor::class, mappedBy:"supervisorPost")]
     private $monitors;
 
 
