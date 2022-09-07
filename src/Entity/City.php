@@ -67,15 +67,16 @@ class City
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Groups({
      *      "read:productor:house_keeping",
      *      "write:City",
+     *      "read:citycollection",
      *      "read:citycollection",
      *      "read:towncollection", 
      *      "event:kafka"
      * })
      */
+    #[ORM\Column(type:"string", length:255)]
     private $name;
 
     /**
