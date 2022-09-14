@@ -10,18 +10,24 @@ use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 use JsonPath\JsonObject;
+use ApiPlatform\Core\Api\IriConverterInterface;
 
 final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface
 {
     private $decorated;
+    /**
+     * @var IriConverterInterface
+     */
+    private $iriConverter;
 
-    public function __construct(NormalizerInterface $decorated)
+    public function __construct(NormalizerInterface $decorated, IriConverterInterface $iriConverter)
     {
         if (!$decorated instanceof DenormalizerInterface) {
             throw new \InvalidArgumentException(sprintf('The decorated normalizer must implement the %s.', DenormalizerInterface::class));
         }
 
         $this->decorated = $decorated;
+        $this->iriConverter = $iriConverter;
     }
 
     public function supportsNormalization($data, $format = null)
@@ -36,12 +42,11 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
 
         if (is_array($data)) {
 
-            if (method_exists($object, 'getIri')) {
-                $data['iri'] = $object->getIri() ;
-            }
-
-            if (is_array($object)) {
-                $data = ['data' => $data ];
+            try {
+               $iri = $this->iriConverter->getIriFromItem($object);
+               $data['iri'] = $iri;
+            } catch (\Throwable $th) {
+                
             }
 
             //$data = ['data' => $data ];
@@ -62,6 +67,7 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
             return $this->decorated->denormalize($data, $class, $format, $context);
 
         } catch (UnexpectedValueException $th) {
+                //dd($th);
             
             if (!isset($context["deserialization_path"]) || !is_string($context["deserialization_path"])) {
                 $arrClass = explode("\\", $class);
@@ -70,7 +76,7 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
                     "class" => $normalClass,
                     "data" => $data,
                 ];
-                //dd($th);
+                //dd($arr);
     
                 throw new SerializerUnexpectedValueException($arr);
                 

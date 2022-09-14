@@ -1,4 +1,7 @@
 api_platform:
+    defaults:
+        #pagination_enabled: false
+        pagination_items_per_page: 2000 # Default value
     formats:
         jsonld:   ['application/ld+json']
         jsonhal:  ['application/hal+json']
