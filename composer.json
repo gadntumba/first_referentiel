@@ -14,6 +14,8 @@
         "doctrine/orm": "^2.11",
         "galbar/jsonpath": "^2.0",
         "knplabs/knp-paginator-bundle": "^5.8",
+        "league/uri": "^6.0",
+        "liip/imagine-bundle": "^2.8",
         "mink67/kafka_connect_bundle": "^1.0.13",
         "nelmio/cors-bundle": "^2.2",
         "phpdocumentor/reflection-docblock": "^5.3",

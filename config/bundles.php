@@ -13,4 +13,5 @@ return [
     Mink67\Encrypt\Mink67EncryptBundle::class => ['all' => true],
     Mink67\KafkaConnect\KafkaConnectBundle::class => ['all' => true],
     Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
+    Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
 ];

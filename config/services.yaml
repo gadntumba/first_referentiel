@@ -6,6 +6,7 @@
 parameters:
     public_directory: '%kernel.project_dir%/public'
     uploads_directory: '%public_directory%/uploads'
+    photo_host: '%env(PHOTO_HOST)%'
 
 services:
     # default configuration for services in *this* file

@@ -21,6 +21,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface as ValidatorValidatorInterface;
+use \Liip\ImagineBundle\Imagine\Cache\CacheManager;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use League\Uri\Uri;
+
 
 class ProductorController extends AbstractController
 {
@@ -42,19 +46,25 @@ class ProductorController extends AbstractController
      * @var OTRepository
      */
     private $oTRepository;
+    /**
+     * @var CacheManager
+     */
+    private $imagineCacheManager;
     
 
     public function __construct(
         DenormalizerInterface $denormalizer, 
         ProductorRepository $repository,
         NormalizerInterface $normalizer,
-        OTRepository $oTRepository
+        OTRepository $oTRepository,
+        CacheManager $imagineCacheManager
     )
     {
         $this->denormalizer = $denormalizer;
         $this->normalizer = $normalizer;
         $this->repository = $repository;
         $this->oTRepository = $oTRepository;
+        $this->imagineCacheManager = $imagineCacheManager;
         
     }
 
@@ -718,14 +728,22 @@ class ProductorController extends AbstractController
             ]
             
         );
-            $itemArr['activityData'] = $this->normalizer->normalize(
-                $item, 
-                null, 
-                [
-                    'groups' => ['read:productor:activities_data']
-                ]
-                
-            );            
+        $itemArr['activityData'] = $this->normalizer->normalize(
+            $item, 
+            null, 
+            [
+                'groups' => ['read:productor:activities_data']
+            ]                
+        );  
+        $itemArr['housekeeping'] = $this->normalizer->normalize(
+            $item, 
+            null, 
+            [
+                'groups' => ['read:productor:house_keeping']
+            ]                
+        )["housekeeping"];
+
+        //""         
         
         //dd($short);
         if (
@@ -751,6 +769,14 @@ class ProductorController extends AbstractController
             ]
             
         );
+
+        $itemArr['photoPath'] = $this->imagineCacheManager->getBrowserPath($item->getIncumbentPhoto(), "pic_producer");
+
+        $uri = Uri::createFromString($itemArr['photoPath']);
+
+        $itemArr['photoPath'] = $this->getParameter("photo_host").$uri->getPath();
+        
+        $itemArr['photoNormalPath'] = $item->getIncumbentPhoto();
 
         return $itemArr;
     }
