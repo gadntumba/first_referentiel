@@ -11,6 +11,8 @@ use App\Entity\Utils\TimestampTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Mink67\KafkaConnect\Annotations\Copyable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Mink67\MultiPartDeserialize\Annotations\File;
+use Mink67\MultiPartDeserialize\Services\NormaliserFile\LiipImagineNormalizerFile;
 
 #[Copyable(resourceName: 'producer.producer', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 #[ORM\Entity(repositoryClass:ProductorRepository::class)]
@@ -196,9 +198,10 @@ class Productor
 
     /**
      * 
-     * @Groups({"read:collection","write:Productor"})
+     * @Groups({"read:collection","read:producer:image","write:Productor"})
      */
     #[ORM\Column(type:"string")]
+    #[File(normalizerClassName: LiipImagineNormalizerFile::class, normalizerParams:["filter" => ["pic_identity"]])]
     private $photoPieceOfIdentification;
 
     /**
@@ -217,9 +220,10 @@ class Productor
 
     /**
      * 
-     * @Groups({"read:collection","write:Productor"})
+     * @Groups({"read:collection","read:producer:image","write:Productor"})
      */
     #[ORM\Column(type:"string")]
+    #[File(normalizerClassName: LiipImagineNormalizerFile::class, normalizerParams:["filter" => ["pic_producer"]])]
     private $incumbentPhoto;
 
     /**
@@ -228,6 +232,9 @@ class Productor
      */
     #[ORM\ManyToOne(targetEntity:PieceIdentificationType::class, inversedBy:"productors")]
     private $typePieceOfIdentification;
+
+    #[ORM\Column(length: 255)]
+    private ?string $investigatorId = null;
 
     public function __construct()
     {
@@ -618,6 +625,18 @@ class Productor
     public function setTypePieceOfIdentification(?PieceIdentificationType $typePieceOfIdentification): self
     {
         $this->typePieceOfIdentification = $typePieceOfIdentification;
+
+        return $this;
+    }
+
+    public function getInvestigatorId(): ?string
+    {
+        return $this->investigatorId;
+    }
+
+    public function setInvestigatorId(string $investigatorId): self
+    {
+        $this->investigatorId = $investigatorId;
 
         return $this;
     }

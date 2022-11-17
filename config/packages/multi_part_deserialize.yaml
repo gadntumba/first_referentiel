@@ -1,0 +1,4 @@
+multi_part_deserialize:
+  public_path: "%public_directory%"
+  upload_path: "%uploads_directory%"
+  host_name: "%env(MPD_HOST)%"

@@ -17,6 +17,8 @@
         "league/uri": "^6.0",
         "liip/imagine-bundle": "^2.8",
         "mink67/kafka_connect_bundle": "^1.0.13",
+        "mink67/multipart_deserialize": "1.0.*",
+        "mink67/security_bundle": "^1.0",
         "nelmio/cors-bundle": "^2.2",
         "phpdocumentor/reflection-docblock": "^5.3",
         "phpstan/phpdoc-parser": "^1.2",

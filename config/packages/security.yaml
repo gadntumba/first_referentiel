@@ -6,7 +6,21 @@ security:
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         users_in_memory: { memory: null }
+        oauth:
+            id: Mink67\Security\User\OAuthUserProvider
     firewalls:
+        api:
+            pattern:   ^/api/
+            provider: oauth
+            stateless: true
+            #guard:
+            #    authenticators:
+            #        - Mink67\Security\Security\KeycloakAuthenticator
+            custom_authenticator: Mink67\Security\Security\KeycloakAuthenticator
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                # target: app_any_route
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false

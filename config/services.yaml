@@ -30,7 +30,7 @@ services:
     
     'App\Serializer\ApiNormalizer':
         # By default .inner is passed as argument
-        decorates: 'api_platform.jsonld.normalizer.item'
+        decorates: 'api_platform.jsonapi.normalizer.item'
     'app.serializer.normalizer.item.json':
         class: 'App\Serializer\ApiNormalizer'
         decorates: 'api_platform.serializer.normalizer.item'

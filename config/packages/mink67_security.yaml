@@ -1,0 +1,2 @@
+mink67_security:
+  jwk_url: "%env(JWK_URL)%"

@@ -14,4 +14,6 @@ return [
     Mink67\KafkaConnect\KafkaConnectBundle::class => ['all' => true],
     Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
     Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
+    Mink67\MultiPartDeserialize\MultiPartDeserializeBundle::class => ['all' => true],
+    Mink67\Security\Mink67SecurityBundle::class => ['all' => true],
 ];

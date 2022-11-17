@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 use JsonPath\JsonObject;
 use ApiPlatform\Core\Api\IriConverterInterface;
+use Mink67\MultiPartDeserialize\Services\MultiPartNormalizer;
 
 final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface, SerializerAwareInterface
 {
@@ -20,7 +21,7 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
      */
     private $iriConverter;
 
-    public function __construct(NormalizerInterface $decorated, IriConverterInterface $iriConverter)
+    public function __construct(MultiPartNormalizer $multiPartNormalizer, NormalizerInterface $decorated, IriConverterInterface $iriConverter)
     {
         if (!$decorated instanceof DenormalizerInterface) {
             throw new \InvalidArgumentException(sprintf('The decorated normalizer must implement the %s.', DenormalizerInterface::class));
@@ -28,6 +29,7 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
 
         $this->decorated = $decorated;
         $this->iriConverter = $iriConverter;
+        $this->multiPartNormalizer = $multiPartNormalizer;
     }
 
     public function supportsNormalization($data, $format = null)
@@ -51,6 +53,7 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
 
             //$data = ['data' => $data ];
         }
+        $data = $this->multiPartNormalizer->normalize($object, $data);
 
         return $data;
     }

@@ -24,7 +24,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface as ValidatorValidat
 use \Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use League\Uri\Uri;
-
+use Mink67\MultiPartDeserialize\Services\MultiPartNormalizer;
+use Mink67\Security\User as Mink67User;
+use Mink67\Security\User\OAuthUser;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use ApiPlatform\Exception\InvalidArgumentException;
+use ApiPlatform\Exception\ItemNotFoundException;
+use ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter;
+use ApiPlatform\Core\Api\IriConverterInterface;
 
 class ProductorController extends AbstractController
 {
@@ -50,6 +57,10 @@ class ProductorController extends AbstractController
      * @var CacheManager
      */
     private $imagineCacheManager;
+    /**
+     * @var MultiPartNormalizer
+     */
+    private $multiPartNormalizer;
     
 
     public function __construct(
@@ -57,7 +68,8 @@ class ProductorController extends AbstractController
         ProductorRepository $repository,
         NormalizerInterface $normalizer,
         OTRepository $oTRepository,
-        CacheManager $imagineCacheManager
+        CacheManager $imagineCacheManager,
+        MultiPartNormalizer $multiPartNormalizer
     )
     {
         $this->denormalizer = $denormalizer;
@@ -65,6 +77,7 @@ class ProductorController extends AbstractController
         $this->repository = $repository;
         $this->oTRepository = $oTRepository;
         $this->imagineCacheManager = $imagineCacheManager;
+        $this->multiPartNormalizer = $multiPartNormalizer;
         
     }
 
@@ -79,6 +92,11 @@ class ProductorController extends AbstractController
         LoggerInterface $logger
     )
     {
+
+        /**
+         * @var OAuthUser
+         */
+        $user =  $this->getUser();
         //dd($this->repository->findAll());
 
         //dd($this->getRequestParams($request, true));
@@ -116,9 +134,6 @@ class ProductorController extends AbstractController
             );
         }
 
-
-
-
         try {
             $productorValidator->validate();
             $productor = new Productor();
@@ -128,6 +143,9 @@ class ProductorController extends AbstractController
             $productor->setHousekeeping($productorValidator->getHouseKeeping());
             // add pieceOfIdentificationData
             $productor = $productorValidator->addPieceOfIdentificationData($productor);//
+            /**
+             * @var Productor
+             */
             $productor = $productorValidator->addActivities($productor);//
             // add other
             $productor->setLatitude($productorValidator->getLatitude());
@@ -153,13 +171,11 @@ class ProductorController extends AbstractController
                 //dump($agricultural);
                $this->persistIfNotPersited($agricultural, $em);
             }
-            
 
             foreach ($fichings as $key => $fiching) {
                 //dump($fiching);
                 $this->persistIfNotPersited($fiching, $em);
             }
-
 
             foreach ($stockRaisings as $key => $stockRaising) {
                 //dump($stockRaising);
@@ -176,6 +192,8 @@ class ProductorController extends AbstractController
                     422
                 );
             }
+            //dd($user->getId());
+            $productor->setInvestigatorId($user->getId());
 
             //dd($productor);
             $em->flush();
@@ -698,6 +716,56 @@ class ProductorController extends AbstractController
         
     }
     /**
+     * @Route("/api/productors/by-iri", methods={"POST"}, name="productor.iri")
+     */
+    public function byIri(Request $request, IriConverterInterface $iriConverter)
+    {
+        //$productor = $this->repository->find($id);
+
+        $requestData = $this->getRequestParams($request, true);
+        //dd($requestData);
+
+
+        if (!isset($requestData["iri"]) || \is_null(isset($requestData["iri"]))) {
+            
+            throw new HttpException(422, "You must fill in the `iri` of the producer");
+            
+        }
+
+        $iri = $requestData["iri"];
+
+        $arrIri = explode("/", $iri);
+        //dd($arrIri);
+        if (
+            count($arrIri) != 4 ||
+            !str_contains($iri, "/api/producers/") ||
+            !((int) $arrIri[3])
+        ) {
+            throw new HttpException(422, "provided iri is invalid"); 
+        }
+
+        $id = (int) $arrIri[3];
+        //dd($id);
+
+        //$productor = $iriConverter->getItemFromIri($requestData["iri"]);
+        $producer = $this->repository->find($id);
+
+        //dd($producer);
+
+        if (is_null($producer)) {
+            return new JsonResponse([
+                "message" => "Not found"
+            ], 200);
+        }
+
+        $itemArr = $this->transform($producer);
+
+        return new JsonResponse($itemArr, 200);
+        
+
+        
+    }
+    /**
      * 
      */
     private function transform(Productor $productor, bool $short=false)
@@ -770,13 +838,25 @@ class ProductorController extends AbstractController
             
         );
 
+
+        $itemArr['images'] = $this->normalizer->normalize(
+            $item, 
+            null, 
+            [
+                'groups' => ["read:producer:image"]
+            ]
+            
+        );
+
+        $itemArr['images'] = $this->multiPartNormalizer->normalize($item, $itemArr['images']);
+
         $itemArr['photoPath'] = $this->imagineCacheManager->getBrowserPath($item->getIncumbentPhoto(), "pic_producer");
 
         $uri = Uri::createFromString($itemArr['photoPath']);
 
         $itemArr['photoPath'] = $this->getParameter("photo_host").$uri->getPath();
         
-        $itemArr['photoNormalPath'] = $item->getIncumbentPhoto();
+        $itemArr['photoNormalPath'] = $item->getIncumbentPhoto();        
 
         return $itemArr;
     }
