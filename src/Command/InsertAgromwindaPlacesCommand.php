@@ -185,6 +185,8 @@ class InsertAgromwindaPlacesCommand extends Command
             $province = new Province;
             $province->setName($arrProvince["name"]);
             $this->em->persist($province);
+            $this->em->flush();
+            dd($province);
             
             $this->setParam($iriProvince, $province->getId());
             $name = $arrProvince["name"];
@@ -241,7 +243,9 @@ class InsertAgromwindaPlacesCommand extends Command
             $city->setName($arrCity["name"]);
             $city->setProvince($province);
 
+
             $this->em->persist($city);
+            $this->em->flush();
             $this->setParam($iriCity, $city->getId());
             $name = $arrCity["name"];
 

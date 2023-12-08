@@ -5,8 +5,11 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     public_directory: '%kernel.project_dir%/public'
+    public_key_file_path: '%kernel.project_dir%/%env(OAUTH2_PUBLIC_KEY_FILE_NAME)%'
     uploads_directory: '%public_directory%/uploads'
     photo_host: '%env(PHOTO_HOST)%'
+    oauth_client_id: "%env(OAUTH2_CLIENT_ID)%"
+    oauth_client_secret: "%env(OAUTH2CLIENT_SECRET)%"
 
 services:
     # default configuration for services in *this* file

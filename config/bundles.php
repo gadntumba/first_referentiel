@@ -10,8 +10,6 @@ return [
     ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle::class => ['all' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
-    Mink67\Encrypt\Mink67EncryptBundle::class => ['all' => true],
-    Mink67\KafkaConnect\KafkaConnectBundle::class => ['all' => true],
     Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
     Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
     Mink67\MultiPartDeserialize\MultiPartDeserializeBundle::class => ['all' => true],

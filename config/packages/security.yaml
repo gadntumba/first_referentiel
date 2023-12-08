@@ -7,7 +7,7 @@ security:
     providers:
         users_in_memory: { memory: null }
         oauth:
-            id: Mink67\Security\User\OAuthUserProvider
+            id: App\Security\User\OAuthUserProvider
     firewalls:
         api:
             pattern:   ^/api/
@@ -16,7 +16,7 @@ security:
             #guard:
             #    authenticators:
             #        - Mink67\Security\Security\KeycloakAuthenticator
-            custom_authenticator: Mink67\Security\Security\KeycloakAuthenticator
+            custom_authenticator: App\Security\OAuth2Authenticator
             logout:
                 path: app_logout
                 # where to redirect after logout
