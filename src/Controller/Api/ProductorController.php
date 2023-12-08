@@ -107,6 +107,8 @@ class ProductorController extends AbstractController
         try {
             $requestData = $this->getRequestParams($request, true);
 
+            //dd($requestData);
+
             $logger->info('############### Start data json productor #########');
             $logger->info(\json_encode($requestData));
             $logger->info('########## End Data jso productor ##########');
@@ -117,6 +119,7 @@ class ProductorController extends AbstractController
                 null,
                 [AbstractNormalizer::OBJECT_TO_POPULATE => $productorValidator]
             );
+
             //dd($request->files->all());
             //dd($productorValidator);
         } catch (UnexpectedValueException $th) {

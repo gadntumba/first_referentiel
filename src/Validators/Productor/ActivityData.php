@@ -16,6 +16,7 @@ class ActivityData {
     private $agriculturals = []; //array( Agriculturals )
     private $stockRaisings = []; //array( StockRaisings )
     private $fichings = []; //array( Fichings )
+    private $entrepreneurship = [];
     /**
     * @var IriConverterInterface
     */
@@ -28,12 +29,12 @@ class ActivityData {
 
     public function __construct(
         DenormalizerInterface $denormalizer, 
-        ValidatorInterface $validator,
+        private ValidatorInterface $validator,
         IriConverterInterface $iriConverter
     )
     {
         $this->denormalizer = $denormalizer;
-        $this->validator = $validator;
+        //$this->validator = $validator;
         $this->iriConverter = $iriConverter;
     }
 
