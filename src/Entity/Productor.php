@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Mink67\MultiPartDeserialize\Annotations\File;
 use Mink67\MultiPartDeserialize\Services\NormaliserFile\LiipImagineNormalizerFile;
 
-#[Copyable(resourceName: 'producer.producer', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+//#[Copyable(resourceName: 'producer.producer', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 #[ORM\Entity(repositoryClass:ProductorRepository::class)]
 #[ORM\HasLifecycleCallbacks()]
 /**

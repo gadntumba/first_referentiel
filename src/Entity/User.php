@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Mink67\KafkaConnect\Annotations\Copy;
 use ApiPlatform\Core\Annotation\ApiResource;
 
-#[Copy(resourceName: 'user.user', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+//#[Copy(resourceName: 'user.user', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 #[ORM\Entity(repositoryClass:UserRepository::class)]
 /**
  *@ApiResource()

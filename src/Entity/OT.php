@@ -12,7 +12,7 @@ use Mink67\KafkaConnect\Annotations\Copy;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Utils\TimestampTraitCopy;
 
-#[Copy(resourceName: 'ot.ot', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+//#[Copy(resourceName: 'ot.ot', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 #[ORM\Entity(repositoryClass:OTRepository::class)]
 /**
  * 

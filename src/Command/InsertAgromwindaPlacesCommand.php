@@ -184,9 +184,10 @@ class InsertAgromwindaPlacesCommand extends Command
 
             $province = new Province;
             $province->setName($arrProvince["name"]);
+            $province->setCreatedAt();
             $this->em->persist($province);
             $this->em->flush();
-            dd($province);
+            //dd($province);
             
             $this->setParam($iriProvince, $province->getId());
             $name = $arrProvince["name"];
@@ -242,6 +243,7 @@ class InsertAgromwindaPlacesCommand extends Command
             $city = new City;
             $city->setName($arrCity["name"]);
             $city->setProvince($province);
+            $city->setCreatedAt();
 
 
             $this->em->persist($city);
@@ -287,8 +289,10 @@ class InsertAgromwindaPlacesCommand extends Command
             $territory = new Territorry;
             $territory->setName($arrTerritory["name"]);
             $territory->setProvince($province);
+            $territory->setCreatedAt();
 
             $this->em->persist($territory);
+            $this->em->flush();
             
             $this->setParam($iriTerritory, $territory->getId());
             $name = $arrTerritory["name"];
@@ -332,8 +336,10 @@ class InsertAgromwindaPlacesCommand extends Command
             $town = new Town;
             $town->setName($arrTown["name"]);
             $town->setCity($city);
+            $town->setCreatedAt();
 
             $this->em->persist($town);
+            $this->em->flush();
             
             $this->setParam($iriTown, $town->getId());
             $name = $arrTown["name"];
@@ -363,8 +369,10 @@ class InsertAgromwindaPlacesCommand extends Command
             $sector = new Sector;
             $sector->setName($arrSector["name"]);
             $sector->setTerritorry($territorry);
+            $sector->setCreatedAt();
 
             $this->em->persist($sector);
+            $this->em->flush();
             
             $this->setParam($iriSector, $sector->getId());
             $name = $arrSector["name"];

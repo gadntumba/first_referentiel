@@ -13,7 +13,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Mink67\KafkaConnect\Annotations\Copyable;
 
 
-#[Copyable(resourceName: 'location.province', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+//#[Copyable(resourceName: 'location.province', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 #[ORM\HasLifecycleCallbacks()]
 #[ORM\Entity(repositoryClass:ProvinceRepository::class)]
 /**

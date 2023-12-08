@@ -9,7 +9,7 @@ use Mink67\KafkaConnect\Annotations\Copy;
 use App\Entity\Utils\TimestampTraitCopy;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[Copy(resourceName: 'ot.coordinator', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
+//#[Copy(resourceName: 'ot.coordinator', groups: ['event:kafka','timestamp:read',"slugger:read"], topicName: 'sync_rna_db')]
 #[ORM\Entity(repositoryClass:CoordinatorRepository::class)]
 /**
  * 
