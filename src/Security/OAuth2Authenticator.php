@@ -90,7 +90,7 @@ class OAuth2Authenticator extends AbstractAuthenticator {
     {
 
         $bearerToken = $request->headers->get("Authorization");
-        return !is_null($bearerToken);
+        return !$bearerToken;
         //return true;
     }
 

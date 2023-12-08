@@ -38,7 +38,6 @@ class ActivityData {
         $this->iriConverter = $iriConverter;
     }
 
-
  /**
   * Get the value of Agriculturals
   */ 
@@ -61,18 +60,13 @@ class ActivityData {
     foreach ($agriculturals as $key => $value) {
             //dump($value);
             //dump($value["sourceOfSupplyActivity"]);
-        
             $agricultural = $this->denormalizer->denormalize($value, AgriculturalActivity::class, null, ["groups" =>["write:AgriculturalActivity"]]);
                 
             if (!($agricultural instanceof AgriculturalActivity)) {
                 throw new \Exception("Not supported yet");
             }
             //dump(is_null($agricultural->getAgriculturalActivityType()) );
-            
             //dump("ok");
-
-
-
             array_push($newAgriculturals, $agricultural );
     }
 
@@ -301,5 +295,25 @@ class ActivityData {
         
         return $productor;
         
+    }
+
+    /**
+     * Get the value of entrepreneurship
+     */ 
+    public function getEntrepreneurship()
+    {
+        return $this->entrepreneurship;
+    }
+
+    /**
+     * Set the value of entrepreneurship
+     *
+     * @return  self
+     */ 
+    public function setEntrepreneurship($entrepreneurship)
+    {
+        $this->entrepreneurship = $entrepreneurship;
+
+        return $this;
     }
 }
