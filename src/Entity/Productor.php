@@ -242,6 +242,9 @@ class Productor
     #[ORM\OneToMany(mappedBy: 'productor', targetEntity: EntrepreneurialActivity::class)]
     private Collection $entrepreneurialActivities;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $remoteId = null;
+
     public function __construct()
     {
         $this->AgriculturalActivity = new ArrayCollection();
@@ -674,6 +677,18 @@ class Productor
                 $entrepreneurialActivity->setProductor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRemoteId(): ?int
+    {
+        return $this->remoteId;
+    }
+
+    public function setRemoteId(?int $remoteId): static
+    {
+        $this->remoteId = $remoteId;
 
         return $this;
     }

@@ -110,7 +110,7 @@
     }
     });
 
-    xhr.open("POST", "http://productor.surintrants.com/api/productors");
+    xhr.open("POST", "http://producer.surintrants.com/api/productors");
     xhr.setRequestHeader("User-Agent", "insomnia/8.4.5");
     xhr.setRequestHeader("Authorization", "Bearer {your token}");
 

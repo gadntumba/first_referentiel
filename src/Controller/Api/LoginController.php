@@ -34,10 +34,14 @@ class LoginController extends AbstractController
             'POST',
             'https://oauth.agromwinda.com/oauth/token',
             [
-                "json" => $data
+                "json" => $data,
+                "headers" => [
+                    "Content-Type" => "application/json",
+                    "Accept" => "application/json"
+                ]
             ]
         );
-        //dd($response->toArray());
+        //dd($response->getContent(false));
         $statusCode = $response->getStatusCode();
         //$data = $response->toArray(false);
         
@@ -48,8 +52,17 @@ class LoginController extends AbstractController
         }
 
         //dd($statusCode);
-
-        throw new HttpException(400, "Invalid Credentials");
+        $args = $data;
+        $data = $response->toArray(false);
+        $data["args"] = [
+            "username" => $args["username"],
+            "password" => $args["password"],
+        ];
+        //throw new HttpException(400, "Invalid Credentials");
+        return new JsonResponse(
+            $data,
+            400
+        );
 
     }
 }
