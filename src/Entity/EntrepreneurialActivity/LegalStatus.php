@@ -2,7 +2,7 @@
 
 namespace App\Entity\EntrepreneurialActivity;
 
-use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\EntrepreneurialActivity;
 use App\Repository\EntrepreneurialActivity\LegalStatusRepository;
 use Doctrine\Common\Collections\ArrayCollection;

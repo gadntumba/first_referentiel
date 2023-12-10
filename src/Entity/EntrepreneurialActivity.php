@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\EntrepreneurialActivity\LegalStatus;
 use App\Entity\EntrepreneurialActivity\ProductDisplayMode;
 use App\Entity\EntrepreneurialActivity\TurnoverRange;
 use App\Repository\EntrepreneurialActivityRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -78,11 +79,9 @@ class EntrepreneurialActivity
     #[Assert\Choice(options:["RCCM","F92"])]
     private ?string $documentType = null;
 
-    #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
-    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    private ?string $documentPhoto = null;
+    private $documentPhoto = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
@@ -90,7 +89,7 @@ class EntrepreneurialActivity
     #[Assert\NotNull()]
     #[Assert\Type("int")]
     #[Assert\PositiveOrZero()]
-    private ?string $countVolunteerStaff = null;
+    private $countVolunteerStaff = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
@@ -98,7 +97,7 @@ class EntrepreneurialActivity
     #[Assert\NotNull()]
     #[Assert\Type("int")]
     #[Assert\PositiveOrZero()]
-    private ?string $countStaffPaid = null;
+    private $countStaffPaid = null;
 
     #[ORM\Column]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
@@ -107,37 +106,35 @@ class EntrepreneurialActivity
     #[Assert\Type("int")]
     #[Assert\Positive()]
     #[Assert\GreaterThan(1700)]
-    private ?int $yearFirstTaxPayment = null;
-
-    #[ORM\Column(type: Types::JSON)]
-    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    private array $taxeNames = [];
+    private $yearFirstTaxPayment = null;
 
     #[ORM\Column(nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotBlank()]
-    #[Assert\NotNull()]
-    #[Assert\Type("float")]
-    #[Assert\PositiveOrZero()]
-    private ?float $amountPaidMonth = null;
+    private ?string $taxeNames = null;
 
     #[ORM\Column(nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     #[Assert\Type("float")]
     #[Assert\PositiveOrZero()]
-    private ?float $amountPaidQuarter = null;
+    private $amountPaidMonth = null;
+
+    #[ORM\Column(nullable:true)]
+    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
+    #[Assert\Type("float")]
+    #[Assert\PositiveOrZero()]
+    private  $amountPaidQuarter = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     #[Assert\Type("float")]
     #[Assert\PositiveOrZero()]
-    private ?float $amountPaidSemester = null;
+    private $amountPaidSemester = null;
 
     #[ORM\Column(nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     #[Assert\Type("float")]
     #[Assert\PositiveOrZero()]
-    private ?float $amountPaidAnnually = null;
+    private $amountPaidAnnually = null;
 
     #[ORM\Column]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
@@ -172,6 +169,7 @@ class EntrepreneurialActivity
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
+    #[Assert\Valid()]
     private ?TurnoverRange $turnover = null;
 
     #[ORM\ManyToOne(inversedBy: 'entrepreneurialActivities')]
@@ -190,10 +188,13 @@ class EntrepreneurialActivity
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     #[Assert\Type("float")]
     #[Assert\PositiveOrZero()]
-    private ?float $amountPaidDay = null;
+    private $amountPaidDay = null;
 
     #[ORM\ManyToOne(inversedBy: 'entrepreneurialActivities')]
     private ?Productor $productor = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $documentPath = null;
 
     public function getId(): ?int
     {
@@ -321,38 +322,41 @@ class EntrepreneurialActivity
         return $this;
     }
 
-    public function getDocumentPhoto(): ?string
+    public function getDocumentPhoto()
     {
         return $this->documentPhoto;
     }
 
-    public function setDocumentPhoto(string $documentPhoto): static
+    public function setDocumentPhoto($documentPhoto): static
     {
+        if (!($documentPhoto instanceof UploadedFile)) {
+            new \Exception("Not support yet");
+        }
         $this->documentPhoto = $documentPhoto;
 
         return $this;
     }
 
-    public function getCountVolunteerStaff(): ?string
+    public function getCountVolunteerStaff(): ?int
     {
         return $this->countVolunteerStaff;
     }
 
-    public function setCountVolunteerStaff(string $countVolunteerStaff): static
+    public function setCountVolunteerStaff($countVolunteerStaff): static
     {
-        $this->countVolunteerStaff = $countVolunteerStaff;
+        $this->countVolunteerStaff = (int) $countVolunteerStaff;
 
         return $this;
     }
 
-    public function getCountStaffPaid(): ?string
+    public function getCountStaffPaid(): ?int
     {
         return $this->countStaffPaid;
     }
 
-    public function setCountStaffPaid(string $countStaffPaid): static
+    public function setCountStaffPaid($countStaffPaid): static
     {
-        $this->countStaffPaid = $countStaffPaid;
+        $this->countStaffPaid = (int) $countStaffPaid;
 
         return $this;
     }
@@ -362,19 +366,19 @@ class EntrepreneurialActivity
         return $this->yearFirstTaxPayment;
     }
 
-    public function setYearFirstTaxPayment(int $yearFirstTaxPayment): static
+    public function setYearFirstTaxPayment($yearFirstTaxPayment): static
     {
-        $this->yearFirstTaxPayment = $yearFirstTaxPayment;
+        $this->yearFirstTaxPayment = (int) $yearFirstTaxPayment;
 
         return $this;
     }
 
-    public function getTaxeNames(): array
+    public function getTaxeNames(): string
     {
         return $this->taxeNames;
     }
 
-    public function setTaxeNames(array $taxeNames): static
+    public function setTaxeNames(string $taxeNames): static
     {
         $this->taxeNames = $taxeNames;
 
@@ -386,9 +390,9 @@ class EntrepreneurialActivity
         return $this->amountPaidMonth;
     }
 
-    public function setAmountPaidMonth(float $amountPaidMonth): static
+    public function setAmountPaidMonth($amountPaidMonth): static
     {
-        $this->amountPaidMonth = $amountPaidMonth;
+        $this->amountPaidMonth = (float) $amountPaidMonth;
 
         return $this;
     }
@@ -398,9 +402,9 @@ class EntrepreneurialActivity
         return $this->amountPaidQuarter;
     }
 
-    public function setAmountPaidQuarter(float $amountPaidQuarter): static
+    public function setAmountPaidQuarter($amountPaidQuarter): static
     {
-        $this->amountPaidQuarter = $amountPaidQuarter;
+        $this->amountPaidQuarter = (float) $amountPaidQuarter;
 
         return $this;
     }
@@ -410,9 +414,9 @@ class EntrepreneurialActivity
         return $this->amountPaidSemester;
     }
 
-    public function setAmountPaidSemester(?float $amountPaidSemester): static
+    public function setAmountPaidSemester($amountPaidSemester): static
     {
-        $this->amountPaidSemester = $amountPaidSemester;
+        $this->amountPaidSemester = (float) $amountPaidSemester;
 
         return $this;
     }
@@ -422,9 +426,9 @@ class EntrepreneurialActivity
         return $this->amountPaidAnnually;
     }
 
-    public function setAmountPaidAnnually(float $amountPaidAnnually): static
+    public function setAmountPaidAnnually($amountPaidAnnually): static
     {
-        $this->amountPaidAnnually = $amountPaidAnnually;
+        $this->amountPaidAnnually = (float) $amountPaidAnnually;
 
         return $this;
     }
@@ -508,6 +512,7 @@ class EntrepreneurialActivity
 
     public function setTurnover(?TurnoverRange $turnover): static
     {
+        //dd($turnover);
         $this->turnover = $turnover;
 
         return $this;
@@ -537,14 +542,15 @@ class EntrepreneurialActivity
         return $this;
     }
 
-    public function getAmountPaidDay(): ?float
+    public function getAmountPaidDay() : ?float
     {
         return $this->amountPaidDay;
     }
 
-    public function setAmountPaidDay(float $amountPaidDay): static
+    public function setAmountPaidDay($amountPaidDay): static
     {
-        $this->amountPaidDay = $amountPaidDay;
+        //dd($amountPaidDay);
+        $this->amountPaidDay = (float) $amountPaidDay;
 
         return $this;
     }
@@ -557,6 +563,18 @@ class EntrepreneurialActivity
     public function setProductor(?Productor $productor): static
     {
         $this->productor = $productor;
+
+        return $this;
+    }
+
+    public function getDocumentPath(): ?string
+    {
+        return $this->documentPath;
+    }
+
+    public function setDocumentPath(string $documentPath): static
+    {
+        $this->documentPath = $documentPath;
 
         return $this;
     }

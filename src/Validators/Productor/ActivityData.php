@@ -361,16 +361,21 @@ class ActivityData {
         $this->entrepreneurships = $entrepreneurships;
         $newEntrepreneurships = [];
   
-        foreach ($entrepreneurships as $key => $fiching) {
-            
-            $fiching = $this->denormalizer->denormalize($fiching, EntrepreneurialActivity::class, null, []);
+        foreach ($entrepreneurships as $key => $entrepreneurship) {
+            //dump($entrepreneurship);
+            try {
+                $entrepreneurship = $this->denormalizer->denormalize($entrepreneurship, EntrepreneurialActivity::class, null, []);
+                
+            } catch (\Throwable $th) {
+                throw $th;
+            }
 
-            //dd($fiching);
-            if (!($fiching instanceof EntrepreneurialActivity)) {
+            //dd($entrepreneurship);
+            if (!($entrepreneurship instanceof EntrepreneurialActivity)) {
                 throw new \Exception("Not supported yet");
             }
 
-            array_push($newEntrepreneurships, $fiching );
+            array_push($newEntrepreneurships, $entrepreneurship );
         }
 
         $this->entrepreneurships = $newEntrepreneurships;

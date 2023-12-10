@@ -41,5 +41,16 @@ services:
     App\Services\FileUploader:
         arguments:
             $uploadPath: '%uploads_directory%'
+            
+    Symfony\Component\DependencyInjection\ContainerInterface: '@service_container'
+
+    ApiPlatform\Symfony\EventListener\DeserializeListener: 
+        class: 'ApiPlatform\Symfony\EventListener\DeserializeListener'
+        autowire: true
+
+    App\EventListerner\DeserializeListener:
+        tags:
+            - {name: 'kernel.event_listerner', event: 'kernel.request', method: 'onKernelRequest', priority: 2}
+        decorates: 'ApiPlatform\Symfony\EventListener\DeserializeListener'
 
     

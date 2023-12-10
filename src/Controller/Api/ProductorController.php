@@ -138,8 +138,9 @@ class ProductorController extends AbstractController
         }
 
         try {
+            $em->getConnection()->beginTransaction();
             $productorValidator->validate();
-            dd($productorValidator);
+            //dd($productorValidator);
             $productor = new Productor();
             // add the identify data
             $productor = $productorValidator->addPersonnalIdentification($productor);
@@ -208,9 +209,12 @@ class ProductorController extends AbstractController
             $em->flush();
 
             $itemArr = $this->transform($productor);
+
+            $em->getConnection()->commit();
             return new JsonResponse($itemArr, 201);
             
         } catch (Exception $err) {
+            $em->getConnection()->rollBack();
 
             return new JsonResponse(
                 $err->getErrors(),
@@ -255,11 +259,28 @@ class ProductorController extends AbstractController
         }
 
         if ($addFiles) {
-            $data = array_merge($data, $request->files->all());
+            //dd($request->files->all());
+            $data = $this->addOtherParams($data,  $request->files->all());
+            
         } 
 
         return $data;
         
+    }
+    /**
+     * 
+     */
+    private function addOtherParams(array $data, array $others) : array {
+        foreach ($others as $key => $item) {
+            if (is_array($item)) {
+                $data[$key] = isset($data[$key])?$data[$key]:[];
+                $data[$key] = $this->addOtherParams($data[$key], $item);
+            }else {
+                $data[$key] = $item;
+            }
+        }
+
+        return $data;
     }
     /**
      * @Route("/api/productors", methods={"GET","HEAD"}, name="productor_list")

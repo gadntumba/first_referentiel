@@ -2,12 +2,14 @@
 
 namespace App\Entity\EntrepreneurialActivity;
 
-use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\EntrepreneurialActivity;
 use App\Repository\EntrepreneurialActivity\TurnoverRangeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TurnoverRangeRepository::class)]
 #[ApiResource]
@@ -19,6 +21,8 @@ class TurnoverRange
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank()]
+    #[Assert\NotNull()]
     private ?string $wording = null;
 
     #[ORM\OneToMany(mappedBy: 'turnover', targetEntity: EntrepreneurialActivity::class)]
