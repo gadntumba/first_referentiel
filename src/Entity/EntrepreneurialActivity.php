@@ -563,6 +563,7 @@ class EntrepreneurialActivity
     public function setProductor(?Productor $productor): static
     {
         $this->productor = $productor;
+        $this->productor->addEntrepreneurialActivity($this);
 
         return $this;
     }

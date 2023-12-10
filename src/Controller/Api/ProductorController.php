@@ -26,13 +26,17 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use League\Uri\Uri;
 use Mink67\MultiPartDeserialize\Services\MultiPartNormalizer;
 use Mink67\Security\User as Mink67User;
-use Mink67\Security\User\OAuthUser;
+use App\Security\User\OAuthUser;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use ApiPlatform\Exception\InvalidArgumentException;
 use ApiPlatform\Exception\ItemNotFoundException;
 use ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter;
 use ApiPlatform\Core\Api\IriConverterInterface;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+/**
+ * 
+ * @IsGranted("IS_AUTHENTICATED_FULLY")
+ */
 class ProductorController extends AbstractController
 {
     /**
@@ -97,6 +101,7 @@ class ProductorController extends AbstractController
          * @var OAuthUser
          */
         $user =  $this->getUser();
+        //dd($user->getNormalUsername());//getNormalUsername
         //dd($this->repository->findAll());
 
         //dd($this->getRequestParams($request, true));
@@ -203,14 +208,17 @@ class ProductorController extends AbstractController
                 );
             }
             //dd($user->getId());
-            $productor->setInvestigatorId($user->getId());
+            $productor->setInvestigatorId($user->getNormalUsername());
 
             //dd($productor);
+            //dump($productor);
             $em->flush();
 
             $itemArr = $this->transform($productor);
 
             $em->getConnection()->commit();
+            //dd();
+            #$em->getConnection()->commit();
             return new JsonResponse($itemArr, 201);
             
         } catch (Exception $err) {

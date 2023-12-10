@@ -39,6 +39,8 @@ class PersonnalIdentityData {
      */
     private $phone; //String
     /**
+     * @Assert\NotNull
+     * @Assert\NotNull
      * @var \DateTime
      */
     private $birthday; //String

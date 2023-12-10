@@ -14,4 +14,5 @@ return [
     Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
     Mink67\MultiPartDeserialize\MultiPartDeserializeBundle::class => ['all' => true],
     Mink67\Security\Mink67SecurityBundle::class => ['all' => true],
+    Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle::class => ['all' => true],
 ];

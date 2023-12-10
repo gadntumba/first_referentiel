@@ -235,7 +235,10 @@ class Productor
 
     #[ORM\Column(length: 255)]
     private ?string $investigatorId = null;
-
+    /**
+     * @Groups({"read:productor:activities_data","read:collection","write:Productor"})
+     * 
+     */
     #[ORM\OneToMany(mappedBy: 'productor', targetEntity: EntrepreneurialActivity::class)]
     private Collection $entrepreneurialActivities;
 

@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use App\Validators\Util\Util;
 use App\Entity\Productor as EntityProductor;
+use App\Services\FileUploader;
 
 class ActivityData {
 
@@ -31,7 +32,8 @@ class ActivityData {
     public function __construct(
         DenormalizerInterface $denormalizer, 
         private ValidatorInterface $validator,
-        IriConverterInterface $iriConverter
+        IriConverterInterface $iriConverter,
+        private FileUploader $fileUploader
     )
     {
         $this->denormalizer = $denormalizer;
@@ -332,12 +334,12 @@ class ActivityData {
         $activities = $this->getEntrepreneurships();
 
         foreach ($activities as $key => $activity) {
-            
             if ($activity instanceof EntrepreneurialActivity) {                
                 $activity->setProductor($productor);
             }
 
         }
+        //dd($productor);
         
         return $productor;
         
@@ -353,22 +355,31 @@ class ActivityData {
 
     /**
      * Set the value of entrepreneurships
+     * @param EntrepreneurialActivity[] $entrepreneurships
      *
      * @return  self
      */ 
     public function setEntrepreneurships($entrepreneurships)
     {
+        /**
+         * @var EntrepreneurialActivity[]
+         */
         $this->entrepreneurships = $entrepreneurships;
         $newEntrepreneurships = [];
   
         foreach ($entrepreneurships as $key => $entrepreneurship) {
             //dump($entrepreneurship);
             try {
+                /**
+                 * @var EntrepreneurialActivity
+                 */
                 $entrepreneurship = $this->denormalizer->denormalize($entrepreneurship, EntrepreneurialActivity::class, null, []);
                 
             } catch (\Throwable $th) {
                 throw $th;
             }
+            //fileUploader
+            $entrepreneurship->setDocumentPath($this->fileUploader->upload($entrepreneurship->getDocumentPhoto()) );
 
             //dd($entrepreneurship);
             if (!($entrepreneurship instanceof EntrepreneurialActivity)) {

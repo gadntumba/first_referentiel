@@ -404,6 +404,8 @@ class Productor {
         $productor = $this->getActivityDataEntity()->addAgricuturalsActivities($productor);
         $productor = $this->getActivityDataEntity()->addFichingsActivities($productor);
         $productor = $this->getActivityDataEntity()->addStockRaisingsActivities($productor);
+        $productor = $this->getActivityDataEntity()->addEntreneurialActivities($productor);
+        //
 
         return $productor;
         

@@ -7,6 +7,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\EntrepreneurialActivity\ProductDisplayModeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductDisplayModeRepository::class)]
@@ -16,9 +17,11 @@ class ProductDisplayMode
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     private ?string $wording = null;
 
     #[ORM\OneToMany(mappedBy: 'productDisplayMode', targetEntity: EntrepreneurialActivity::class)]

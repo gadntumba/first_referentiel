@@ -18,11 +18,13 @@ class TurnoverRange
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
     #[Assert\NotNull()]
+    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     private ?string $wording = null;
 
     #[ORM\OneToMany(mappedBy: 'turnover', targetEntity: EntrepreneurialActivity::class)]

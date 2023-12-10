@@ -7,6 +7,7 @@ use App\Entity\EntrepreneurialActivity;
 use App\Repository\EntrepreneurialActivity\LegalStatusRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LegalStatusRepository::class)]
@@ -16,9 +17,11 @@ class LegalStatus
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     private ?string $wording = null;
 
     #[ORM\OneToMany(mappedBy: 'legalStatus', targetEntity: EntrepreneurialActivity::class)]
