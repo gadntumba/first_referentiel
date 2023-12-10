@@ -20,11 +20,8 @@ class LoginController extends AbstractController
     ): Response
     {
         //dd($request->headers->get("content-type"));
-        if ($request->headers->get("content-type") == "application/json") {
-            $json = json_decode($request->getContent(), true);
-        }else {
-            $form = $request->request->all();
-        }
+        $json = json_decode($request->getContent(), true);
+        $form = $request->request->all();
         $data = array_merge($json, $form);
         $data["grant_type"] = "password";
         $data["client_id"] = $this->getParameter("oauth_client_id");
