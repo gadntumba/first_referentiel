@@ -34,6 +34,7 @@ class Productor {
      * 
      */
     private $activityDataEntity; //ActivityData
+
     private $monitor; //Monitor
     /**
      * @var DenormalizerInterface
@@ -432,6 +433,14 @@ class Productor {
     {
         return $this->getActivityDataEntity()->getFichings();
     }
+    /**
+     * Get the value of StockRaisings
+    */ 
+    public function getEntrepreneurships()
+    {
+        return $this->getActivityDataEntity()->getEntrepreneurships();
+    }
+    //getEntrepreneurships
 
     public function getLatitude()
     {

@@ -236,6 +236,9 @@ class Productor
     #[ORM\Column(length: 255)]
     private ?string $investigatorId = null;
 
+    #[ORM\OneToMany(mappedBy: 'productor', targetEntity: EntrepreneurialActivity::class)]
+    private Collection $entrepreneurialActivities;
+
     public function __construct()
     {
         $this->AgriculturalActivity = new ArrayCollection();
@@ -243,6 +246,7 @@ class Productor
         $this->fichingactivity = new ArrayCollection();
         $this->raisingactivity = new ArrayCollection();
         $this->smartphone = new ArrayCollection();
+        $this->entrepreneurialActivities = new ArrayCollection();
         
     }
 
@@ -637,6 +641,36 @@ class Productor
     public function setInvestigatorId(string $investigatorId): self
     {
         $this->investigatorId = $investigatorId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EntrepreneurialActivity>
+     */
+    public function getEntrepreneurialActivities(): Collection
+    {
+        return $this->entrepreneurialActivities;
+    }
+
+    public function addEntrepreneurialActivity(EntrepreneurialActivity $entrepreneurialActivity): static
+    {
+        if (!$this->entrepreneurialActivities->contains($entrepreneurialActivity)) {
+            $this->entrepreneurialActivities->add($entrepreneurialActivity);
+            $entrepreneurialActivity->setProductor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEntrepreneurialActivity(EntrepreneurialActivity $entrepreneurialActivity): static
+    {
+        if ($this->entrepreneurialActivities->removeElement($entrepreneurialActivity)) {
+            // set the owning side to null (unless already changed)
+            if ($entrepreneurialActivity->getProductor() === $this) {
+                $entrepreneurialActivity->setProductor(null);
+            }
+        }
 
         return $this;
     }

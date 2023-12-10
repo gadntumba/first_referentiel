@@ -3,6 +3,7 @@ namespace App\Validators\Productor;
 
 use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\AgriculturalActivity;
+use App\Entity\EntrepreneurialActivity;
 use App\Entity\FichingActivity;
 use App\Entity\PieceIdentificationType;
 use App\Entity\StockRaisingActivity;
@@ -16,7 +17,7 @@ class ActivityData {
     private $agriculturals = []; //array( Agriculturals )
     private $stockRaisings = []; //array( StockRaisings )
     private $fichings = []; //array( Fichings )
-    private $entrepreneurship = [];
+    private $entrepreneurships = [];
     /**
     * @var IriConverterInterface
     */
@@ -149,6 +150,7 @@ class ActivityData {
         $errors = $this->validateAgriculturalActivity($errors);
         $errors = $this->validateFichingActivity($errors);
         $errors = $this->validateStockRaisings($errors);
+        $errors = $this->validateEntrepreneurialActivity($errors);
 
         return $errors;
 
@@ -170,12 +172,9 @@ class ActivityData {
 
 
             if (count($errorsTmp) > 0) {
-    
                 $errors["activities"] = $errors["activities"]??[];
                 $errors["activities"]["agricultural"] = $errors["activities"]["agricultural"]??[];
                 $errors["activities"]["agricultural"][$key] = Util::tranformErrorsData($errorsTmp);
-                
-            
             }
 
         }
@@ -231,6 +230,35 @@ class ActivityData {
                 $errors["activities"] = $errors["activities"]??[];
                 $errors["activities"]["fichingActivities"] = $errors["activities"]["fichingActivities"]??[];
                 $errors["activities"]["fichingActivities"][$key] = Util::tranformErrorsData($errorsTmp);
+            
+            }
+
+        }
+
+        return $errors;
+
+    }
+    /**
+    * 
+    */
+    public function validateEntrepreneurialActivity(array $errors = [])
+    {
+
+        $actitvies = $this->getEntrepreneurships();
+
+        if (is_null($actitvies)) {
+            return $errors;
+        }
+
+        foreach ($actitvies as $key => $activity) {
+
+            $errorsTmp = $this->validator->validate($activity);
+
+            if (count($errorsTmp) > 0) {
+    
+                $errors["activities"] = $errors["activities"]??[];
+                $errors["activities"]["entrepreneurialActivity"] = $errors["activities"]["entrepreneurialActivity"]??[];
+                $errors["activities"]["entrepreneurialActivity"][$key] = Util::tranformErrorsData($errorsTmp);
             
             }
 
@@ -296,24 +324,56 @@ class ActivityData {
         return $productor;
         
     }
-
     /**
-     * Get the value of entrepreneurship
-     */ 
-    public function getEntrepreneurship()
+     * 
+     */
+    public function addEntreneurialActivities(EntityProductor $productor)
     {
-        return $this->entrepreneurship;
+        $activities = $this->getEntrepreneurships();
+
+        foreach ($activities as $key => $activity) {
+            
+            if ($activity instanceof EntrepreneurialActivity) {                
+                $activity->setProductor($productor);
+            }
+
+        }
+        
+        return $productor;
+        
     }
 
     /**
-     * Set the value of entrepreneurship
+     * Get the value of entrepreneurships
+     */ 
+    public function getEntrepreneurships()
+    {
+        return $this->entrepreneurships;
+    }
+
+    /**
+     * Set the value of entrepreneurships
      *
      * @return  self
      */ 
-    public function setEntrepreneurship($entrepreneurship)
+    public function setEntrepreneurships($entrepreneurships)
     {
-        $this->entrepreneurship = $entrepreneurship;
+        $this->entrepreneurships = $entrepreneurships;
+        $newEntrepreneurships = [];
+  
+        foreach ($entrepreneurships as $key => $fiching) {
+            
+            $fiching = $this->denormalizer->denormalize($fiching, EntrepreneurialActivity::class, null, []);
 
+            //dd($fiching);
+            if (!($fiching instanceof EntrepreneurialActivity)) {
+                throw new \Exception("Not supported yet");
+            }
+
+            array_push($newEntrepreneurships, $fiching );
+        }
+
+        $this->entrepreneurships = $newEntrepreneurships;
         return $this;
     }
 }

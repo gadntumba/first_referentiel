@@ -139,6 +139,7 @@ class ProductorController extends AbstractController
 
         try {
             $productorValidator->validate();
+            dd($productorValidator);
             $productor = new Productor();
             // add the identify data
             $productor = $productorValidator->addPersonnalIdentification($productor);
@@ -169,6 +170,7 @@ class ProductorController extends AbstractController
             $agriculturals = $productorValidator->getAgriculturals();
             $fichings = $productorValidator->getFichings();
             $stockRaisings = $productorValidator->getStockRaisings();
+            $entrepreneurialChips = $productorValidator->getEntrepreneurships();
 
             foreach ($agriculturals as $key => $agricultural) {
                 //dump($agricultural);
@@ -183,6 +185,10 @@ class ProductorController extends AbstractController
             foreach ($stockRaisings as $key => $stockRaising) {
                 //dump($stockRaising);
                 $this->persistIfNotPersited($stockRaising, $em);
+            }
+            foreach ($entrepreneurialChips as $key => $entrepreneurialChip) {
+                //dump($stockRaising);
+                $this->persistIfNotPersited($entrepreneurialChip, $em);
             }
 
 

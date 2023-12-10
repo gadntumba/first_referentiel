@@ -104,10 +104,14 @@ class Territorry
     #[ORM\OneToMany(targetEntity:Supervisor::class, mappedBy:"territory", cascade:["persist"])]
     private $supervisors;
 
+    #[ORM\OneToMany(mappedBy: 'territory', targetEntity: EntrepreneurialActivity::class)]
+    private Collection $entrepreneurialActivities;
+
     public function __construct()
     {
         $this->sectors = new ArrayCollection();
         $this->supervisors = new ArrayCollection();
+        $this->entrepreneurialActivities = new ArrayCollection();
         
     }
 
@@ -205,6 +209,36 @@ class Territorry
             // set the owning side to null (unless already changed)
             if ($supervisor->getTerritory() === $this) {
                 $supervisor->setTerritory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EntrepreneurialActivity>
+     */
+    public function getEntrepreneurialActivities(): Collection
+    {
+        return $this->entrepreneurialActivities;
+    }
+
+    public function addEntrepreneurialActivity(EntrepreneurialActivity $entrepreneurialActivity): static
+    {
+        if (!$this->entrepreneurialActivities->contains($entrepreneurialActivity)) {
+            $this->entrepreneurialActivities->add($entrepreneurialActivity);
+            $entrepreneurialActivity->setTerritory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEntrepreneurialActivity(EntrepreneurialActivity $entrepreneurialActivity): static
+    {
+        if ($this->entrepreneurialActivities->removeElement($entrepreneurialActivity)) {
+            // set the owning side to null (unless already changed)
+            if ($entrepreneurialActivity->getTerritory() === $this) {
+                $entrepreneurialActivity->setTerritory(null);
             }
         }
 

@@ -93,9 +93,13 @@ class Town
     #[ORM\ManyToOne(targetEntity:City::class, inversedBy:"towns")]
     private $city;
 
+    #[ORM\OneToMany(mappedBy: 'town', targetEntity: EntrepreneurialActivity::class)]
+    private Collection $entrepreneurialActivities;
+
     public function __construct()
     {
         $this->addresses = new ArrayCollection();
+        $this->entrepreneurialActivities = new ArrayCollection();
         
     }
 
@@ -166,6 +170,36 @@ class Town
     public function setCity(?City $city): self
     {
         $this->city = $city;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EntrepreneurialActivity>
+     */
+    public function getEntrepreneurialActivities(): Collection
+    {
+        return $this->entrepreneurialActivities;
+    }
+
+    public function addEntrepreneurialActivity(EntrepreneurialActivity $entrepreneurialActivity): static
+    {
+        if (!$this->entrepreneurialActivities->contains($entrepreneurialActivity)) {
+            $this->entrepreneurialActivities->add($entrepreneurialActivity);
+            $entrepreneurialActivity->setTown($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEntrepreneurialActivity(EntrepreneurialActivity $entrepreneurialActivity): static
+    {
+        if ($this->entrepreneurialActivities->removeElement($entrepreneurialActivity)) {
+            // set the owning side to null (unless already changed)
+            if ($entrepreneurialActivity->getTown() === $this) {
+                $entrepreneurialActivity->setTown(null);
+            }
+        }
 
         return $this;
     }
