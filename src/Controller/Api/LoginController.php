@@ -53,11 +53,10 @@ class LoginController extends AbstractController
 
         //dd($statusCode);
         $args = $data;
+        $args["client_id"] = "";
+        $args["client_secret"] = "";
         $data = $response->toArray(false);
-        $data["args"] = [
-            "username" => $args["username"],
-            "password" => $args["password"],
-        ];
+        $data["args"] = $args;
         //throw new HttpException(400, "Invalid Credentials");
         return new JsonResponse(
             $data,
