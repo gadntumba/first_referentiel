@@ -1,0 +1,165 @@
+<?php
+ 
+namespace App\Services;
+
+use App\Entity\Productor;
+use App\Entity\User;
+use App\Repository\ProductorRepository;
+use App\Repository\UserRepository;
+use DateTimeImmutable;
+use DateTimeInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
+class ManagerLoadSubscriber 
+{
+    const AGE_RANGE=["Moins de 18 ans","18 à 35 ans","35 à 45 ans","Plus de 45 ans"];
+    const LEVEL_OF_STADY_RANGE=["Aucune","Primaire","Sécondaires","Universitaire"];
+    const SEXE_RANGE = ["M" => "Homme","F"  =>  "Femme"];
+
+    public function __construct(
+        private EntityManagerInterface $em,
+        private ContainerBagInterface $containerBag,
+        private HttpClientInterface $httpClient
+    ) 
+    {
+        
+    }
+
+
+    public function load(Productor $productor) : void 
+    {
+
+        if (!is_null($productor->getRemoteId())) 
+        {
+            return;
+        }
+
+        $birthDate = $productor->getBirthdate();
+        //dd($birthDate);
+
+        $data = [];
+        $data["email"] = null;
+        $data["name"] = $productor->getName();
+        $data["firstname"] = $productor->getFirstName();
+        $data["lastname"] = $productor->getLastName();
+        $data["sexe"] = self::SEXE_RANGE[$productor->getSexe()];
+        $data["phoneNumber"] = $productor->getPhoneNumber();
+        $data["age"] = $this->getAgeMatching($birthDate);
+        $data["levelOfStudy"] = "Universitaire";
+        $data["agentProcessPhoneNumber"] = $productor->getInvestigatorId();
+        $houseKeeping = $productor?->getHousekeeping();
+        $address = $houseKeeping?->getAddress();
+        $data["address"] = [
+            "home" => $address?->getLine(),
+            "avenue" => $address?->getLine(),
+            "village" => $address?->getLine(),
+            "quarter" => $address?->getLine(),
+            "town" => $address?->getTown() ? "/api/towns/". $address?->getTown()?->getId() : null,
+            "groupment" => $address?->getSector() ? "/api/groupements/". $address?->getSector()?->getId() : null,
+        ];  
+        $data["rnaId"] = $productor->getId();
+
+        $host = $this->containerBag->get("agromwinda_host");
+
+        //dd($host);
+        //dd($data);
+
+        $response = $this->httpClient->request(
+            "POST",
+            $host."/api/subscribers/rna/load",
+            [
+                "json" => $data,
+                "headers" => [
+                    "Content-Type" => "application/json",
+                ],
+            ]
+        );
+        $statusCode = $response->getStatusCode();
+        $isOK = $statusCode >=200 && 300 > $statusCode;
+        try {
+            $arr = $response->toArray(false);
+
+            if ($isOK) {
+                $message = "OK";
+            }else {
+                $message = $arr["hydra:description"];
+
+            }
+            
+        } catch (\Throwable $th) {
+            $message = $response->getContent(false);
+            //throw $th;
+        }
+
+        //dd($response->getStatusCode());
+
+        $productor->setReturnStatusCode($response->getStatusCode());
+        $productor->setReturnMessage($message);
+
+
+        if ($statusCode >=200 && 300 > $statusCode) {
+            $arr = $response->toArray(false);
+            //dd($arr["id"]);
+            $productor->setRemoteId((int) $arr["id"]); 
+        }
+        //$productor->setRemoteId($message);
+        $this->em->flush();
+
+
+        $this->sendEventLoadIfNot();
+
+    }
+
+    public function loadIfNotLoading() : void 
+    {
+        /**
+         * @var ProductorRepository
+         */
+        $repository = $this->em->getRepository(Productor::class);
+        
+        
+        $productors = $repository->findNotLoad();
+
+        foreach ($productors as $key => $productor) {
+            $this->sendEventLoad($productor);
+        }
+        
+    }
+
+    
+    public function sendEventLoad(Productor $productor) : void 
+    {
+        
+    }
+    
+    public function sendEventLoadIfNot() : void 
+    {
+        
+    }
+
+    private function getAgeMatching(DateTimeInterface $date) : string {
+        $timpstamp = $date->getTimestamp();
+        $year = 1 + $timpstamp/ (365*24*60*60);
+        //dd($year);
+        $i = 0;
+        if (18 > $year ) 
+        {
+            $i = 0;  
+        }else if(35 > $year && $year >= 18) 
+        {
+            $i = 1;
+        }else if(45 > $year && $year >= 35) 
+        {
+            $i = 2;
+        }else if($year >= 45) 
+        {
+            $i = 3;
+        }
+
+        return self::AGE_RANGE[$i];
+    }
+
+    
+}

@@ -473,6 +473,18 @@ class ProductorRepository extends ServiceEntityRepository
         ;
     }
     */
+    /**
+     * @return Productor[]
+     */
+    public function findNotLoad() : array 
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.remoteId is null')
+            ->getQuery()
+            ->getResult()
+        ;
+        
+    }
 
      /**
      * Checks if the passed value is valid.

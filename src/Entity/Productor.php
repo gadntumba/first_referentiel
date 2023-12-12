@@ -245,6 +245,12 @@ class Productor
     #[ORM\Column(nullable: true)]
     private ?int $remoteId = null;
 
+    #[ORM\Column]
+    private ?int $returnStatusCode = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $returnMessage = null;
+
     public function __construct()
     {
         $this->AgriculturalActivity = new ArrayCollection();
@@ -689,6 +695,30 @@ class Productor
     public function setRemoteId(?int $remoteId): static
     {
         $this->remoteId = $remoteId;
+
+        return $this;
+    }
+
+    public function getReturnStatusCode(): ?int
+    {
+        return $this->returnStatusCode;
+    }
+
+    public function setReturnStatusCode(int $returnStatusCode): static
+    {
+        $this->returnStatusCode = $returnStatusCode;
+
+        return $this;
+    }
+
+    public function getReturnMessage(): ?string
+    {
+        return $this->returnMessage;
+    }
+
+    public function setReturnMessage(string $returnMessage): static
+    {
+        $this->returnMessage = $returnMessage;
 
         return $this;
     }

@@ -2,6 +2,9 @@
 
 namespace App\Command;
 
+use App\Entity\Productor;
+use App\Services\ManagerLoadSubscriber;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,7 +22,11 @@ use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 )]
 class TestCommand extends Command
 {
-    public function __construct(private ContainerBagInterface $containerBag) {
+    public function __construct(
+        private ContainerBagInterface $containerBag,
+        private ManagerLoadSubscriber $managerLoadSubscriber,
+        private EntityManagerInterface $em
+    ) {
         parent::__construct();
     }
     protected function configure(): void
@@ -33,6 +40,10 @@ class TestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        $produtor = $this->em->getRepository(Productor::class)->find(10);
+        $this->managerLoadSubscriber->load($produtor);
+
+        return Command::SUCCESS;
         $publicKey = <<<EOD
         -----BEGIN PUBLIC KEY-----
         MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA00RHidTJdhlsynMnbFzg

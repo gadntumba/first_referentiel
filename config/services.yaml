@@ -10,6 +10,8 @@ parameters:
     photo_host: '%env(PHOTO_HOST)%'
     oauth_client_id: "%env(OAUTH2_CLIENT_ID)%"
     oauth_client_secret: "%env(OAUTH2CLIENT_SECRET)%"
+    agromwinda_host: "%env(AGROMWINDA_HOST)%"
+    
 
 services:
     # default configuration for services in *this* file
