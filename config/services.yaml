@@ -11,6 +11,7 @@ parameters:
     oauth_client_id: "%env(OAUTH2_CLIENT_ID)%"
     oauth_client_secret: "%env(OAUTH2CLIENT_SECRET)%"
     agromwinda_host: "%env(AGROMWINDA_HOST)%"
+    agromwinda_load_mode: "%env(AGROMWINDA_LOAD_MODE)%"
     
 
 services:

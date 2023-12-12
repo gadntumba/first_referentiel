@@ -40,8 +40,10 @@ class TestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $produtor = $this->em->getRepository(Productor::class)->find(10);
-        $this->managerLoadSubscriber->load($produtor);
+        
+        //$produtor = $this->em->getRepository(Productor::class)->find(11);
+        //$this->managerLoadSubscriber->load($produtor);
+        $this->managerLoadSubscriber->sendEventLoadIfNot();
 
         return Command::SUCCESS;
         $publicKey = <<<EOD

@@ -4,13 +4,18 @@ namespace App\Services;
 
 use App\Entity\Productor;
 use App\Entity\User;
+use App\Message\SendLoadSubscriberInAgromwinda;
 use App\Repository\ProductorRepository;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Mink67\MultiPartDeserialize\Services\MultiPartNormalizer;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class ManagerLoadSubscriber 
 {
@@ -21,7 +26,11 @@ class ManagerLoadSubscriber
     public function __construct(
         private EntityManagerInterface $em,
         private ContainerBagInterface $containerBag,
-        private HttpClientInterface $httpClient
+        private HttpClientInterface $httpClient,
+        private NormalizerInterface $normalizer,
+        private CacheManager $cacheManager,
+        private MultiPartNormalizer $multiPartNormalizer,
+        private MessageBusInterface $messageBus
     ) 
     {
         
@@ -38,10 +47,11 @@ class ManagerLoadSubscriber
 
         $birthDate = $productor->getBirthdate();
         //dd($birthDate);
+        $loadMode = $this->containerBag->get("agromwinda_load_mode") == "TEST"? "test@" : "";
 
         $data = [];
         $data["email"] = null;
-        $data["name"] = $productor->getName();
+        $data["name"] = $loadMode . $productor->getName();
         $data["firstname"] = $productor->getFirstName();
         $data["lastname"] = $productor->getLastName();
         $data["sexe"] = self::SEXE_RANGE[$productor->getSexe()];
@@ -60,6 +70,31 @@ class ManagerLoadSubscriber
             "groupment" => $address?->getSector() ? "/api/groupements/". $address?->getSector()?->getId() : null,
         ];  
         $data["rnaId"] = $productor->getId();
+        //
+
+        $images = $this->normalizer->normalize(
+            $productor, 
+            null, 
+            [
+                'groups' => ["read:producer:image"]
+            ]            
+        );
+
+        $images = $this->multiPartNormalizer->normalize($productor, $images);
+        //dd($images);
+
+
+        $photoHost = $this->containerBag->get("photo_host");
+
+        try {
+
+            $data["profilPic"] = [
+                "path" => $photoHost . $images["photoPieceOfIdentification"]["pic_identity"]
+            ];
+            
+        } catch (\Throwable $th) {
+            
+        }
 
         $host = $this->containerBag->get("agromwinda_host");
 
@@ -98,6 +133,7 @@ class ManagerLoadSubscriber
         $productor->setReturnStatusCode($response->getStatusCode());
         $productor->setReturnMessage($message);
 
+        //dd($productor);
 
         if ($statusCode >=200 && 300 > $statusCode) {
             $arr = $response->toArray(false);
@@ -107,8 +143,7 @@ class ManagerLoadSubscriber
         //$productor->setRemoteId($message);
         $this->em->flush();
 
-
-        $this->sendEventLoadIfNot();
+        //$this->sendEventLoadIfNot();
 
     }
 
@@ -123,7 +158,7 @@ class ManagerLoadSubscriber
         $productors = $repository->findNotLoad();
 
         foreach ($productors as $key => $productor) {
-            $this->sendEventLoad($productor);
+            $this->load($productor);
         }
         
     }
@@ -131,11 +166,25 @@ class ManagerLoadSubscriber
     
     public function sendEventLoad(Productor $productor) : void 
     {
+        $this->messageBus->dispatch(
+            new SendLoadSubscriberInAgromwinda($productor->getId())
+        );
         
     }
     
     public function sendEventLoadIfNot() : void 
     {
+        /**
+         * @var ProductorRepository
+         */
+        $repository = $this->em->getRepository(Productor::class);
+        
+        
+        $productors = $repository->findNotLoad();
+
+        foreach ($productors as $key => $productor) {
+            $this->sendEventLoad($productor);
+        }
         
     }
 
