@@ -379,7 +379,11 @@ class ActivityData {
                 throw $th;
             }
             //fileUploader
-            $entrepreneurship->setDocumentPath($this->fileUploader->upload($entrepreneurship->getDocumentPhoto()) );
+            if (!is_null($entrepreneurship->getDocumentPhoto())) 
+            {
+                $entrepreneurship->setDocumentPath($this->fileUploader->upload($entrepreneurship->getDocumentPhoto()) );
+                
+            }
 
             //dd($entrepreneurship);
             if (!($entrepreneurship instanceof EntrepreneurialActivity)) {
