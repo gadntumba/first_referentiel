@@ -100,8 +100,6 @@ class EntrepreneurialActivity
     #[ORM\Column]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     #[Assert\Type("int")]
-    #[Assert\Positive()]
-    #[Assert\GreaterThan(1700)]
     private $yearFirstTaxPayment = null;
 
     #[ORM\Column(nullable:true)]

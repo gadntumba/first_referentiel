@@ -265,7 +265,6 @@ class ActivityData {
             }
 
         }
-
         return $errors;
 
     }
