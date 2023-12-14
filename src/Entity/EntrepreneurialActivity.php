@@ -176,7 +176,7 @@ class EntrepreneurialActivity
     #[Assert\NotNull()]
     private ?ProductDisplayMode $productDisplayMode = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     #[Assert\Type("float")]
     #[Assert\PositiveOrZero()]
