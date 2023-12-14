@@ -145,7 +145,7 @@ class EntrepreneurialActivity
     #[Assert\NotNull()]
     private $useMicrofinance = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     private ?string $addressLine = null;
 
