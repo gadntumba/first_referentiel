@@ -79,8 +79,6 @@ class EntrepreneurialActivity
     #[Assert\Choice(options:["RCCM","F92"])]
     private ?string $documentType = null;
 
-    #[Assert\NotBlank()]
-    #[Assert\NotNull()]
     private $documentPhoto = null;
 
     #[ORM\Column(length: 255)]
@@ -101,8 +99,6 @@ class EntrepreneurialActivity
 
     #[ORM\Column]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotBlank()]
-    #[Assert\NotNull()]
     #[Assert\Type("int")]
     #[Assert\Positive()]
     #[Assert\GreaterThan(1700)]
@@ -153,8 +149,6 @@ class EntrepreneurialActivity
 
     #[ORM\Column(length: 255)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotBlank()]
-    #[Assert\NotNull()]
     private ?string $addressLine = null;
 
     #[ORM\ManyToOne(inversedBy: 'entrepreneurialActivities')]
