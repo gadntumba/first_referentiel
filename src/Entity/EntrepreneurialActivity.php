@@ -185,7 +185,7 @@ class EntrepreneurialActivity
     #[ORM\ManyToOne(inversedBy: 'entrepreneurialActivities')]
     private ?Productor $productor = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     private ?string $documentPath = null;
 
     public function getId(): ?int
