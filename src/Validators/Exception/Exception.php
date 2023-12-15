@@ -9,7 +9,7 @@ class Exception extends BaseException {
      * 
      */
     public function __construct(array $errors) {
-        parent::__construct("Validator Error");
+        parent::__construct(json_encode($errors));
         $this->errors = $errors;
     }
 

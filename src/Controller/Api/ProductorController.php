@@ -73,7 +73,8 @@ class ProductorController extends AbstractController
         NormalizerInterface $normalizer,
         OTRepository $oTRepository,
         CacheManager $imagineCacheManager,
-        MultiPartNormalizer $multiPartNormalizer
+        MultiPartNormalizer $multiPartNormalizer,
+        private LoggerInterface $logger
     )
     {
         $this->denormalizer = $denormalizer;
@@ -130,6 +131,7 @@ class ProductorController extends AbstractController
         } catch (UnexpectedValueException $th) {
             //throw $th;
             //dd($th);
+            $this->logger->error($th->getMessage());
             
             return new JsonResponse(
                 [
@@ -221,13 +223,21 @@ class ProductorController extends AbstractController
             #$em->getConnection()->commit();
             return new JsonResponse($itemArr, 201);
             
-        } catch (Exception $err) {
+        } catch (\Throwable $err) {
             $em->getConnection()->rollBack();
-
-            return new JsonResponse(
-                $err->getErrors(),
-                422
-            );
+            $this->logger->error($err->getMessage());
+            if ($err instanceof Exception) {
+                return new JsonResponse(
+                    $err->getErrors(),
+                    422
+                );
+                # code...
+            }else {
+                return new JsonResponse(
+                    $err->getMessage(),
+                    400
+                );
+            }
 
         }
 
