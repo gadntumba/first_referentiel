@@ -78,6 +78,7 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
                 $arr = [
                     "class" => $normalClass,
                     "data" => $data,
+                    "message" => $th->getMessage(),
                 ];
                 //dd($arr);
     

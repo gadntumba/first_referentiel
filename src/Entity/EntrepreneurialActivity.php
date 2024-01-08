@@ -106,28 +106,42 @@ class EntrepreneurialActivity
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     private ?string $taxeNames = null;
 
-    #[ORM\Column(nullable:true)]
+    #[ORM\Column(nullable: true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
+    private $taxeAmount = null;
+
+    #[ORM\ManyToOne(inversedBy: 'entrepreneurialActivities')]
+    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
+    private ?TaxePayMode $taxePayMode = null;
+
+    #[ORM\Column(nullable:true)]
+    ##[Groups(["read:productor:activities_data","read:fichingacollection"])]
     #[Assert\Type("float")]
-    #[Assert\PositiveOrZero()]
+    ##[Assert\PositiveOrZero()]
+    private $amountPaidDay = null;
+
+    #[ORM\Column(nullable:true)]
+    ##[Groups(["read:productor:activities_data","read:fichingacollection"])]
+    #[Assert\Type("float")]
+    ##[Assert\PositiveOrZero()]
     private $amountPaidMonth = null;
 
     #[ORM\Column(nullable:true)]
-    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
+    ##[Groups(["read:productor:activities_data","read:fichingacollection"])]
     #[Assert\Type("float")]
-    #[Assert\PositiveOrZero()]
+    ##[Assert\PositiveOrZero()]
     private  $amountPaidQuarter = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
+    ##[Groups(["read:productor:activities_data","read:fichingacollection"])]
     #[Assert\Type("float")]
-    #[Assert\PositiveOrZero()]
+    ##[Assert\PositiveOrZero()]
     private $amountPaidSemester = null;
 
     #[ORM\Column(nullable:true)]
-    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
+    ##[Groups(["read:productor:activities_data","read:fichingacollection"])]
     #[Assert\Type("float")]
-    #[Assert\PositiveOrZero()]
+    ##[Assert\PositiveOrZero()]
     private $amountPaidAnnually = null;
 
     #[ORM\Column]
@@ -176,17 +190,26 @@ class EntrepreneurialActivity
     #[Assert\NotNull()]
     private ?ProductDisplayMode $productDisplayMode = null;
 
-    #[ORM\Column(nullable:true)]
-    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\Type("float")]
-    #[Assert\PositiveOrZero()]
-    private $amountPaidDay = null;
-
     #[ORM\ManyToOne(inversedBy: 'entrepreneurialActivities')]
     private ?Productor $productor = null;
 
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $documentPath = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $taxes = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $activities = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
+    #[Assert\NotBlank()]
+    #[Assert\NotNull()]
+    #[Assert\Type("int")]
+    #[Assert\Positive()]
+    #[Assert\GreaterThan(1700)]
+    private $yearOfLegalization = null;
 
     public function getId(): ?int
     {
@@ -568,6 +591,66 @@ class EntrepreneurialActivity
     public function setDocumentPath(string $documentPath): static
     {
         $this->documentPath = $documentPath;
+
+        return $this;
+    }
+
+    public function getTaxeAmount(): ?float
+    {
+        return $this->taxeAmount;
+    }
+
+    public function setTaxeAmount($taxeAmount): static
+    {
+        $this->taxeAmount = (float) $taxeAmount;
+
+        return $this;
+    }
+
+    public function getTaxePayMode(): ?TaxePayMode
+    {
+        return $this->taxePayMode;
+    }
+
+    public function setTaxePayMode(?TaxePayMode $taxePayMode): static
+    {
+        $this->taxePayMode = $taxePayMode;
+
+        return $this;
+    }
+
+    public function getTaxes(): ?array
+    {
+        return $this->taxes;
+    }
+
+    public function setTaxes(?array $taxes): static
+    {
+        $this->taxes = $taxes;
+
+        return $this;
+    }
+
+    public function getActivities(): ?array
+    {
+        return $this->activities;
+    }
+
+    public function setActivities(?array $activities): static
+    {
+        $this->activities = $activities;
+
+        return $this;
+    }
+
+    public function getYearOfLegalization(): ?float
+    {
+        return $this->yearOfLegalization;
+    }
+
+    public function setYearOfLegalization($yearOfLegalization): static
+    {
+        $this->yearOfLegalization = (int) $yearOfLegalization;
 
         return $this;
     }
