@@ -108,3 +108,126 @@ xhr.setRequestHeader("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1Ni
 xhr.send(data);
 
 ```
+- Response
+  
+```json
+  {
+    "id": 18,
+    "latitude": 0,
+    "longitude": 0,
+    "altitude": 0,
+    "personnalIdentityData": {
+      "name": "",
+      "firstName": "Felicien",
+      "lastName": "Triller",
+      "sexe": "M",
+      "phoneNumber": "0839021131",
+      "birthdate": "1995-12-23T00:00:00+00:00",
+      "nui": "895443311",
+      "levelStudy": {
+        "id": 1,
+        "libelle": "moins de 18",
+        "iri": "\/api\/level_studies\/1"
+      },
+      "householdSize": 5
+    },
+    "pieceOfIdentificationData": {
+      "numberPieceOfIdentification": "98544-4EE4-1231",
+      "typePieceOfIdentification": {
+        "id": 1,
+        "libelle": "Carte d'electeur",
+        "iri": "\/api\/piece_identification_types\/1"
+      }
+    },
+    "activityData": {
+      "AgriculturalActivity": [],
+      "fichingactivity": [],
+      "raisingactivity": [],
+      "entrepreneurialActivities": [
+        {
+          "name": "Chez maman lili",
+          "creationYear": 2014,
+          "isRegistered": false,
+          "haveConstitutiveAct": true,
+          "haveInternalRegulations": false,
+          "haveAdministrationProceduresManual": true,
+          "haveFinanceProceduresManual": false,
+          "haveManagementConsultancy": false,
+          "haveAccounting": true,
+          "documentType": "RCCM",
+          "countVolunteerStaff": 3,
+          "countStaffPaid": 2,
+          "yearFirstTaxPayment": 2014,
+          "taxeNames": "Taxe d'avenu",
+          "taxeAmount": 3000,
+          "taxePayMode": "\/api\/taxe_pay_modes\/8",
+          "useMobileBank": false,
+          "useCommercialBank": true,
+          "useMicrofinance": false,
+          "addressLine": "mavuzi",
+          "town": "\/api\/towns\/1",
+          "territory": null,
+          "turnover": {
+            "id": 1,
+            "wording": "moins de 1 0000 000 Frac Congolais",
+            "iri": "\/api\/turnover_ranges\/1"
+          },
+          "legalStatus": {
+            "id": 1,
+            "wording": "Asbl",
+            "iri": "\/api\/legal_statuses\/1"
+          },
+          "productDisplayMode": {
+            "id": 1,
+            "wording": "Par terre",
+            "iri": "\/api\/product_display_modes\/1"
+          },
+          "yearOfLegalization": 2021,
+          "iri": "\/api\/entrepreneurial_activities\/17"
+        }
+      ]
+    },
+    "housekeeping": {
+      "id": 20,
+      "NIM": "34113713",
+      "reference": null,
+      "address": {
+        "id": 20,
+        "line": "maringa lubefu",
+        "town": {
+          "id": 1,
+          "name": "Rwashi",
+          "city": {
+            "id": 3,
+            "name": "Lubumbashi",
+            "province": {
+              "id": 4,
+              "name": "Haut-Katanga",
+              "iri": "\/api\/location\/provinces\/4"
+            },
+            "iri": "\/api\/cities\/3"
+          },
+          "iri": "\/api\/towns\/1"
+        },
+        "sector": null
+      },
+      "iri": "\/api\/house_keepings\/20"
+    },
+    "timestamp": {
+      "createdAt": "2024-01-08T14:23:53+00:00",
+      "updatedAt": "2024-01-08T14:23:53+00:00",
+      "slug": "1eeae318-d292-67d4-bc4f-3b7fbf6ee888"
+    },
+    "images": {
+      "photoPieceOfIdentification": {
+        "pic_identity": "\/media\/cache\/resolve\/pic_identity\/Capture-d-ecran-du-2023-10-08-17-03-51-659c0579f36a6.png"
+      },
+      "incumbentPhoto": {
+        "pic_producer": "\/media\/cache\/resolve\/pic_producer\/vue-bon-reception-659c0579f34e1.png"
+      }
+    },
+    "photoPath": "http:\/\/localhost:8000\/media\/cache\/resolve\/pic_producer\/vue-bon-reception-659c0579f34e1.png",
+    "photoNormalPath": "vue-bon-reception-659c0579f34e1.png"
+  }
+
+```
