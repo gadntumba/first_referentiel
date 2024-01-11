@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\EntrepreneurialActivity\Document;
 use App\Entity\EntrepreneurialActivity\LegalStatus;
 use App\Entity\EntrepreneurialActivity\ProductDisplayMode;
 use App\Entity\EntrepreneurialActivity\TurnoverRange;
 use App\Repository\EntrepreneurialActivityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -210,6 +213,15 @@ class EntrepreneurialActivity
     #[Assert\Positive()]
     #[Assert\GreaterThan(1700)]
     private $yearOfLegalization = null;
+    
+    #[ORM\OneToMany(mappedBy: 'activity', targetEntity: Document::class)]
+    #[Groups(["read:producer:document"])]
+    private Collection $documents;
+
+    public function __construct()
+    {
+        $this->documents = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -651,6 +663,36 @@ class EntrepreneurialActivity
     public function setYearOfLegalization($yearOfLegalization): static
     {
         $this->yearOfLegalization = (int) $yearOfLegalization;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Document>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(Document $document): static
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents->add($document);
+            $document->setActivity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Document $document): static
+    {
+        if ($this->documents->removeElement($document)) {
+            // set the owning side to null (unless already changed)
+            if ($document->getActivity() === $this) {
+                $document->setActivity(null);
+            }
+        }
 
         return $this;
     }

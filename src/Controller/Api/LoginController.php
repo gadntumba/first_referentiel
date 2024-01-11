@@ -21,6 +21,10 @@ class LoginController extends AbstractController
     {
         //dd($request->headers->get("content-type"));
         $json = json_decode($request->getContent(), true);
+        //dd($json);
+        if (!$json) {
+            throw new HttpException(400, "Content Error");
+        }
         $form = $request->request->all();
         $data = array_merge($json, $form);
         $data["grant_type"] = "password";

@@ -32,7 +32,11 @@ use ApiPlatform\Exception\InvalidArgumentException;
 use ApiPlatform\Exception\ItemNotFoundException;
 use ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter;
 use ApiPlatform\Core\Api\IriConverterInterface;
+use App\Entity\EntrepreneurialActivity\Document;
+use App\Services\FileUploader;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\Response;
+
 /**
  * 
  * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -74,6 +78,7 @@ class ProductorController extends AbstractController
         OTRepository $oTRepository,
         CacheManager $imagineCacheManager,
         MultiPartNormalizer $multiPartNormalizer,
+        private FileUploader $fileUploader,
         private LoggerInterface $logger
     )
     {
@@ -102,10 +107,6 @@ class ProductorController extends AbstractController
          * @var OAuthUser
          */
         $user =  $this->getUser();
-        //dd($user->getNormalUsername());//getNormalUsername
-        //dd($this->repository->findAll());
-
-        //dd($this->getRequestParams($request, true));
         
         /**
          * @var ProductorProductor
@@ -126,8 +127,6 @@ class ProductorController extends AbstractController
                 [AbstractNormalizer::OBJECT_TO_POPULATE => $productorValidator]
             );
 
-            //dd($request->files->all());
-            //dd($productorValidator);
         } catch (UnexpectedValueException $th) {
             //throw $th;
             //dd($th);
@@ -241,6 +240,78 @@ class ProductorController extends AbstractController
 
         }
 
+    }
+
+    /**
+     * @Route("/api/productors/{id}/documents", methods={"POST"}, name="productor.document")
+     * 
+     */
+    public function addDocument(
+        EntityManagerInterface $em,
+        Productor $productor,
+        Request $request
+    ) : Response 
+    {
+        //dd($productor);
+
+        try {
+
+            $requestData = $this->getRequestParams($request, true);
+
+            if (!isset($requestData["file"])) 
+            {
+                throw new HttpException(422, "You must submit file field");
+            }
+
+            $uploadedFile = $requestData["file"];
+            $entity = new Document();
+
+            /**
+             * @var Document
+             */
+            $entity = $this->denormalizer->denormalize(
+                $requestData,
+                Document::class,
+                null,
+                [AbstractNormalizer::OBJECT_TO_POPULATE => $entity]
+            );
+
+            $path = $this->fileUploader->upload($uploadedFile);
+            $activities = $productor->getEntrepreneurialActivities();
+
+            if (!isset($activities[0])) 
+            {
+                throw new HttpException(400, "Producer invalid");
+            }
+            $activity = $activities[0];
+            //dd($activities[0]);
+            //dump($productor);
+            //dd($activity->getDocuments()[0]);
+
+            $entity->setPath($path);
+            $entity->setActivity($activity);
+
+            $em->persist($entity);            
+            $em->flush();
+
+            $data = $this->normalizer->normalize(
+                $entity,
+                null,
+                [
+                    "groups" => ["read:document", "read:doc_type"]
+                ]
+            );
+
+            //dd($data);
+            return new JsonResponse($data, 201);
+            
+        } catch (\Throwable $th) 
+        {
+            throw  $th;
+            //dd($th);
+            //throw $th;
+        }
+        
     }
     /**
      * 
@@ -820,6 +891,7 @@ class ProductorController extends AbstractController
     {
         $item = $productor;
 
+
         $itemArr = $this->normalizer->normalize(
             $item, 
             null, 
@@ -895,6 +967,35 @@ class ProductorController extends AbstractController
             ]
             
         );
+
+        $itemArr['documents'] = $this->normalizer->normalize(
+            $item, 
+            null, 
+            [
+                'groups' => ["read:producer:document"]
+            ]
+            
+        );
+        if (isset($itemArr['documents']["entrepreneurialActivities"][0]["documents"])) {
+            $documents = $itemArr['documents']["entrepreneurialActivities"][0]["documents"];
+
+            $imagineCacheManager = $this->imagineCacheManager;
+
+            $documents = array_map(
+                function (array $doc) use($imagineCacheManager) {
+                    $pathKey = "path";
+                    $doc[$pathKey] = $imagineCacheManager->getBrowserPath($doc[$pathKey], "pic_producer");
+                    return $doc;
+                },
+                $documents
+            );
+            //dd($documents);
+            $itemArr['documents'] = $documents;
+        }else {
+            $itemArr['documents'] = [];
+        }
+        //dd($item);
+        //
 
         $itemArr['images'] = $this->multiPartNormalizer->normalize($item, $itemArr['images']);
 
