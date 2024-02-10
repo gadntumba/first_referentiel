@@ -1,7 +1,8 @@
 <?php
  
 namespace App\Services;
- 
+
+use Google\Cloud\Storage\StorageClient;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -13,12 +14,17 @@ class FileUploader
     private $slugger;
     private $urlHelper;
     private $relativeUploadsDir;
+    /**
+     * @var StorageClient
+     */
+    private $googleStorage;
  
-    public function __construct($publicPath, $uploadPath, SluggerInterface $slugger, UrlHelper $urlHelper)
+    public function __construct($publicPath, $uploadPath, private $googleServiceUrl, SluggerInterface $slugger, UrlHelper $urlHelper)
     {
         $this->uploadPath = $uploadPath;
         $this->slugger = $slugger;
         $this->urlHelper = $urlHelper;
+        $this->googleStorage = new StorageClient(['keyFilePath' => $googleServiceUrl]);
  
         // get uploads directory relative to public path //  "/uploads/"
         $this->relativeUploadsDir = str_replace($publicPath, '', $this->uploadPath).'/';
@@ -39,6 +45,22 @@ class FileUploader
         }
  
         return $fileName;
+    }
+
+    public function uploadGoogle(UploadedFile $file) : string 
+    {
+        $bucket        = $this->googleStorage->bucket('agromwinda_platform');
+        $obj = $bucket->upload(
+            fopen($file->getPathname(),'r'),
+            ['name' => $file->getClientOriginalName()]
+        );  
+        $fullUrl = null;
+        if($url = $obj->gcsUri()) {
+            //$image->setPath("https://storage.cloud.google.com/" . explode("gs://", $url)[1]);
+            $fullUrl = "https://storage.cloud.google.com/" . explode("gs://", $url)[1];
+        }  
+        
+        return $fullUrl;             
     }
  
     public function getuploadPath()

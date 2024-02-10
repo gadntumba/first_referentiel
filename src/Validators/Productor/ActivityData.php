@@ -380,7 +380,7 @@ class ActivityData {
             //fileUploader
             if (!is_null($entrepreneurship->getDocumentPhoto())) 
             {
-                $entrepreneurship->setDocumentPath($this->fileUploader->upload($entrepreneurship->getDocumentPhoto()) );
+                $entrepreneurship->setDocumentPath($this->fileUploader->uploadGoogle($entrepreneurship->getDocumentPhoto()) );
                 
             }
 

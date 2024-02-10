@@ -395,7 +395,7 @@ class Productor {
             throw new BadRequestHttpException(' is required');
         }
 
-        return $this->fileUploader->upload($uploadedFile);
+        return $this->fileUploader->uploadGoogle($uploadedFile);
     }
 
     public function addActivities(EntityProductor $productor)

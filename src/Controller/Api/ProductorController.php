@@ -107,7 +107,12 @@ class ProductorController extends AbstractController
          * @var OAuthUser
          */
         $user =  $this->getUser();
-        
+
+        if (!$this->isGranted("ROLE_INVESTIGATOR")) {
+          throw new HttpException(403, "No access");  
+        }
+        //dd($user->getRoles());
+
         /**
          * @var ProductorProductor
          */
@@ -119,7 +124,9 @@ class ProductorController extends AbstractController
             $logger->info('############### Start data json productor #########');
             $logger->info(\json_encode($requestData));
             $logger->info('########## End Data jso productor ##########');
-            
+            /**
+             * @var ProductorProductor
+             */
             $productorValidator = $this->denormalizer->denormalize(
                 $requestData,
                 ProductorProductor::class,
@@ -976,7 +983,7 @@ class ProductorController extends AbstractController
             ]
             
         );
-        if (isset($itemArr['documents']["entrepreneurialActivities"][0]["documents"])) {
+        /*if (isset($itemArr['documents']["entrepreneurialActivities"][0]["documents"])) {
             $documents = $itemArr['documents']["entrepreneurialActivities"][0]["documents"];
 
             $imagineCacheManager = $this->imagineCacheManager;
@@ -993,17 +1000,19 @@ class ProductorController extends AbstractController
             $itemArr['documents'] = $documents;
         }else {
             $itemArr['documents'] = [];
-        }
+        }*/
         //dd($item);
         //
 
-        $itemArr['images'] = $this->multiPartNormalizer->normalize($item, $itemArr['images']);
+        //$itemArr['images'] = $this->multiPartNormalizer->normalize($item, $itemArr['images']);
 
-        $itemArr['photoPath'] = $this->imagineCacheManager->getBrowserPath($item->getIncumbentPhoto(), "pic_producer");
+        //$itemArr['photoPath'] = $this->imagineCacheManager->getBrowserPath($item->getIncumbentPhoto(), "pic_producer");
 
-        $uri = Uri::createFromString($itemArr['photoPath']);
+        //$uri = Uri::createFromString($itemArr['photoPath']);
 
-        $itemArr['photoPath'] = $this->getParameter("photo_host").$uri->getPath();
+        //$itemArr['photoPath'] = $this->getParameter("photo_host").$uri->getPath();
+        
+        $itemArr['photoPath'] = $item->getIncumbentPhoto();
         
         $itemArr['photoNormalPath'] = $item->getIncumbentPhoto();        
 

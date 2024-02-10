@@ -78,5 +78,4 @@
 
         xhr.send(data);
         
-
 ```
