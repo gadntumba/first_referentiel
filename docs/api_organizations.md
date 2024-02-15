@@ -5,7 +5,8 @@ GET /api/organizations HTTP/1.1
 User-Agent: insomnia/8.5.1
 Content-Type: application/json
 Accept: application/json
-Host: localhost:8000
+Host: producer.surintrants.com
+
 
 ```
 
