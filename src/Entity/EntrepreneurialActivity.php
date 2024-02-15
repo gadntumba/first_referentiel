@@ -41,61 +41,49 @@ class EntrepreneurialActivity
     #[Assert\GreaterThan(1700)]
     private $creationYear = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotNull()]
     private $isRegistered = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotNull()]
     private $haveConstitutiveAct = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotNull()]
     private $haveInternalRegulations = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotNull()]
     private $haveAdministrationProceduresManual = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotNull()]
     private $haveFinanceProceduresManual = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotNull()]
     private $haveManagementConsultancy = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotNull()]
     private $haveAccounting = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotNull()]
     #[Assert\Choice(options:["RCCM","F92"])]
     private ?string $documentType = null;
 
     private $documentPhoto = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotBlank()]
-    #[Assert\NotNull()]
     #[Assert\Type("int")]
     #[Assert\PositiveOrZero()]
     private $countVolunteerStaff = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotBlank()]
-    #[Assert\NotNull()]
     #[Assert\Type("int")]
     #[Assert\PositiveOrZero()]
     private $countStaffPaid = null;
@@ -147,19 +135,16 @@ class EntrepreneurialActivity
     ##[Assert\PositiveOrZero()]
     private $amountPaidAnnually = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotNull()]
     private $useMobileBank = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotNull()]
     private $useCommercialBank = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotNull()]
     private $useMicrofinance = null;
 
     #[ORM\Column(length: 255, nullable:true)]
@@ -207,11 +192,6 @@ class EntrepreneurialActivity
 
     #[ORM\Column(nullable: true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotBlank()]
-    #[Assert\NotNull()]
-    #[Assert\Type("int")]
-    #[Assert\Positive()]
-    #[Assert\GreaterThan(1700)]
     private $yearOfLegalization = null;
     
     #[ORM\OneToMany(mappedBy: 'activity', targetEntity: Document::class)]
