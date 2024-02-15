@@ -251,6 +251,15 @@ class Productor
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $returnMessage = null;
 
+    #[ORM\ManyToOne(inversedBy: 'productors')]
+    private ?MaritalState $maritalState = null;
+    /**
+     * @Groups({"read:productor:personnal_id_data","read:collection","write:Productor"})
+     * 
+     */
+    #[ORM\ManyToOne(inversedBy: 'productors')]
+    private ?Organization $organization = null;
+
     public function __construct()
     {
         $this->AgriculturalActivity = new ArrayCollection();
@@ -719,6 +728,30 @@ class Productor
     public function setReturnMessage(string $returnMessage): static
     {
         $this->returnMessage = $returnMessage;
+
+        return $this;
+    }
+
+    public function getMaritalState(): ?MaritalState
+    {
+        return $this->maritalState;
+    }
+
+    public function setMaritalState(?MaritalState $maritalState): static
+    {
+        $this->maritalState = $maritalState;
+
+        return $this;
+    }
+
+    public function getOrganization(): ?Organization
+    {
+        return $this->organization;
+    }
+
+    public function setOrganization(?Organization $organization): static
+    {
+        $this->organization = $organization;
 
         return $this;
     }

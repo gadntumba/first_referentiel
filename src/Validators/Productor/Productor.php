@@ -370,6 +370,7 @@ class Productor {
         $productor->setNui($persIdenProduct->getNui());
         $productor->setLevelStudy($persIdenProduct->getLevelStudy());
         $productor->setHouseholdSize($persIdenProduct->getHouseholdSize());
+        $productor->setOrganization($persIdenProduct->getOrganization());
 
         return $productor;
     }

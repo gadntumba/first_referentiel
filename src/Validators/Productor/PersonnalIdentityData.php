@@ -2,6 +2,8 @@
 namespace App\Validators\Productor;
 
 use App\Entity\LevelStudy;
+use App\Entity\MaritalState;
+use App\Entity\Organization;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -68,10 +70,22 @@ class PersonnalIdentityData {
      * @var DenormalizerInterface
      */
     private $denormalizer; //int
+    /**
+     * @var MaritalState
+     */
+    private $maritalState;
+
+    /**
+     * @var Organization
+     */
+    private $organization;
+
+
 
     
     public function __construct(DenormalizerInterface $denormalizer)
     {
+        
         $this->denormalizer = $denormalizer;
     }
 
@@ -276,4 +290,54 @@ public function setLevelStudy(LevelStudy $levelStudy)
 
   return $this;
  }
+
+    /**
+     * Get the value of maritalState
+     *
+     * @return  MaritalState
+     */ 
+    public function getMaritalState()
+    {
+        return $this->maritalState;
+    }
+
+    /**
+     * Set the value of maritalState
+     *
+     * @param  MaritalState  $maritalState
+     *
+     * @return  self
+     */ 
+    public function setMaritalState(MaritalState $maritalState)
+    {
+        $this->maritalState = $maritalState;
+
+        return $this;
+    }
+
+
+
+    /**
+     * Get the value of organization
+     *
+     * @return  Organization
+     */ 
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
+    /**
+     * Set the value of organization
+     *
+     * @param  Organization  $organization
+     *
+     * @return  self
+     */ 
+    public function setOrganization(Organization $organization)
+    {
+        $this->organization = $organization;
+
+        return $this;
+    }
 }

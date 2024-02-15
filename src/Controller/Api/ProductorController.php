@@ -150,6 +150,8 @@ class ProductorController extends AbstractController
             );
         }
 
+        //dd($productorValidator);
+
         try {
             $em->getConnection()->beginTransaction();
             $productorValidator->validate();

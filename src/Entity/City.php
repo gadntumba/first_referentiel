@@ -64,6 +64,7 @@ class City
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type:"integer")]
+    #[Groups(["read:organization"])]
     private $id;
 
     /**
@@ -77,6 +78,7 @@ class City
      * })
      */
     #[ORM\Column(type:"string", length:255)]
+    #[Groups(["read:organization"])]
     private $name;
 
     /**
@@ -104,10 +106,14 @@ class City
     #[ORM\OneToMany(targetEntity:Supervisor::class, mappedBy:"city", cascade:["persist"])]
     private $supervisors;
 
+    #[ORM\OneToMany(mappedBy: 'city', targetEntity: Organization::class)]
+    private Collection $organizations;
+
     public function __construct()
     {
         $this->towns = new ArrayCollection();
         $this->supervisors = new ArrayCollection();
+        $this->organizations = new ArrayCollection();
         
     }
 
@@ -205,6 +211,36 @@ class City
             // set the owning side to null (unless already changed)
             if ($supervisor->getCity() === $this) {
                 $supervisor->setCity(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Organization>
+     */
+    public function getOrganizations(): Collection
+    {
+        return $this->organizations;
+    }
+
+    public function addOrganization(Organization $organization): static
+    {
+        if (!$this->organizations->contains($organization)) {
+            $this->organizations->add($organization);
+            $organization->setCity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrganization(Organization $organization): static
+    {
+        if ($this->organizations->removeElement($organization)) {
+            // set the owning side to null (unless already changed)
+            if ($organization->getCity() === $this) {
+                $organization->setCity(null);
             }
         }
 

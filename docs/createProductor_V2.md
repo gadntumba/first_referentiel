@@ -34,6 +34,7 @@ data.append("photoPieceOfIdentification", "/home/nkusu/Images/Capture d’écran
 data.append("activityData[entrepreneurships][0][name]", "Chez maman lili");
 // Liste des activités de l'entreprise
 data.append("activityData[entrepreneurships][0][activities][0]", "Vente des matériaux de construction");
+//
 data.append("activityData[entrepreneurships][0][activities][1]", "Vente des chaises plastiques");
 //Année de création
 data.append("activityData[entrepreneurships][0][creationYear]", "2014");
