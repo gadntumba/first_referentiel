@@ -537,6 +537,7 @@ class ProductorRepository extends ServiceEntityRepository
         }
 
         if ($filterUserDto && $filterUserDto->getCities() && count($filterUserDto->getCities()) > 0 ) {
+            //dd($filterUserDto->getCities());
             $queryBuilder->andWhere('c is not null and c.id IN (:cities)');
             $queryBuilder->setParameter('cities', $filterUserDto->getCities());
         }
@@ -550,6 +551,11 @@ class ProductorRepository extends ServiceEntityRepository
             $queryBuilder->andWhere('pr is not null and pr.id IN (:provs) or pu is not null and pu.id IN (:provs)');
             $queryBuilder->setParameter('provs', $filterUserDto->getProvinces());
         }
+
+        $query=$queryBuilder->getQuery();
+        //dump($query->getSQL());
+        //dd($query->getParameters());
+        //$query->getSQL();
 
         $criteria = Criteria::create()
             ->setFirstResult($firstResult)

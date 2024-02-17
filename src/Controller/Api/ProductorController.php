@@ -405,18 +405,22 @@ class ProductorController extends AbstractController
         $filter->setSectors(isset($arrQuery['sectors'])?$arrQuery['sectors']:[]);
         $filter->setDateStart(isset($arrQuery['datestart'])?$arrQuery['datestart']:null);
         $filter->setDateEnd(isset($arrQuery['dateend'])?$arrQuery['dateend']:null);
-
-        $paginator = $this->repository->getBooksByFavoriteAuthor($filter);
+        //dd($filter);
+        $page = isset($arrQuery['page'])?(int)$arrQuery['page']:1;
+        $paginator = $this->repository->getBooksByFavoriteAuthor($filter, $page);
         $iterotor = $paginator->getIterator();
         //$all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
         
         $data = [];
+        //$res = $paginator->getQuery()->getResult();
+
 
         //dd($all); "read:productor:level_0"
         foreach ($iterotor as $key => $item) {
             $itemArr = $this->transform($item, true);
             array_push($data, $itemArr);
         }
+        
 
         $resp = [
             "data" => $data,
