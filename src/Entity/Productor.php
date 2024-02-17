@@ -259,6 +259,12 @@ class Productor
      */
     #[ORM\ManyToOne(inversedBy: 'productors')]
     private ?Organization $organization = null;
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
+    #[ORM\Column(nullable: true)]
+    private ?bool $isActive = false;
 
     public function __construct()
     {
@@ -752,6 +758,18 @@ class Productor
     public function setOrganization(?Organization $organization): static
     {
         $this->organization = $organization;
+
+        return $this;
+    }
+
+    public function isIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(?bool $isActive): static
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

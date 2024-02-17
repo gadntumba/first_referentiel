@@ -178,9 +178,11 @@ class EntrepreneurialActivity
     private ?string $documentPath = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     private ?array $taxes = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
     private ?array $activities = null;
 
     #[ORM\Column(nullable: true)]

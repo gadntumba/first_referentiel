@@ -407,7 +407,9 @@ class ProductorController extends AbstractController
         $filter->setDateEnd(isset($arrQuery['dateend'])?$arrQuery['dateend']:null);
         //dd($filter);
         $page = isset($arrQuery['page'])?(int)$arrQuery['page']:1;
-        $paginator = $this->repository->getBooksByFavoriteAuthor($filter, $page);
+        $onlyActived = !$this->isGranted("ROLE_ADMIN");
+        //dd($onlyActived);
+        $paginator = $this->repository->getBooksByFavoriteAuthor($filter, $page, $onlyActived);
         $iterotor = $paginator->getIterator();
         //$all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
         
@@ -942,6 +944,34 @@ class ProductorController extends AbstractController
         return new JsonResponse($itemArr, 200);
         
     }
+
+    /**
+     * @Route("/api/productors/{id}/change/status", methods={"POST"}, name="productor_status")
+     */
+    public function visibled(Request $request, string $id, EntityManagerInterface $em) 
+    {
+        if (!$this->isGranted("ROLE_ADMIN")) {
+            throw new HttpException(403, "ACCESS DENIED");
+        }
+        $productor = $this->repository->find($id);
+        if (is_null($productor)) {
+            return new JsonResponse([
+                "message" => "Not found"
+            ], 404);
+        }
+        $requestData = $this->getRequestParams($request, false);
+
+        $productor->setIsActive(isset($requestData["status"])?!!$requestData["status"]:false);
+
+        $em->flush($productor);
+        $itemArr = $this->transform($productor);
+
+        //dd($itemArr);
+        return new JsonResponse($itemArr, 200);
+
+
+    }
+
  
     private function imageToBase64($path) {
         $path = $path;
@@ -1127,7 +1157,9 @@ class ProductorController extends AbstractController
         
         $itemArr['photoPath'] = $item->getIncumbentPhoto();
         
-        $itemArr['photoNormalPath'] = $item->getIncumbentPhoto();        
+        $itemArr['photoNormalPath'] = $item->getIncumbentPhoto();  
+        
+        //$taxes = $productor->;
 
         return $itemArr;
     }

@@ -488,7 +488,7 @@ class ProductorRepository extends ServiceEntityRepository
         ;
         
     }
-    public function getBooksByFavoriteAuthor(FilterUserDto $filterUserDto = null, int $page = 1): ApiPlatformPaginator
+    public function getBooksByFavoriteAuthor(FilterUserDto $filterUserDto = null, int $page = 1, bool $onlyActived = true): ApiPlatformPaginator
     {
         $firstResult = ($page -1) * self::PAGINATOR_PER_PAGE;
 
@@ -504,7 +504,11 @@ class ProductorRepository extends ServiceEntityRepository
             ->leftJoin('c.province', 'pu')
             /*->setParameter('author', $user->getFavoriteAuthor()->getId())
             ->andWhere('b.publicatedOn IS NOT NULL');*/
-            ;
+            ;   
+        if ($onlyActived) {
+            $queryBuilder->andWhere('u.isActive = :actived');
+            $queryBuilder->setParameter('actived', true);
+        }
 
         if($filterUserDto && $filterUserDto->getSearch()) {
 
