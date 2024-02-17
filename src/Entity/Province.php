@@ -77,7 +77,7 @@ class Province
      *      "read:citycollection",
      *      "write:Territory",
      *      "read:territorycollection", 
-     *      "event:kafka"
+     *      "event:kafka", "read:productor:activities_data"
      * })
      */
     #[ORM\Id]
@@ -92,7 +92,7 @@ class Province
      *      "write:Province","read:provincecollection",
      *      "read:citycollection",
      *      "read:territorycollection", 
-     *      "event:kafka"})
+     *      "event:kafka", "read:productor:activities_data"})
      * @Assert\NotBlank
      * @Assert\Length(
      *  min = 3,

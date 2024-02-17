@@ -59,7 +59,7 @@ class City
     
     /**
      * 
-     * @Groups({"read:productor:house_keeping","read:citycollection","read:towncollection", "event:kafka"})
+     * @Groups({"read:productor:house_keeping","read:citycollection","read:towncollection", "event:kafka", "read:productor:activities_data"})
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -74,7 +74,7 @@ class City
      *      "read:citycollection",
      *      "read:citycollection",
      *      "read:towncollection", 
-     *      "event:kafka"
+     *      "event:kafka", "read:productor:activities_data"
      * })
      */
     #[ORM\Column(type:"string", length:255)]
@@ -93,7 +93,7 @@ class City
      *      "write:City",
      *      "read:citycollection",
      *      "read:towncollection",
-     *      "event:kafka"
+     *      "event:kafka", "read:productor:activities_data"
      * })
      * 
      */
