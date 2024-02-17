@@ -32,14 +32,16 @@ use ApiPlatform\Exception\InvalidArgumentException;
 use ApiPlatform\Exception\ItemNotFoundException;
 use ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter;
 use ApiPlatform\Core\Api\IriConverterInterface;
+use App\Dto\FilterUserDto;
 use App\Entity\EntrepreneurialActivity\Document;
 use App\Services\FileUploader;
+use Dompdf\Dompdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * 
- * @IsGranted("IS_AUTHENTICATED_FULLY")
  */
 class ProductorController extends AbstractController
 {
@@ -76,6 +78,7 @@ class ProductorController extends AbstractController
         ProductorRepository $repository,
         NormalizerInterface $normalizer,
         OTRepository $oTRepository,
+        private HttpClientInterface $httpClient,
         CacheManager $imagineCacheManager,
         MultiPartNormalizer $multiPartNormalizer,
         private FileUploader $fileUploader,
@@ -92,6 +95,8 @@ class ProductorController extends AbstractController
     }
 
     /**
+     * 
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @Route("/api/productors", methods={"POST"}, name="productor_crate")
      */
     public function create(
@@ -253,6 +258,7 @@ class ProductorController extends AbstractController
 
     /**
      * @Route("/api/productors/{id}/documents", methods={"POST"}, name="productor.document")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * 
      */
     public function addDocument(
@@ -384,9 +390,54 @@ class ProductorController extends AbstractController
      * @Route("/api/productors", methods={"GET","HEAD"}, name="productor_list")
      * 
      */
-    public function list()
+    public function list(Request $req)
     {        
-        $all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
+        $query = $req->query;
+        //dd($query->all());
+        $arrQuery = $query->all();
+        $filter = new FilterUserDto;
+
+        $filter->setSearch(isset($arrQuery['search'])?$arrQuery['search']: null);
+        $filter->setProvinces(isset($arrQuery['provinces'])?$arrQuery['provinces']:[]);
+        $filter->setCities(isset($arrQuery['cities'])?$arrQuery['cities']:[]);
+        $filter->setTerritories(isset($arrQuery['territories'])?$arrQuery['territories']:[]);
+        $filter->setTowns(isset($arrQuery['towns'])?$arrQuery['towns']:[]);
+        $filter->setSectors(isset($arrQuery['sectors'])?$arrQuery['sectors']:[]);
+        $filter->setDateStart(isset($arrQuery['datestart'])?$arrQuery['datestart']:null);
+        $filter->setDateEnd(isset($arrQuery['dateend'])?$arrQuery['dateend']:null);
+
+        $paginator = $this->repository->getBooksByFavoriteAuthor($filter);
+        $iterotor = $paginator->getIterator();
+        //$all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
+        
+        $data = [];
+
+        //dd($all); "read:productor:level_0"
+        foreach ($iterotor as $key => $item) {
+            $itemArr = $this->transform($item, true);
+            array_push($data, $itemArr);
+        }
+
+        $resp = [
+            "data" => $data,
+            "totalItems" => $paginator->getTotalItems(),
+            "lastPage" => $paginator->getLastPage(),
+        ];
+
+
+        return new JsonResponse($resp, 200);
+    }
+    /**
+     * @Route("/api/productors/others/twig/pdf", methods={"GET","HEAD"}, name="productor_list_twig")
+     * 
+     */
+    public function listTwig()
+    {        
+        $all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 300);
+
+        return $this->render('pdf_generator/all.html.twig', [
+            'productors' => $all,
+        ]);
         
         $data = [];
 
@@ -830,6 +881,7 @@ class ProductorController extends AbstractController
 
     /**
      * @Route("/api/productors/{id}", methods={"GET","HEAD"}, name="productor_show")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function show(Request $request, string $id)
     {
@@ -840,8 +892,63 @@ class ProductorController extends AbstractController
             ], 200);
         }
         $itemArr = $this->transform($productor);
+
+        //dd($itemArr);
         return new JsonResponse($itemArr, 200);
         
+    }
+
+    /**
+     * @Route("/api/productors/{id}/pdf", methods={"GET","HEAD"}, name="productor_show_pdf")
+     */
+    public function showPdf(Request $request, string $id)
+    {
+        $productor = $this->repository->find($id);
+        if (is_null($productor)) {
+            return new JsonResponse([
+                "message" => "Not found"
+            ], 404);
+        }
+
+        $itemArr = $this->transform($productor);
+
+        if (isset($itemArr["images"]["photoPieceOfIdentification"])) {
+            $itemArr["images"]["photoPieceOfIdentification"] = $this->imageToBase64($itemArr["images"]["photoPieceOfIdentification"]);
+        }
+
+        if (isset($itemArr["images"]["incumbentPhoto"])) {
+            $itemArr["images"]["incumbentPhoto"] = $this->imageToBase64($itemArr["images"]["incumbentPhoto"]);
+        }
+
+        if (isset($itemArr["documents"]["entrepreneurialActivities"])) {
+            $typeDocs = $itemArr["documents"]["entrepreneurialActivities"];
+        }
+
+        $html =  $this->renderView('pdf_generator/index.html.twig', $itemArr);
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->render();
+         
+        return new Response (
+            $dompdf->stream('resume', ["Attachment" => false]),
+            Response::HTTP_OK,
+            ['Content-Type' => 'application/pdf']
+        );
+
+        return new JsonResponse($itemArr, 200);
+        
+    }
+ 
+    private function imageToBase64($path) {
+        $path = $path;
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        //$resp = $this->httpClient->request("GET", $path);
+        $data = $this->fileUploader->downloadGoogle($path);
+        //$data = $resp->getContent();
+        //dd($data);
+        //$data = file_get_contents($path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        return $base64;
     }
     /**
      * @Route("/api/productors/by-iri", methods={"POST"}, name="productor.iri")

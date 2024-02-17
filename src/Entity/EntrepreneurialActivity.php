@@ -160,22 +160,15 @@ class EntrepreneurialActivity
     private ?Territorry $territory = null;
 
     #[ORM\ManyToOne(inversedBy: 'entrepreneurialActivities')]
-    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotBlank()]
-    #[Assert\NotNull()]
-    #[Assert\Valid()]
+    //#[Groups(["read:productor:activities_data","read:fichingacollection"])]
     private ?TurnoverRange $turnover = null;
 
     #[ORM\ManyToOne(inversedBy: 'entrepreneurialActivities')]
-    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotBlank()]
-    #[Assert\NotNull()]
+    //#[Groups(["read:productor:activities_data","read:fichingacollection"])]
     private ?LegalStatus $legalStatus = null;
 
     #[ORM\ManyToOne(inversedBy: 'entrepreneurialActivities')]
-    #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotBlank()]
-    #[Assert\NotNull()]
+    //#[Groups(["read:productor:activities_data","read:fichingacollection"])]
     private ?ProductDisplayMode $productDisplayMode = null;
 
     #[ORM\ManyToOne(inversedBy: 'entrepreneurialActivities')]

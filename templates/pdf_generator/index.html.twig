@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Resume</title>
+</head>
+<body>
+    <div style="margin: 0 auto;display: block;width: 500px;">
+        <table width="100%" border="1">
+            {% if images.incumbentPhoto is defined %}
+                <tr>
+                    <td colspan="2">
+                        <img src="{{images.incumbentPhoto}}" style="width:200px;"> 
+                    </td>
+                </tr>
+                
+            {% endif %}
+            
+            <tr>
+                <th>Nom:</th>
+                <td>{{personnalIdentityData.name}}</td>
+            </tr>
+            <tr>
+                <th>Post Nom:</th>
+                <td>{{personnalIdentityData.lastName}}</td>
+            </tr>
+            <tr>
+                <th>Pré Nom:</th>
+                <td>{{personnalIdentityData.firstName}}</td>
+            </tr>
+            <tr>
+                <th>Numero téléphone:</th>
+                <td>{{personnalIdentityData.phoneNumber}}</td>
+            </tr>
+            <tr>
+                <th>Date de naissance:</th>
+                <td>{{personnalIdentityData.birthdate|date("d/m/Y") }}</td>
+            </tr>
+            <tr>
+                <th>Niveau d'étude:</th>
+                <td>{{personnalIdentityData.levelStudy.libelle }}</td>
+            </tr>
+            <tr>
+                <th>Taille de menage :</th>
+                <td>{{personnalIdentityData.householdSize }}</td>
+            </tr>
+            {% if housekeeping.address.town.city.province is defined %}
+                <tr>
+                    <th>Adresse physique :</th>
+                    <td>
+                        {{ housekeeping.address.line }};
+                        C\{{ housekeeping.address.town.name }};
+                        V\{{ housekeeping.address.town.city.name }};
+                        P\{{ housekeeping.address.town.city.province.name }};
+                    </td>
+                </tr>
+
+            {% endif %}
+            
+            <tr>
+                <th>Adresse physique :</th>
+                <td></td>
+            </tr>
+            {% if personnalIdentityData.organization is defined and personnalIdentityData.organization is not null %}
+                <tr>
+                    <th>Organization :</th>
+                    <td>{{personnalIdentityData.organization.name }}</td>
+                </tr>
+            {% else %}
+                
+            <tr>
+                <th>Organisation :</th>
+                <td>Pas d'organisation</td>
+            </tr>
+            
+            {% endif %}
+
+            {% if images.photoPieceOfIdentification is defined %}
+                <tr>
+                    <th colspan="2">
+                        Piece d'identité
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <img src="{{images.photoPieceOfIdentification}}" style="width:200px;"> 
+                    </td>
+                </tr>
+                <tr>
+                    <th>Numéro piece :</th>
+                    <td>{{pieceOfIdentificationData.numberPieceOfIdentification }}</td>
+                </tr>
+                {% if pieceOfIdentificationData.typePieceOfIdentification is defined %}
+                    <tr>
+                        <th>Type piece :</th>
+                        <td>{{pieceOfIdentificationData.typePieceOfIdentification.libelle }}</td>
+                    </tr>
+                {% endif %}
+                
+            {% else %}
+                    <tr>
+                        <td colspan="2">
+                            Pas de piece
+                        </td>
+                    </tr>
+                      
+                
+            {% endif %}
+
+            {% if activityData.entrepreneurialActivities is defined %}
+
+                <tr>
+                    <th colspan="2">
+                        Activités
+                    </th>
+                </tr>
+                {% for activity in activityData.entrepreneurialActivities %}
+                    <tr>
+                        <th>Nom de l'entreprise :</th>
+                        <td>{{activity.name }}</td>
+                    </tr>
+                    
+                {% endfor %}
+            
+            {% endif %}
+            
+            
+            
+        </table>
+    </div>
+</body>
+</html>

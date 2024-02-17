@@ -14,7 +14,10 @@ use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Migrations\Query\Query;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Dto\FilterUserDto;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use ApiPlatform\Doctrine\Orm\Paginator as ApiPlatformPaginator;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * @method Productor|null find($id, $lockMode = null, $lockVersion = null)
@@ -485,11 +488,97 @@ class ProductorRepository extends ServiceEntityRepository
         ;
         
     }
+    public function getBooksByFavoriteAuthor(FilterUserDto $filterUserDto = null, int $page = 1): ApiPlatformPaginator
+    {
+        $firstResult = ($page -1) * self::PAGINATOR_PER_PAGE;
 
-     /**
-     * Checks if the passed value is valid.
-     *
-     * @param mixed $value The value that should be validated
-     */
+        $queryBuilder = $this->createQueryBuilder("u");
+        $queryBuilder->select('u')
+            ->leftJoin('u.housekeeping', 'h')
+            ->leftJoin('h.address', 'a')
+            ->leftJoin('a.town', 'to')
+            ->leftJoin('a.sector', 's')
+            ->leftJoin('to.city', 'c')
+            ->leftJoin('s.territorry', 'te')
+            ->leftJoin('te.province', 'pr')
+            ->leftJoin('c.province', 'pu')
+            /*->setParameter('author', $user->getFavoriteAuthor()->getId())
+            ->andWhere('b.publicatedOn IS NOT NULL');*/
+            ;
+
+        if($filterUserDto && $filterUserDto->getSearch()) {
+
+            $search = strtolower($filterUserDto->getSearch()) ;
+            $queryBuilder->andWhere('u.id LIKE :id OR lower(u.name) LIKE :name OR lower(u.lastname) LIKE :lastname OR lower(u.firstname) LIKE :firstname OR lower(u.phoneNumber) LIKE :phoneNumber')
+                ->setParameter('id', "%" .$search. "%")
+                ->setParameter('name', "%" .$search. "%")
+                ->setParameter('lastname', "%" .$search. "%")
+                ->setParameter('firstname', "%" .$search. "%")
+                ->setParameter('phoneNumber', "%" .$search. "%")
+            ;
+
+        }
+        if($filterUserDto && $filterUserDto->getDateStart() && $filterUserDto->getDateEnd()) {
+
+            $queryBuilder->andWhere('u.createdAt BETWEEN :dateStart AND :dateEnd');
+            $queryBuilder->setParameter('dateStart', $filterUserDto->getDateStart()->format("Y-m-d"));
+            $queryBuilder->setParameter('dateEnd', $filterUserDto->getDateEnd()->format("Y-m-d"));
+
+        }
+
+        if ($filterUserDto && $filterUserDto->getTowns() && count($filterUserDto->getTowns()) > 0 ) {
+            $queryBuilder->andWhere('to is not null and to.id IN (:towns)');
+            $queryBuilder->setParameter('towns', $filterUserDto->getTowns());
+        }
+
+        if ($filterUserDto && $filterUserDto->getSectors() && count($filterUserDto->getSectors()) > 0 ) {
+            $queryBuilder->andWhere('s is not null and s.id IN (:sectors)');
+            $queryBuilder->setParameter('sectors', $filterUserDto->getSectors());
+        }
+
+        if ($filterUserDto && $filterUserDto->getCities() && count($filterUserDto->getCities()) > 0 ) {
+            $queryBuilder->andWhere('c is not null and c.id IN (:cities)');
+            $queryBuilder->setParameter('cities', $filterUserDto->getCities());
+        }
+
+        if ($filterUserDto && $filterUserDto->getTerritories() && count($filterUserDto->getTerritories()) > 0 ) {
+            $queryBuilder->andWhere('te is not null and te.id IN (:te)');
+            $queryBuilder->setParameter('te', $filterUserDto->getTerritories());
+        }
+
+        if ($filterUserDto && $filterUserDto->getProvinces() && count($filterUserDto->getProvinces()) > 0 ) {
+            $queryBuilder->andWhere('pr is not null and pr.id IN (:provs) or pu is not null and pu.id IN (:provs)');
+            $queryBuilder->setParameter('provs', $filterUserDto->getProvinces());
+        }
+
+        $criteria = Criteria::create()
+            ->setFirstResult($firstResult)
+            ->setMaxResults(self::PAGINATOR_PER_PAGE);
+        $queryBuilder->addCriteria($criteria);
+
+        $doctrinePaginator = new Paginator($queryBuilder);
+        $paginator = new ApiPlatformPaginator($doctrinePaginator);
+
+        return $paginator;
+
+        /*$sub1 = $this->_em->createQueryBuilder();
+        $sub1->from(User::class, "u1");
+
+        if ($filterUserDto->getProvinces() && count($filterUserDto->getProvinces()) > 0 ) {
+            Connection::PARAM_STR_ARRAY;
+            $queryBuilder->andWhere("");
+        }
+
+        $criteria = Criteria::create()
+            ->setFirstResult($firstResult)
+            ->setMaxResults(self::ITEMS_PER_PAGE);
+        $queryBuilder->addCriteria($criteria);
+
+        $doctrinePaginator = new Paginator($queryBuilder);
+        $paginator = new ApiPlatformPaginator($doctrinePaginator);
+
+        return $paginator;*/
+    }
+
     
 }
