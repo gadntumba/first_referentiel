@@ -2,10 +2,13 @@
  
 namespace App\Services;
 
+use App\Command\InsertAgromwindaPlacesCommand;
 use App\Entity\Productor;
 use App\Entity\User;
 use App\Message\SendLoadSubscriberInAgromwinda;
 use App\Repository\ProductorRepository;
+use App\Repository\SectorRepository;
+use App\Repository\TownRepository;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -30,7 +33,10 @@ class ManagerLoadSubscriber
         private NormalizerInterface $normalizer,
         private CacheManager $cacheManager,
         private MultiPartNormalizer $multiPartNormalizer,
-        private MessageBusInterface $messageBus
+        private MessageBusInterface $messageBus,
+        private InsertAgromwindaPlacesCommand $managerMatcherLocation,
+        private TownRepository $townRepository,
+        private SectorRepository $sectorRepository,
     ) 
     {
         
@@ -61,13 +67,34 @@ class ManagerLoadSubscriber
         $data["agentProcessPhoneNumber"] = $productor->getInvestigatorId();
         $houseKeeping = $productor?->getHousekeeping();
         $address = $houseKeeping?->getAddress();
+        $iriTown = null;
+        $iriSector = null;
+
+        if ($address?->getTown()) {
+            $town = $address?->getTown();
+            $townId = $town->getId();
+            //dd($townId);
+            $res = $this->managerMatcherLocation->getParamByAppId("/towns", $townId);
+            $iriTown = "/api".$res->getIri();
+            
+        }elseif ($address?->getSector()) {
+            $sector = $address?->getSector();
+            $sectorId = $sector->getId();
+            //dd($sectorId);
+            $res = $this->managerMatcherLocation->getParamByAppId("/sectors", $sectorId);
+            $iriSector = "/api".$res->getIri();
+            
+        }
+
+        //dd("/api".$res->getIri());
+        
         $data["address"] = [
             "home" => $address?->getLine(),
             "avenue" => $address?->getLine(),
             "village" => $address?->getLine(),
             "quarter" => $address?->getLine(),
-            "town" => $address?->getTown() ? "/api/towns/". $address?->getTown()?->getId() : null,
-            "groupment" => $address?->getSector() ? "/api/groupements/". $address?->getSector()?->getId() : null,
+            "town" => $iriTown,
+            "groupment" => $iriSector,
         ];  
         $data["rnaId"] = $productor->getId();
         //

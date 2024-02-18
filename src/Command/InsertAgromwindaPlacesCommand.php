@@ -146,6 +146,34 @@ class InsertAgromwindaPlacesCommand extends Command
         return $param;
 
     }
+    /**
+     * @return Param
+     * @param string $key
+     * @throws Exception
+     * 
+     */
+    public function getParamByAppId(string $prefixIri, int $appId): ?Param
+    {
+        $conn = $this->getConnection();
+        $table = $this->getTableName();
+
+        $sql = "SELECT entity_iri, app_id FROM $table WHERE  entity_iri like :prefixIri AND app_id = :appId";
+        $stmt = $conn->prepare($sql);
+
+        $resultSet = $stmt->executeQuery(['prefixIri' => $prefixIri."%", "appId" => $appId]);
+        
+        $arrData = $resultSet->fetchAssociative();
+        
+        //dd($arrData);
+        $param = null;
+
+        if ($arrData && is_array($arrData) && isset($arrData["entity_iri"])) {
+            $param = new Param($arrData["entity_iri"], $arrData["app_id"]);
+        }
+
+        return $param;
+
+    }
     
     /**
      * @return self

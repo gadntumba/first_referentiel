@@ -3,6 +3,8 @@
 namespace App\Command;
 
 use App\Entity\Productor;
+use App\Repository\ProductorRepository;
+use App\Repository\TownRepository;
 use App\Services\ManagerLoadSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -25,7 +27,10 @@ class TestCommand extends Command
     public function __construct(
         private ContainerBagInterface $containerBag,
         private ManagerLoadSubscriber $managerLoadSubscriber,
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
+        private InsertAgromwindaPlacesCommand $managerMatcherLocation,
+        private ProductorRepository $productorRepository,
+        private TownRepository $townRepository
     ) {
         parent::__construct();
     }
@@ -40,6 +45,12 @@ class TestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        $town = $this->townRepository->findOneBy([]);
+        $townId = $town->getId();
+        //dd($townId);
+        $res = $this->managerMatcherLocation->getParamByAppId("/towns", $townId);
+
+        dd("/api".$res->getIri());
         
         //$produtor = $this->em->getRepository(Productor::class)->find(11);
         //$this->managerLoadSubscriber->load($produtor);
