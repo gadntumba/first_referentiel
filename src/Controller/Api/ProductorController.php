@@ -1126,6 +1126,79 @@ class ProductorController extends AbstractController
             ]
             
         );
+        if (isset($itemArr['activityData']["entrepreneurialActivities"][0])) 
+        {
+            $freeFieldData = $itemArr['activityData']["entrepreneurialActivities"][0];
+            
+            $otherData = [];
+
+            $otherData["stateMarital"] = isset($freeFieldData["activities"][2])? $freeFieldData["activities"][2] :null;
+            $otherData["otherIDCard"] = isset($freeFieldData["activities"][3])? $freeFieldData["activities"][3] :null;
+            $otherData["legalStatus"] = isset($freeFieldData["activities"][4])? $freeFieldData["activities"][4] :null;
+
+            $otherData["sectorAgroForestry"] = isset($freeFieldData["activities"][5])? $freeFieldData["activities"][5] : null;
+            $otherData["sectorIndustry"] = isset($freeFieldData["activities"][6])? $freeFieldData["activities"][6] : null;
+            $otherData["sectorServices"] = isset($freeFieldData["activities"][7])? $freeFieldData["activities"][7] : null;
+            $otherData["sectorGreeEconomy"] = isset($freeFieldData["activities"][8])? $freeFieldData["activities"][8] : null;
+            $otherData["otherActivitySector"] = isset($freeFieldData["activities"][9])? $freeFieldData["activities"][9] : null;
+
+            $otherData["transformFruitAndVegetableActivity"] = isset($freeFieldData["activities"][10])? $freeFieldData["activities"][10] : null;
+            $otherData["juiceMakerActivity"] = isset($freeFieldData["activities"][11])? $freeFieldData["activities"][11] : null;
+            $otherData["condimengActivity"] = isset($freeFieldData["activities"][12])? $freeFieldData["activities"][12] : null;
+            $otherData["FumageSalaisonSechageActity"] = isset($freeFieldData["activities"][13])? $freeFieldData["activities"][13] : null;
+            $otherData["otherActity"] = isset($freeFieldData["activities"][14])? $freeFieldData["activities"][14] : null;
+
+            $otherData["affiliationStructure"] = isset($freeFieldData["activities"][15])? $freeFieldData["activities"][15] : null;
+            $otherData["turneOverAmount"] = isset($freeFieldData["activities"][16])? $freeFieldData["activities"][16] : null;
+
+            $otherData["journalierStaff"] = isset($freeFieldData["activities"][17])? $freeFieldData["activities"][17] : null;
+            $otherData["pernanentStaff"] = isset($freeFieldData["activities"][55])? $freeFieldData["activities"][55] : null;
+            $otherData["familyStaff"] = isset($freeFieldData["activities"][56])? $freeFieldData["activities"][56] : null;
+
+            $otherData["concourFinancing"] = isset($freeFieldData["taxes"][18])? $freeFieldData["taxes"][18] : null;
+            $otherData["padepmeFinancing"] = isset($freeFieldData["taxes"][19])? $freeFieldData["taxes"][19] : null;
+            $otherData["otherFinancing"] = isset($freeFieldData["taxes"][20])? $freeFieldData["taxes"][20] : null;
+
+            $otherData["haveCredit"] = isset($freeFieldData["taxes"][21])? $freeFieldData["taxes"][21] : null;
+            $otherData["institutCredit"] = isset($freeFieldData["taxes"][22])? $freeFieldData["taxes"][22] : null;
+            $otherData["amountCredit"] = isset($freeFieldData["taxes"][23])? $freeFieldData["taxes"][23] : null;
+
+            $otherData["noDificuty"] = isset($freeFieldData["taxes"][24])? $freeFieldData["taxes"][24] : null;
+            $otherData["trainningDificuty"] = isset($freeFieldData["taxes"][25])? $freeFieldData["taxes"][25] : null;
+            $otherData["financingDificuty"] = isset($freeFieldData["taxes"][26])? $freeFieldData["taxes"][26] : null;
+            $otherData["tracaserieDificuty"] = isset($freeFieldData["taxes"][27])? $freeFieldData["taxes"][27] : null;
+            $otherData["marketAccessDificuty"] = isset($freeFieldData["taxes"][28])? $freeFieldData["taxes"][28] : null;
+            $otherData["productionDificuty"] = isset($freeFieldData["taxes"][29])? $freeFieldData["taxes"][29] : null;
+            $otherData["otherDificuty"] = isset($freeFieldData["taxes"][30])? $freeFieldData["taxes"][30] : null;
+
+            $otherData["activityLinkwasteProcessing"] = isset($freeFieldData["taxes"][31])? $freeFieldData["taxes"][31] : null;
+            $otherData["activityLinkImprovedStoves"] = isset($freeFieldData["taxes"][32])? $freeFieldData["taxes"][32] : null;
+            $otherData["activityLinkRecycling"] = isset($freeFieldData["taxes"][33])? $freeFieldData["taxes"][33] : null;
+            $otherData["otherActivityLink"] = isset($freeFieldData["taxes"][34])? $freeFieldData["taxes"][34] : null;
+
+            $otherData["indidualCustomer"] = isset($freeFieldData["activities"][35])? $freeFieldData["activities"][35] : null;
+            $otherData["supermarketCustomer"] = isset($freeFieldData["activities"][36])? $freeFieldData["activities"][36] : null;
+            $otherData["businessCustomer"] = isset($freeFieldData["activities"][37])? $freeFieldData["activities"][37] : null;
+            $otherData["onLineCustomer"] = isset($freeFieldData["activities"][38])? $freeFieldData["activities"][38] : null;
+            $otherData["dealerCustomer"] = isset($freeFieldData["activities"][39])? $freeFieldData["activities"][39] : null;
+            $otherData["otherCustomer"] = isset($freeFieldData["activities"][40])? $freeFieldData["activities"][40] : null;
+
+            $otherData["visionManyBranches"] = isset($freeFieldData["activities"][41])? $freeFieldData["activities"][41] : null;
+            $otherData["visionDiversifyClient"] = isset($freeFieldData["activities"][42])? $freeFieldData["activities"][42] : null;
+            $otherData["visionUsePackaging"] = isset($freeFieldData["activities"][43])? $freeFieldData["activities"][43] : null;
+            $otherData["visionInprouveTurneOver"] = isset($freeFieldData["activities"][44])? $freeFieldData["activities"][44] : null;
+            $otherData["visionMakeFactory"] = isset($freeFieldData["activities"][45])? $freeFieldData["activities"][45] : null;
+            $otherData["visionOther"] = isset($freeFieldData["activities"][46])? $freeFieldData["activities"][46] : null;
+
+
+            $otherData["otherContectNames"] = isset($freeFieldData["activities"][47])? $freeFieldData["activities"][47] : null;
+            $otherData["otherContectPhoneNumber"] = isset($freeFieldData["activities"][48])? $freeFieldData["activities"][48] : null;
+            $otherData["otherContectAddress"] = isset($freeFieldData["activities"][49])? $freeFieldData["activities"][49] : null;
+
+            $otherData["instigatorOpinion"] = isset($freeFieldData["activities"][50])? $freeFieldData["activities"][50] : null;
+
+            $itemArr['activityData']["entrepreneurialActivities"][0]["otherData"] = $otherData;
+        }
         /*if (isset($itemArr['documents']["entrepreneurialActivities"][0]["documents"])) {
             $documents = $itemArr['documents']["entrepreneurialActivities"][0]["documents"];
 
