@@ -291,7 +291,7 @@ class ProductorController extends AbstractController
                 [AbstractNormalizer::OBJECT_TO_POPULATE => $entity]
             );
 
-            $path = $this->fileUploader->upload($uploadedFile);
+            $path = $this->fileUploader->uploadGoogle($uploadedFile);
             $activities = $productor->getEntrepreneurialActivities();
 
             if (!isset($activities[0])) 
