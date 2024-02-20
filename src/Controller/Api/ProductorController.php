@@ -34,8 +34,11 @@ use ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter;
 use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Dto\FilterUserDto;
 use App\Entity\EntrepreneurialActivity\Document;
+use App\Entity\HouseKeeping;
+use App\Services\CopyEntityValuesService;
 use App\Services\FileUploader;
 use Dompdf\Dompdf;
+use Imagine\Filter\Basic\Copy;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -82,7 +85,8 @@ class ProductorController extends AbstractController
         CacheManager $imagineCacheManager,
         MultiPartNormalizer $multiPartNormalizer,
         private FileUploader $fileUploader,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private CopyEntityValuesService $copyEntityValuesService
     )
     {
         $this->denormalizer = $denormalizer;
@@ -124,7 +128,7 @@ class ProductorController extends AbstractController
         try {
             $requestData = $this->getRequestParams($request, true);
 
-            //dd($requestData);
+           // dd($requestData);
 
             $logger->info('############### Start data json productor #########');
             $logger->info(\json_encode($requestData));
@@ -138,6 +142,8 @@ class ProductorController extends AbstractController
                 null,
                 [AbstractNormalizer::OBJECT_TO_POPULATE => $productorValidator]
             );
+
+            $phoneNumber = $productorValidator->getPersonnalIdentityData()->getPhone();
 
         } catch (UnexpectedValueException $th) {
             //throw $th;
@@ -159,13 +165,41 @@ class ProductorController extends AbstractController
 
         try {
             $em->getConnection()->beginTransaction();
+            //dd('oke');
+
+            $productor = $this->repository->findOneBy(["phoneNumber" => $phoneNumber]);
+            //dd($productor);
+
+            if (is_null($productor)) 
+            {
+                //dd("ok");
+                $productor = new Productor();  
+
+            }elseif($productor->getInvestigatorId() !=  $user->getNormalUsername()) {
+
+                throw new HttpException(422, "PhoneNumber is alrady exists");
+                
+            }
+            $em->initializeObject($productor);
+            //dump($productorValidator->getHouseKeeping()->getAddress()->getLine());
+            // add the identify data
+            // add the house keeping
+            if (!is_null($productor->getHousekeeping())) {
+                //$noramlHouseKeeping = $em->getRepository(HouseKeeping::class)->find($productor->getHousekeeping()->getId());
+                //dump($noramlHouseKeeping);
+                //dd('ok');
+                $houseKeeping = $this->copyEntityValuesService->copyValues($productor->getHousekeeping(), $productorValidator->getHouseKeeping());
+                //dd($houseKeeping);
+                $productorValidator->setHousekeeping($houseKeeping) ;
+            }
+            $productor->setHousekeeping($productorValidator->getHouseKeeping());
+
+            //dd($productorValidator->getHouseKeeping()->getAddress()->getLine());
+
             $productorValidator->validate();
             //dd($productorValidator);
-            $productor = new Productor();
-            // add the identify data
+
             $productor = $productorValidator->addPersonnalIdentification($productor);
-            // add the house keeping
-            $productor->setHousekeeping($productorValidator->getHouseKeeping());
             // add pieceOfIdentificationData
             $productor = $productorValidator->addPieceOfIdentificationData($productor);//
             /**
@@ -228,7 +262,6 @@ class ProductorController extends AbstractController
             //dd($productor);
             //dump($productor);
             $em->flush();
-
             $itemArr = $this->transform($productor);
 
             $em->getConnection()->commit();
@@ -253,6 +286,7 @@ class ProductorController extends AbstractController
             }
 
         }
+        
 
     }
 
