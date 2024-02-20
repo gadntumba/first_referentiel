@@ -505,6 +505,10 @@ class ProductorRepository extends ServiceEntityRepository
             /*->setParameter('author', $user->getFavoriteAuthor()->getId())
             ->andWhere('b.publicatedOn IS NOT NULL');*/
             ;   
+
+            $queryBuilder->andWhere('u.isNormal = :normal');
+            $queryBuilder->setParameter('normal', true);
+            
         if ($onlyActived) {
             $queryBuilder->andWhere('u.isActive = :actived');
             $queryBuilder->setParameter('actived', true);

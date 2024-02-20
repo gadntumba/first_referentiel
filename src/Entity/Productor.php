@@ -266,6 +266,9 @@ class Productor
     #[ORM\Column(nullable: true)]
     private ?bool $isActive = false;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isNormal = null;
+
     public function __construct()
     {
         $this->AgriculturalActivity = new ArrayCollection();
@@ -770,6 +773,18 @@ class Productor
     public function setIsActive(?bool $isActive): static
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function isIsNormal(): ?bool
+    {
+        return $this->isNormal;
+    }
+
+    public function setIsNormal(?bool $isNormal): static
+    {
+        $this->isNormal = $isNormal;
 
         return $this;
     }

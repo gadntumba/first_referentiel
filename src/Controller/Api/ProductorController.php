@@ -192,7 +192,7 @@ class ProductorController extends AbstractController
                 //dd($houseKeeping);
                 $productorValidator->setHousekeeping($houseKeeping) ;
             }
-            
+
             $productor->setHousekeeping($productorValidator->getHouseKeeping());
 
             //dd($productorValidator->getHouseKeeping()->getAddress()->getLine());
@@ -259,6 +259,7 @@ class ProductorController extends AbstractController
             }
             //dd($user->getId());
             $productor->setInvestigatorId($user->getNormalUsername());
+            $productor->setIsNormal(true);
 
             //dd($productor);
             //dump($productor);
