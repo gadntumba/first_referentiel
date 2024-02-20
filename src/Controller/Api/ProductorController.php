@@ -192,6 +192,7 @@ class ProductorController extends AbstractController
                 //dd($houseKeeping);
                 $productorValidator->setHousekeeping($houseKeeping) ;
             }
+            
             $productor->setHousekeeping($productorValidator->getHouseKeeping());
 
             //dd($productorValidator->getHouseKeeping()->getAddress()->getLine());
