@@ -259,7 +259,8 @@ class ProductorController extends AbstractController
             }
             //dd($user->getId());
             $productor->setInvestigatorId($user->getNormalUsername());
-            $productor->setIsNormal(true);
+            $isTest = $this->getParameter("agromwinda_load_mode") == "TEST"? true : false;
+            $productor->setIsNormal(!$isTest);
 
             //dd($productor);
             //dump($productor);
@@ -445,7 +446,9 @@ class ProductorController extends AbstractController
         $page = isset($arrQuery['page'])?(int)$arrQuery['page']:1;
         $onlyActived = !$this->isGranted("ROLE_ADMIN");
         //dd($onlyActived);
-        $paginator = $this->repository->getBooksByFavoriteAuthor($filter, $page, $onlyActived);
+        $isTest = $this->getParameter("agromwinda_load_mode") == "TEST"? true : false;
+
+        $paginator = $this->repository->getBooksByFavoriteAuthor($filter, $page, $onlyActived, $isTest);
         $iterotor = $paginator->getIterator();
         //$all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
         

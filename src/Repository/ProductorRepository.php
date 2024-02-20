@@ -488,7 +488,11 @@ class ProductorRepository extends ServiceEntityRepository
         ;
         
     }
-    public function getBooksByFavoriteAuthor(FilterUserDto $filterUserDto = null, int $page = 1, bool $onlyActived = true): ApiPlatformPaginator
+    public function getBooksByFavoriteAuthor(
+        FilterUserDto $filterUserDto = null, 
+        int $page = 1, bool $onlyActived = true, 
+        bool $isTest=true
+    ): ApiPlatformPaginator
     {
         $firstResult = ($page -1) * self::PAGINATOR_PER_PAGE;
 
@@ -505,10 +509,13 @@ class ProductorRepository extends ServiceEntityRepository
             /*->setParameter('author', $user->getFavoriteAuthor()->getId())
             ->andWhere('b.publicatedOn IS NOT NULL');*/
             ;   
+            //dd($isTest);
+            if (!$isTest) {
+                //dd(!$isTest);
+                $queryBuilder->andWhere('u.isNormal = :normal');
+                $queryBuilder->setParameter('normal', true);
+            }
 
-            $queryBuilder->andWhere('u.isNormal = :normal');
-            $queryBuilder->setParameter('normal', true);
-            
         if ($onlyActived) {
             $queryBuilder->andWhere('u.isActive = :actived');
             $queryBuilder->setParameter('actived', true);
