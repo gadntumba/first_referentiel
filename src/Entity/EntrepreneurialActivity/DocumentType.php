@@ -4,6 +4,7 @@ namespace App\Entity\EntrepreneurialActivity;
 
 #use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\DocumentBrut;
 use App\Repository\EntrepreneurialActivity\DocumentTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -32,9 +33,13 @@ class DocumentType
     #[ORM\OneToMany(mappedBy: 'documentType', targetEntity: Document::class)]
     private Collection $documents;
 
+    #[ORM\OneToMany(mappedBy: 'documentType', targetEntity: DocumentBrut::class)]
+    private Collection $documentBruts;
+
     public function __construct()
     {
         $this->documents = new ArrayCollection();
+        $this->documentBruts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -78,6 +83,36 @@ class DocumentType
             // set the owning side to null (unless already changed)
             if ($document->getDocumentType() === $this) {
                 $document->setDocumentType(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DocumentBrut>
+     */
+    public function getDocumentBruts(): Collection
+    {
+        return $this->documentBruts;
+    }
+
+    public function addDocumentBrut(DocumentBrut $documentBrut): static
+    {
+        if (!$this->documentBruts->contains($documentBrut)) {
+            $this->documentBruts->add($documentBrut);
+            $documentBrut->setDocumentType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocumentBrut(DocumentBrut $documentBrut): static
+    {
+        if ($this->documentBruts->removeElement($documentBrut)) {
+            // set the owning side to null (unless already changed)
+            if ($documentBrut->getDocumentType() === $this) {
+                $documentBrut->setDocumentType(null);
             }
         }
 
