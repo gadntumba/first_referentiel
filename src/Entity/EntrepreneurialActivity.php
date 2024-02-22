@@ -26,10 +26,8 @@ class EntrepreneurialActivity
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     #[Groups(["read:productor:activities_data","read:fichingacollection"])]
-    #[Assert\NotBlank()]
-    #[Assert\NotNull()]
     private ?string $name = null;
 
     #[ORM\Column]
