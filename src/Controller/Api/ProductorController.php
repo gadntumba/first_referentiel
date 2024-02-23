@@ -1015,6 +1015,7 @@ class ProductorController extends AbstractController
         $requestData = $this->getRequestParams($request, false);
 
         $productor->setIsActive(isset($requestData["status"])?!!$requestData["status"]:false);
+        $productor->setValidatorId($this->getUser()?->getNormalUsername());
 
         $em->flush($productor);
         $itemArr = $this->transform($productor);

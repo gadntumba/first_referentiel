@@ -269,6 +269,9 @@ class Productor
     #[ORM\Column(nullable: true)]
     private ?bool $isNormal = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $validatorId = null;
+
     public function __construct()
     {
         $this->AgriculturalActivity = new ArrayCollection();
@@ -785,6 +788,18 @@ class Productor
     public function setIsNormal(?bool $isNormal): static
     {
         $this->isNormal = $isNormal;
+
+        return $this;
+    }
+
+    public function getValidatorId(): ?string
+    {
+        return $this->validatorId;
+    }
+
+    public function setValidatorId(?string $validatorId): static
+    {
+        $this->validatorId = $validatorId;
 
         return $this;
     }
