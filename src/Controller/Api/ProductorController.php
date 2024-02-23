@@ -300,15 +300,29 @@ class ProductorController extends AbstractController
      */
     public function addDocument(
         EntityManagerInterface $em,
-        Productor $productor,
+         $id,
+         ProductorRepository $productorRepository,
         Request $request
     ) : Response 
     {
         //dd($productor);
+        $requestData = $this->getRequestParams($request, true);
+        $productor = $productorRepository->find($id);
+
+        if (!$productor) 
+        {
+            $phoneNumber = isset($requestData["phoneNumber"])?$requestData["phoneNumber"]:null;
+            $productor = $productorRepository->findOneBy(["phoneNumber" => $phoneNumber]);
+        }
+
+        //dd($productor);
+
+        if (!$productor) {
+            throw new HttpException(404, "productor not found");
+        }
 
         try {
 
-            $requestData = $this->getRequestParams($request, true);
 
             if (!isset($requestData["file"])) 
             {
