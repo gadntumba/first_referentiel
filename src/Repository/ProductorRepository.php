@@ -524,11 +524,11 @@ class ProductorRepository extends ServiceEntityRepository
         if($filterUserDto && $filterUserDto->getSearch()) {
 
             $search = strtolower($filterUserDto->getSearch()) ;
-            $queryBuilder->andWhere('u.id LIKE :id OR lower(u.name) LIKE :name OR lower(u.lastname) LIKE :lastname OR lower(u.firstname) LIKE :firstname OR lower(u.phoneNumber) LIKE :phoneNumber')
+            $queryBuilder->andWhere('u.id LIKE :id OR lower(u.name) LIKE :name OR lower(u.lastName) LIKE :lastName OR lower(u.firstName) LIKE :firstName OR lower(u.phoneNumber) LIKE :phoneNumber')
                 ->setParameter('id', "%" .$search. "%")
                 ->setParameter('name', "%" .$search. "%")
-                ->setParameter('lastname', "%" .$search. "%")
-                ->setParameter('firstname', "%" .$search. "%")
+                ->setParameter('lastName', "%" .$search. "%")
+                ->setParameter('firstName', "%" .$search. "%")
                 ->setParameter('phoneNumber', "%" .$search. "%")
             ;
 
