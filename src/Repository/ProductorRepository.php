@@ -601,5 +601,16 @@ class ProductorRepository extends ServiceEntityRepository
         return $paginator;*/
     }
 
+    function findIfInstigatorIsNull() : array 
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.instigator is null')
+            //->setParameter('val', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+        
+    }
+
     
 }

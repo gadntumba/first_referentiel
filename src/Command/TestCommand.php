@@ -5,6 +5,7 @@ namespace App\Command;
 use App\Entity\Productor;
 use App\Repository\ProductorRepository;
 use App\Repository\TownRepository;
+use App\Services\ManagerGetInstigator;
 use App\Services\ManagerLoadSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -30,7 +31,8 @@ class TestCommand extends Command
         private EntityManagerInterface $em,
         private InsertAgromwindaPlacesCommand $managerMatcherLocation,
         private ProductorRepository $productorRepository,
-        private TownRepository $townRepository
+        private TownRepository $townRepository,
+        private ManagerGetInstigator $managerGetInstigator
     ) {
         parent::__construct();
     }
@@ -45,6 +47,9 @@ class TestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        $this->managerGetInstigator->getIfNotExist();
+        return Command::SUCCESS;
+
         $town = $this->townRepository->findOneBy([]);
         $townId = $town->getId();
         //dd($townId);

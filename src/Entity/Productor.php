@@ -272,6 +272,9 @@ class Productor
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $validatorId = null;
 
+    #[ORM\ManyToOne(inversedBy: 'productors')]
+    private ?Instigator $instigator = null;
+
     public function __construct()
     {
         $this->AgriculturalActivity = new ArrayCollection();
@@ -800,6 +803,18 @@ class Productor
     public function setValidatorId(?string $validatorId): static
     {
         $this->validatorId = $validatorId;
+
+        return $this;
+    }
+
+    public function getInstigator(): ?Instigator
+    {
+        return $this->instigator;
+    }
+
+    public function setInstigator(?Instigator $instigator): static
+    {
+        $this->instigator = $instigator;
 
         return $this;
     }

@@ -458,12 +458,14 @@ class ProductorController extends AbstractController
         $filter->setDateEnd(isset($arrQuery['dateend'])?$arrQuery['dateend']:null);
         //dd($filter);
         $page = isset($arrQuery['page'])?(int)$arrQuery['page']:1;
-        
+
         $onlyActived = !$this->isGranted("ROLE_ADMIN") && 
             !$this->isGranted("ROLE_ANALYST") && 
             !$this->isGranted("ROLE_VOUCHER_COORDINATOR")
         ;
+
         //dd($onlyActived);
+        
         $isTest = $this->getParameter("agromwinda_load_mode") == "TEST"? true : false;
 
         $paginator = $this->repository->getBooksByFavoriteAuthor($filter, $page, $onlyActived, $isTest);
