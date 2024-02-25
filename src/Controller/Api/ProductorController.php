@@ -477,6 +477,7 @@ class ProductorController extends AbstractController
         
         $data = [];
         //$res = $paginator->getQuery()->getResult();
+        $dateNumbers = min(count($statsDays), 7);
 
         //dd($statsDay);
         //dd($stats);
@@ -494,7 +495,7 @@ class ProductorController extends AbstractController
             "totalItems" => $paginator->getTotalItems(),
             "lastPage" => $paginator->getLastPage(),
             "stats" => $stats,
-            "statsDays" => $statsDays,
+            "statsDays" => array_slice($statsDays, (-1)*$dateNumbers, $dateNumbers),
         ];
 
 

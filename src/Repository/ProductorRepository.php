@@ -699,7 +699,7 @@ class ProductorRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder("u");
 
         $queryBuilder->select(
-            "DATE_FORMAT(u.createdAt, '%d-%Y-%m') formattedDate, count(u.id) total, sum(case when u.isActive = 1 then 1 else 0 end) validated"
+            "DATE_FORMAT(u.createdAt, '%Y-%m-%d') formattedDate, count(u.id) total, sum(case when u.isActive = 1 then 1 else 0 end) validated"
             //"u"
         )
             ->leftJoin('u.housekeeping', 'h')
