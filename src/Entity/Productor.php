@@ -273,6 +273,10 @@ class Productor
     private ?string $validatorId = null;
 
     #[ORM\ManyToOne(inversedBy: 'productors')]
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
     private ?Instigator $instigator = null;
 
     public function __construct()

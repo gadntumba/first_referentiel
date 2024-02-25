@@ -7,6 +7,7 @@ use App\Repository\InstigatorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: InstigatorRepository::class)]
 #[ApiResource]
@@ -15,21 +16,45 @@ class Instigator
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
     private ?string $phoneNumber = null;
 
     #[ORM\Column]
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
     private array $location = [];
 
     #[ORM\OneToMany(mappedBy: 'instigator', targetEntity: Productor::class)]
