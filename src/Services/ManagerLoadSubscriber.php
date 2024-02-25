@@ -37,6 +37,7 @@ class ManagerLoadSubscriber
         private InsertAgromwindaPlacesCommand $managerMatcherLocation,
         private TownRepository $townRepository,
         private SectorRepository $sectorRepository,
+        private ManagerGetInstigator $managerGetInstigator
     ) 
     {
         
@@ -167,7 +168,11 @@ class ManagerLoadSubscriber
             //dd($arr["id"]);
             $productor->setRemoteId((int) $arr["id"]); 
         }
+
         //$productor->setRemoteId($message);
+
+        $this->managerGetInstigator->loadInvigotor($productor);
+
         $this->em->flush();
 
         //$this->sendEventLoadIfNot();

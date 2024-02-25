@@ -38,6 +38,7 @@ class ManagerGetInstigator
             $instigator = $this->instigatorRepository->findOneBy(["phoneNumber" => $investigatorId]);
             if (is_null($instigator) ) {
                 $instigator = $this->loadInvigotor($productorConcern);
+                dump("load instigator : " . $investigatorId);
             }
 
             $productorConcern->setInstigator($instigator);
@@ -47,6 +48,19 @@ class ManagerGetInstigator
 
         $this->em->flush();
 
+    }
+
+    function loadInvestigator(Productor $productor) {
+        $investigatorId = $productor->getInvestigatorId();
+
+        $instigator = $this->instigatorRepository->findOneBy(["phoneNumber" => $investigatorId]);
+        
+        if (is_null($instigator) ) {
+            $instigator = $this->loadInvigotor($productor);
+        }
+
+        $productor->setInstigator($instigator);
+        
     }
 
     function loadInvigotor(Productor $productor) : ?Instigator 
@@ -79,7 +93,6 @@ class ManagerGetInstigator
                 $investigator->setPhoneNumber(isset($arr["user"]["phone_number"])? $arr["user"]["phone_number"] : null);
                 $this->em->persist($investigator);
                 $this->em->flush();
-                dump("load instigator : " . $investigatorId);
                 return $investigator;
             }else {
                 return null;
