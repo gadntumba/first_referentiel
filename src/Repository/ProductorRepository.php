@@ -713,7 +713,7 @@ class ProductorRepository extends ServiceEntityRepository
             $queryBuilder->setParameter('normal', true);
         }
         $stats = $queryBuilder->getQuery()->getResult(); 
-        return array_pop($stats);
+        return $stats;
         
     }
     public function getStatsCities(bool $isTest): array
@@ -740,7 +740,7 @@ class ProductorRepository extends ServiceEntityRepository
         }
 
         $stats = $queryBuilder->getQuery()->getResult(); 
-        return array_pop($stats);
+        return $stats;
         
     }
     public function getStatsDays(bool $isTest): array
@@ -763,7 +763,7 @@ class ProductorRepository extends ServiceEntityRepository
         }
 
         $stats = $queryBuilder->getQuery()->getResult(); 
-        return array_pop($stats);
+        return $stats;
         
     }
 
