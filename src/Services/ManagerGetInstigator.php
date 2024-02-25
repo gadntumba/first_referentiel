@@ -40,6 +40,10 @@ class ManagerGetInstigator
                 $instigator = $this->loadInvigotor($productorConcern);
                 dump("load instigator : " . $investigatorId);
             }
+            if (is_null($instigator)) {
+                $instigator = $this->loadInvigotor($productorConcern, "0");  
+                dump("load instigator (with prefix 0) : " . $investigatorId);              
+            }
 
             $productorConcern->setInstigator($instigator);
 
@@ -58,14 +62,18 @@ class ManagerGetInstigator
         if (is_null($instigator) ) {
             $instigator = $this->loadInvigotor($productor);
         }
+        if (is_null($instigator)) {
+            $instigator = $this->loadInvigotor($productor, "0");
+            
+        }
 
         $productor->setInstigator($instigator);
         
     }
 
-    function loadInvigotor(Productor $productor) : ?Instigator 
+    function loadInvigotor(Productor $productor, string $prefixId="") : ?Instigator 
     {
-        $investigatorId = $productor->getInvestigatorId();
+        $investigatorId = $prefixId . $productor->getInvestigatorId();
 
         $host = $this->containerBag->get("agromwinda_host");
         $host = "https://api.agromwinda.com";
