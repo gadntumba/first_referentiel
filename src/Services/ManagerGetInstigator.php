@@ -43,7 +43,7 @@ class ManagerGetInstigator
 
             $productorConcern->setInstigator($instigator);
 
-            dump("set investigator : ".$instigator->getPhoneNumber()." in produtor : ". $productorConcern->getId());
+            dump("set investigator : ".$instigator?->getPhoneNumber()." in produtor : ". $productorConcern->getId());
         }
 
         $this->em->flush();
