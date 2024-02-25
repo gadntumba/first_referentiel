@@ -469,11 +469,17 @@ class ProductorController extends AbstractController
         $isTest = $this->getParameter("agromwinda_load_mode") == "TEST"? true : false;
 
         $paginator = $this->repository->getBooksByFavoriteAuthor($filter, $page, $onlyActived, $isTest);
+        $stats = $this->repository->getBooksByFavoriteAuthorStats($filter, $page, $onlyActived, $isTest);//
+        $statsDays = $this->repository->getBooksByFavoriteAuthorStatsDay($filter, $page, $onlyActived, $isTest);//
+        //getBooksByFavoriteAuthorStatsDay
         $iterotor = $paginator->getIterator();
         //$all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
         
         $data = [];
         //$res = $paginator->getQuery()->getResult();
+
+        //dd($statsDay);
+        //dd($stats);
 
 
         //dd($all); "read:productor:level_0"
@@ -487,6 +493,8 @@ class ProductorController extends AbstractController
             "data" => $data,
             "totalItems" => $paginator->getTotalItems(),
             "lastPage" => $paginator->getLastPage(),
+            "stats" => $stats,
+            "statsDays" => $statsDays,
         ];
 
 

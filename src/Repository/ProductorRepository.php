@@ -601,6 +601,182 @@ class ProductorRepository extends ServiceEntityRepository
         return $paginator;*/
     }
 
+
+    public function getBooksByFavoriteAuthorStats(
+        FilterUserDto $filterUserDto = null, 
+        int $page = 1, bool $onlyActived = true, 
+        bool $isTest=true
+    ): array
+    {
+        $firstResult = ($page -1) * self::PAGINATOR_PER_PAGE;
+
+        $queryBuilder = $this->createQueryBuilder("u");
+
+        $queryBuilder->select(
+            "count(u.id) total, sum(case when u.isActive = 1 then 1 else 0 end) validated"
+            //"u"
+        )
+            ->leftJoin('u.housekeeping', 'h')
+            ->leftJoin('h.address', 'a')
+            ->leftJoin('a.town', 'to')
+            ->leftJoin('a.sector', 's')
+            ->leftJoin('to.city', 'c')
+            ->leftJoin('s.territorry', 'te')
+            ->leftJoin('te.province', 'pr')
+            ->leftJoin('c.province', 'pu')
+            /*->setParameter('author', $user->getFavoriteAuthor()->getId())
+            ->andWhere('b.publicatedOn IS NOT NULL');*/
+            ;   
+            //dd($isTest);
+            if (!$isTest) {
+                //dd(!$isTest);
+                $queryBuilder->andWhere('u.isNormal = :normal');
+                $queryBuilder->setParameter('normal', true);
+            }
+
+        if ($onlyActived) {
+            $queryBuilder->andWhere('u.isActive = :actived');
+            $queryBuilder->setParameter('actived', true);
+        }
+
+        if($filterUserDto && $filterUserDto->getSearch()) {
+
+            $search = strtolower($filterUserDto->getSearch()) ;
+            $queryBuilder->andWhere('u.id LIKE :id OR lower(u.name) LIKE :name OR lower(u.lastName) LIKE :lastName OR lower(u.firstName) LIKE :firstName OR lower(u.phoneNumber) LIKE :phoneNumber')
+                ->setParameter('id', "%" .$search. "%")
+                ->setParameter('name', "%" .$search. "%")
+                ->setParameter('lastName', "%" .$search. "%")
+                ->setParameter('firstName', "%" .$search. "%")
+                ->setParameter('phoneNumber', "%" .$search. "%")
+            ;
+
+        }
+        if($filterUserDto && $filterUserDto->getDateStart() && $filterUserDto->getDateEnd()) {
+
+            $queryBuilder->andWhere('u.createdAt BETWEEN :dateStart AND :dateEnd');
+            $queryBuilder->setParameter('dateStart', $filterUserDto->getDateStart()->format("Y-m-d"));
+            $queryBuilder->setParameter('dateEnd', $filterUserDto->getDateEnd()->format("Y-m-d"));
+
+        }
+
+        if ($filterUserDto && $filterUserDto->getTowns() && count($filterUserDto->getTowns()) > 0 ) {
+            $queryBuilder->andWhere('to is not null and to.id IN (:towns)');
+            $queryBuilder->setParameter('towns', $filterUserDto->getTowns());
+        }
+
+        if ($filterUserDto && $filterUserDto->getSectors() && count($filterUserDto->getSectors()) > 0 ) {
+            $queryBuilder->andWhere('s is not null and s.id IN (:sectors)');
+            $queryBuilder->setParameter('sectors', $filterUserDto->getSectors());
+        }
+
+        if ($filterUserDto && $filterUserDto->getCities() && count($filterUserDto->getCities()) > 0 ) {
+            //dd($filterUserDto->getCities());
+            $queryBuilder->andWhere('c is not null and c.id IN (:cities)');
+            $queryBuilder->setParameter('cities', $filterUserDto->getCities());
+        }
+
+        if ($filterUserDto && $filterUserDto->getTerritories() && count($filterUserDto->getTerritories()) > 0 ) {
+            $queryBuilder->andWhere('te is not null and te.id IN (:te)');
+            $queryBuilder->setParameter('te', $filterUserDto->getTerritories());
+        }
+
+        if ($filterUserDto && $filterUserDto->getProvinces() && count($filterUserDto->getProvinces()) > 0 ) {
+            $queryBuilder->andWhere('pr is not null and pr.id IN (:provs) or pu is not null and pu.id IN (:provs)');
+            $queryBuilder->setParameter('provs', $filterUserDto->getProvinces());
+        }
+        //$queryBuilder->groupBy("")
+        $stats = $queryBuilder->getQuery()->getResult(); 
+        return array_pop($stats);
+        
+    }
+
+    public function getBooksByFavoriteAuthorStatsDay(
+        FilterUserDto $filterUserDto = null, 
+        int $page = 1, bool $onlyActived = true, 
+        bool $isTest=true
+    ): array
+    {
+        $queryBuilder = $this->createQueryBuilder("u");
+
+        $queryBuilder->select(
+            "DATE_FORMAT(u.createdAt, '%d-%Y-%m') formattedDate, count(u.id) total, sum(case when u.isActive = 1 then 1 else 0 end) validated"
+            //"u"
+        )
+            ->leftJoin('u.housekeeping', 'h')
+            ->leftJoin('h.address', 'a')
+            ->leftJoin('a.town', 'to')
+            ->leftJoin('a.sector', 's')
+            ->leftJoin('to.city', 'c')
+            ->leftJoin('s.territorry', 'te')
+            ->leftJoin('te.province', 'pr')
+            ->leftJoin('c.province', 'pu')
+            /*->setParameter('author', $user->getFavoriteAuthor()->getId())
+            ->andWhere('b.publicatedOn IS NOT NULL');*/
+            ;   
+            //dd($isTest);
+            if (!$isTest) {
+                //dd(!$isTest);
+                $queryBuilder->andWhere('u.isNormal = :normal');
+                $queryBuilder->setParameter('normal', true);
+            }
+
+        if ($onlyActived) {
+            $queryBuilder->andWhere('u.isActive = :actived');
+            $queryBuilder->setParameter('actived', true);
+        }
+
+        if($filterUserDto && $filterUserDto->getSearch()) {
+
+            $search = strtolower($filterUserDto->getSearch()) ;
+            $queryBuilder->andWhere('u.id LIKE :id OR lower(u.name) LIKE :name OR lower(u.lastName) LIKE :lastName OR lower(u.firstName) LIKE :firstName OR lower(u.phoneNumber) LIKE :phoneNumber')
+                ->setParameter('id', "%" .$search. "%")
+                ->setParameter('name', "%" .$search. "%")
+                ->setParameter('lastName', "%" .$search. "%")
+                ->setParameter('firstName', "%" .$search. "%")
+                ->setParameter('phoneNumber', "%" .$search. "%")
+            ;
+
+        }
+        if($filterUserDto && $filterUserDto->getDateStart() && $filterUserDto->getDateEnd()) {
+
+            $queryBuilder->andWhere('u.createdAt BETWEEN :dateStart AND :dateEnd');
+            $queryBuilder->setParameter('dateStart', $filterUserDto->getDateStart()->format("Y-m-d"));
+            $queryBuilder->setParameter('dateEnd', $filterUserDto->getDateEnd()->format("Y-m-d"));
+
+        }
+
+        if ($filterUserDto && $filterUserDto->getTowns() && count($filterUserDto->getTowns()) > 0 ) {
+            $queryBuilder->andWhere('to is not null and to.id IN (:towns)');
+            $queryBuilder->setParameter('towns', $filterUserDto->getTowns());
+        }
+
+        if ($filterUserDto && $filterUserDto->getSectors() && count($filterUserDto->getSectors()) > 0 ) {
+            $queryBuilder->andWhere('s is not null and s.id IN (:sectors)');
+            $queryBuilder->setParameter('sectors', $filterUserDto->getSectors());
+        }
+
+        if ($filterUserDto && $filterUserDto->getCities() && count($filterUserDto->getCities()) > 0 ) {
+            //dd($filterUserDto->getCities());
+            $queryBuilder->andWhere('c is not null and c.id IN (:cities)');
+            $queryBuilder->setParameter('cities', $filterUserDto->getCities());
+        }
+
+        if ($filterUserDto && $filterUserDto->getTerritories() && count($filterUserDto->getTerritories()) > 0 ) {
+            $queryBuilder->andWhere('te is not null and te.id IN (:te)');
+            $queryBuilder->setParameter('te', $filterUserDto->getTerritories());
+        }
+
+        if ($filterUserDto && $filterUserDto->getProvinces() && count($filterUserDto->getProvinces()) > 0 ) {
+            $queryBuilder->andWhere('pr is not null and pr.id IN (:provs) or pu is not null and pu.id IN (:provs)');
+            $queryBuilder->setParameter('provs', $filterUserDto->getProvinces());
+        }
+        $queryBuilder->groupBy("formattedDate");
+        $stats = $queryBuilder->getQuery()->getResult(); 
+        return $stats;
+        
+    }
+
+
     function findIfInstigatorIsNull() : array 
     {
         return $this->createQueryBuilder('p')
