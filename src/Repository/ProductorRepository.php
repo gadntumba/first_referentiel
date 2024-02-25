@@ -690,6 +690,83 @@ class ProductorRepository extends ServiceEntityRepository
         
     }
 
+
+
+
+    public function getStatsAll(bool $isTest): array
+    {
+
+        $queryBuilder = $this->createQueryBuilder("u");
+
+        $queryBuilder->select(
+            "count(u.id) total, sum(case when u.isActive = 1 then 1 else 0 end) validated"
+            //"u"
+        )
+        
+            /*->setParameter('author', $user->getFavoriteAuthor()->getId())
+            ->andWhere('b.publicatedOn IS NOT NULL');*/
+            ;   
+        //$queryBuilder->groupBy("")
+        if (!$isTest) {
+            //dd(!$isTest);
+            $queryBuilder->andWhere('u.isNormal = :normal');
+            $queryBuilder->setParameter('normal', true);
+        }
+        $stats = $queryBuilder->getQuery()->getResult(); 
+        return array_pop($stats);
+        
+    }
+    public function getStatsCities(bool $isTest): array
+    {
+
+        $queryBuilder = $this->createQueryBuilder("u");
+
+        $queryBuilder->select(
+            "c.id as cityId, c.name as cityName, count(u.id) total, sum(case when u.isActive = 1 then 1 else 0 end) validated"
+            //"u"
+        )
+        ->leftJoin('u.housekeeping', 'h')
+        ->leftJoin('h.address', 'a')
+        ->leftJoin('a.town', 'to')
+        ->leftJoin('to.city', 'c')
+            /*->setParameter('author', $user->getFavoriteAuthor()->getId())
+            ->andWhere('b.publicatedOn IS NOT NULL');*/
+            ;   
+        $queryBuilder->groupBy("c.id");
+        if (!$isTest) {
+            //dd(!$isTest);
+            $queryBuilder->andWhere('u.isNormal = :normal');
+            $queryBuilder->setParameter('normal', true);
+        }
+
+        $stats = $queryBuilder->getQuery()->getResult(); 
+        return array_pop($stats);
+        
+    }
+    public function getStatsDays(bool $isTest): array
+    {
+
+        $queryBuilder = $this->createQueryBuilder("u");
+
+        $queryBuilder->select(
+            "DATE_FORMAT(u.createdAt, '%Y-%m-%d') formattedDate, count(u.id) total, sum(case when u.isActive = 1 then 1 else 0 end) validated"
+            //"u"
+        )
+            /*->setParameter('author', $user->getFavoriteAuthor()->getId())
+            ->andWhere('b.publicatedOn IS NOT NULL');*/
+            ;   
+        $queryBuilder->groupBy("formattedDate");
+        if (!$isTest) {
+            //dd(!$isTest);
+            $queryBuilder->andWhere('u.isNormal = :normal');
+            $queryBuilder->setParameter('normal', true);
+        }
+
+        $stats = $queryBuilder->getQuery()->getResult(); 
+        return array_pop($stats);
+        
+    }
+
     public function getBooksByFavoriteAuthorStatsDay(
         FilterUserDto $filterUserDto = null, 
         int $page = 1, bool $onlyActived = true, 

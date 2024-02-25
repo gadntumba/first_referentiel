@@ -469,15 +469,15 @@ class ProductorController extends AbstractController
         $isTest = $this->getParameter("agromwinda_load_mode") == "TEST"? true : false;
 
         $paginator = $this->repository->getBooksByFavoriteAuthor($filter, $page, $onlyActived, $isTest);
-        $stats = $this->repository->getBooksByFavoriteAuthorStats($filter, $page, $onlyActived, $isTest);//
-        $statsDays = $this->repository->getBooksByFavoriteAuthorStatsDay($filter, $page, $onlyActived, $isTest);//
+        //$stats = $this->repository->getBooksByFavoriteAuthorStats($filter, $page, $onlyActived, $isTest);//
+        //$statsDays = $this->repository->getBooksByFavoriteAuthorStatsDay($filter, $page, $onlyActived, $isTest);//
         //getBooksByFavoriteAuthorStatsDay
         $iterotor = $paginator->getIterator();
         //$all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
         
         $data = [];
         //$res = $paginator->getQuery()->getResult();
-        $dateNumbers = min(count($statsDays), 7);
+        //$dateNumbers = min(count($statsDays), 7);
 
         //dd($statsDay);
         //dd($stats);
@@ -494,12 +494,40 @@ class ProductorController extends AbstractController
             "data" => $data,
             "totalItems" => $paginator->getTotalItems(),
             "lastPage" => $paginator->getLastPage(),
-            "stats" => $stats,
-            "statsDays" => array_slice($statsDays, (-1)*$dateNumbers, $dateNumbers),
+            //"stats" => $stats,
+            //"statsDays" => array_slice($statsDays, (-1)*$dateNumbers, $dateNumbers),
         ];
 
-
         return new JsonResponse($resp, 200);
+    }
+
+    /**
+     * @Route("/api/stats", methods={"GET","HEAD"}, name="productor_stats")
+     * 
+     */
+    public function stats(Request $req) 
+    {
+        $isTest = $this->getParameter("agromwinda_load_mode") == "TEST"? true : false;
+
+        $statsAll = $this->repository->getStatsAll($isTest);
+        $statsCities = $this->repository->getStatsCities($isTest);
+        $statsDays = $this->repository->getStatsDays($isTest);
+
+        //dump($statsAll);
+        //dump($statsCities);
+        //dump($statsDays);
+        //dd();
+        
+        return new JsonResponse(
+            [
+                "statsAll" => $statsAll,
+                "statsCities" => $statsCities,
+                "statsDays" => $statsDays,
+            ]
+            , 200);
+        //$stats = $this->repository->getBooksByFavoriteAuthorStats($filter, $page, $onlyActived, $isTest);//
+        //$statsDays = $this->repository->getBooksByFavoriteAuthorStatsDay($filter, $page, $onlyActived, $isTest);//
+        
     }
     /**
      * @Route("/api/productors/others/twig/pdf", methods={"GET","HEAD"}, name="productor_list_twig")
