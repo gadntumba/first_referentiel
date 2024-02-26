@@ -743,6 +743,34 @@ class ProductorRepository extends ServiceEntityRepository
         return $stats;
         
     }
+    public function getStatsInvestigator(bool $isTest): array
+    {
+
+        $queryBuilder = $this->createQueryBuilder("u");
+
+        $queryBuilder->select(
+            "i.id investId, i.phoneNumber investPhone, i.name instName, i.firstname investFirstname, c.id as cityId, c.name as cityName, count(u.id) total, sum(case when u.isActive = 1 then 1 else 0 end) validated"
+            //"u"
+        )
+        ->leftJoin('u.housekeeping', 'h')//instigator
+        ->leftJoin('u.instigator', 'i')//instigator
+        ->leftJoin('h.address', 'a')
+        ->leftJoin('a.town', 'to')
+        ->leftJoin('to.city', 'c')
+            /*->setParameter('author', $user->getFavoriteAuthor()->getId())
+            ->andWhere('b.publicatedOn IS NOT NULL');*/
+            ;   
+        $queryBuilder->groupBy("c.id, i.id");
+        if (!$isTest) {
+            //dd(!$isTest);
+            $queryBuilder->andWhere('u.isNormal = :normal');
+            $queryBuilder->setParameter('normal', true);
+        }
+
+        $stats = $queryBuilder->getQuery()->getResult(); 
+        return $stats;
+        
+    }
     public function getStatsDays(bool $isTest): array
     {
 

@@ -512,17 +512,18 @@ class ProductorController extends AbstractController
         $statsAll = $this->repository->getStatsAll($isTest);
         $statsCities = $this->repository->getStatsCities($isTest);
         $statsDays = $this->repository->getStatsDays($isTest);
-
+        $statsInvest = $this->repository->getStatsInvestigator($isTest);//getStatsInvestigator
         //dump($statsAll);
         //dump($statsCities);
         //dump($statsDays);
         //dd();
-        
+
         return new JsonResponse(
             [
                 "statsAll" => $statsAll,
                 "statsCities" => $statsCities,
                 "statsDays" => $statsDays,
+                "statsInvest" => $statsInvest,
             ]
             , 200);
         //$stats = $this->repository->getBooksByFavoriteAuthorStats($filter, $page, $onlyActived, $isTest);//
