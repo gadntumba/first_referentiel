@@ -1069,7 +1069,10 @@ class ProductorController extends AbstractController
         }else {
             $status = true;
         }
-        $productor->setIsActive(isset($status));
+
+        //dd($status);
+
+        $productor->setIsActive($status);
         $productor->setValidatorId($this->getUser()?->getNormalUsername());
 
         $em->flush($productor);
