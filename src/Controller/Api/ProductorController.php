@@ -1061,8 +1061,15 @@ class ProductorController extends AbstractController
             ], 404);
         }
         $requestData = $this->getRequestParams($request, false);
-
-        $productor->setIsActive(isset($requestData["status"])?!!$requestData["status"]:false);
+        if (!isset($requestData["status"]) || is_null($requestData["status"])) {
+            $status = null;
+        }
+        elseif ($requestData["status"] === false) {
+            $status = false;
+        }else {
+            $status = true;
+        }
+        $productor->setIsActive(isset($status));
         $productor->setValidatorId($this->getUser()?->getNormalUsername());
 
         $em->flush($productor);

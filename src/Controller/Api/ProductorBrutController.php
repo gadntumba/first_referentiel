@@ -22,7 +22,8 @@ class ProductorBrutController extends AbstractController
          */
         $user =  $this->getUser();
 
-        if (!$this->isGranted("ROLE_INVESTIGATOR")) {
+        if (!$this->isGranted("ROLE_INVESTIGATOR")) 
+        {
           throw new HttpException(403, "No access");  
         }
 
