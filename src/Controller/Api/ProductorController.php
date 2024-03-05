@@ -753,8 +753,6 @@ class ProductorController extends AbstractController
 
     }
 
-
-
     /**
      * 
      */
@@ -828,7 +826,6 @@ class ProductorController extends AbstractController
         return compact('datesThisWeek', 'datesPrevWeek');
 
     }
-
 
     /**
      * 
@@ -905,9 +902,6 @@ class ProductorController extends AbstractController
     }
 
     
-
-
-
     /**
      * @Route("/api/productors/stats/weeks/activities", methods={"GET","HEAD"}, name="productor_smartphone_stats_week_activities")
      */
@@ -1048,7 +1042,7 @@ class ProductorController extends AbstractController
     /**
      * @Route("/api/productors/{id}/change/status", methods={"POST"}, name="productor_status")
      */
-    public function visibled(Request $request, string $id, EntityManagerInterface $em) 
+    public function visibled(Request $request, string $id, EntityManagerInterface $em, Pusher $pusher) 
     {
         if (!$this->isGranted("ROLE_ADMIN")) 
         {
@@ -1066,13 +1060,18 @@ class ProductorController extends AbstractController
         $requestData = $this->getRequestParams($request, false);
         if (!isset($requestData["status"]) || is_null($requestData["status"])) {
             $status = null;
+
+            $obs = new Observation();
+            $obs->setTitle("Invalidation");
+            $obs->setContent("pas contenu");
+
+            $this->sendNotification($em, $obs, $productor, $pusher);
         }
         elseif ($requestData["status"] === false) {
             $status = false;
         }else {
             $status = true;
         }
-
         //dd($status);
 
         $productor->setIsActive($status);
@@ -1084,6 +1083,32 @@ class ProductorController extends AbstractController
         //dd($itemArr);
         return new JsonResponse($itemArr, 200);
 
+    }
+
+    function sendNotification(EntityManagerInterface $em, Observation $obs, Productor $productor, Pusher $pusher) : void {
+        
+        $obs->setProductor($productor);
+        $obs->setUserId($this->getUser()?->getNormalUsername());
+        
+        $em->persist($obs);
+
+        $em->flush();
+        //dd('event-'.$productor->getInvestigatorId());
+        $result = $pusher->trigger(
+            'agrodata', 
+            'event-'.$productor->getInvestigatorId(), 
+            [
+                "idObs"         => $obs->getId(),
+                "idProd"         => $productor->getId(),
+                "title"         => $obs->getTitle(),
+                "content"                   => $obs->getContent(),
+                "validatorPhone"         => $this->getUser()?->getNormalUsername(),
+                "productor"         => [
+                    "names" => $productor->getName() . " " . $productor->getFirstName(). " " . $productor->getLastName(),
+                    "phoneNumber" => $productor->getPhoneNumber(),
+                ],
+            ]
+        );
     }
 
  
@@ -1418,28 +1443,9 @@ class ProductorController extends AbstractController
         $obs = new Observation();
         $obs->setTitle(isset($requestData["title"])?$requestData["title"]: "");
         $obs->setContent(isset($requestData["content"])?$requestData["content"]: "pas contenu");
-        $obs->setUserId($productor->getInvestigatorId());
-        $obs->setProductor($productor);
+        //$obs->setUserId($productor->getInvestigatorId());
         
-        $em->persist($obs);
-
-        $em->flush();
-        //dd('event-'.$productor->getInvestigatorId());
-        $result = $pusher->trigger(
-            'agrodata', 
-            'event-'.$productor->getInvestigatorId(), 
-            [
-                "idObs"         => $obs->getId(),
-                "idProd"         => $productor->getId(),
-                "title"         => $obs->getTitle(),
-                "content"                   => $obs->getContent(),
-                "validatorPhone"         => $obs->getTitle(),
-                "productor"         => [
-                    "names" => $productor->getName() . " " . $productor->getFirstName(). " " . $productor->getLastName(),
-                    "phoneNumber" => $productor->getPhoneNumber(),
-                ],
-            ]
-        );
+        $this->sendNotification($em, $obs, $productor, $pusher);
 
         //dd($result);
 
