@@ -41,6 +41,15 @@ services:
     'app.serializer.normalizer.item.json':
         class: 'App\Serializer\ApiNormalizer'
         decorates: 'api_platform.serializer.normalizer.item'
+        
+    Pusher\Pusher:
+        arguments:
+            $auth_key: '%env(PUSHER_KEY)%'
+            $secret: '%env(PUSHER_SECRET)%'
+            $app_id: '%env(PUSHER_APP_ID)%'
+            $options:
+                cluster: '%env(PUSHER_CLUSTER)%'
+                useTLS: true
 
     App\Services\FileUploader:
         arguments:

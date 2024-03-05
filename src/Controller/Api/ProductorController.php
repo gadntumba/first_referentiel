@@ -35,13 +35,16 @@ use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Dto\FilterUserDto;
 use App\Entity\EntrepreneurialActivity\Document;
 use App\Entity\HouseKeeping;
+use App\Entity\Observation;
 use App\Services\CopyEntityValuesService;
 use App\Services\FileUploader;
 use Dompdf\Dompdf;
 use Imagine\Filter\Basic\Copy;
+use Pusher\Pusher;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 
 /**
  * 
@@ -1390,6 +1393,147 @@ class ProductorController extends AbstractController
 
 
         return new JsonResponse($data, 200);
+    }
+
+    /**
+     * @Route("/api/productors/{id}/add/obs", methods="POST", name="productor_add_obs")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    function postObservation($id, EntityManagerInterface $em, Request $request, Pusher $pusher) : Response 
+    {
+        $user = $this->getUser();
+        //dd($user->getNormalUsername());
+        $requestData = $this->getRequestParams($request);
+        /**
+         * @var Productor
+         */
+        $productor = $em->getRepository(Productor::class)->find($id);
+
+        //dd($productor->getInvestigatorId());
+
+        if (is_null($productor)) {
+            throw new HttpException(404, "Productor not found");
+        }
+
+        $obs = new Observation();
+        $obs->setTitle(isset($requestData["title"])?$requestData["title"]: "");
+        $obs->setContent(isset($requestData["content"])?$requestData["content"]: "pas contenu");
+        $obs->setUserId($productor->getInvestigatorId());
+        $obs->setProductor($productor);
+        
+        $em->persist($obs);
+
+        $em->flush();
+        //dd('event-'.$productor->getInvestigatorId());
+        $result = $pusher->trigger(
+            'agrodata', 
+            'event-'.$productor->getInvestigatorId(), 
+            [
+                "idObs"         => $obs->getId(),
+                "idProd"         => $productor->getId(),
+                "title"         => $obs->getTitle(),
+                "content"                   => $obs->getContent(),
+                "validatorPhone"         => $obs->getTitle(),
+                "productor"         => [
+                    "names" => $productor->getName() . " " . $productor->getFirstName(). " " . $productor->getLastName(),
+                    "phoneNumber" => $productor->getPhoneNumber(),
+                ],
+            ]
+        );
+
+        //dd($result);
+
+        return new JsonResponse(["message" => "Ok"], 201);
+
+    }
+
+    /**
+     * @Route("/api/productors/{id}/add/obs", methods="GET", name="productor_get_obs")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    function getObservations($id, EntityManagerInterface $em, Request $request, NormalizerInterface $normalizer) : Response 
+    {
+        //$user = $this->getUser();
+
+        $productor = $em->getRepository(Productor::class)->find($id);
+
+        if (is_null($productor)) {
+            throw new HttpException(404, "Productor not found");
+        }
+        /**
+         * @var Observation[]
+         */
+        $data = $em->getRepository(Observation::class)->findBy(["productor" => $productor]);
+        //dd($data);
+        $dataArr = array_map(
+            function (Observation $item)  {
+                return [
+                    "id" => $item->getId(),
+                    "title" => $item->getTitle(),
+                    "content" => $item->getContent(),
+                    "askAt" => $item->getAskAt(),
+                    "productor" => [
+                        "id" => $item->getProductor()?->getId(),
+                        "name" => $item->getProductor()?->getName(),
+                        "firstname" => $item->getProductor()?->getFirstName(),
+                        "lastname" => $item->getProductor()?->getLastName()
+                    ],
+                    "validator" => $item->getUserId()
+                ];
+            },
+            $data,
+        );
+
+        //$dataArr = $this->normalizer->normalize($data, null, ['groups' => ['read:observ'] ]);
+        
+        return new JsonResponse(["data" => $dataArr, "code" => 201], 201);
+
+    }
+    
+    /**
+     * @Route("/api/productors/obs/{id}/ask", methods="GET", name="productor_ask_obs")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    function getAskObservation($id, EntityManagerInterface $em, Request $request, NormalizerInterface $normalizer) : Response 
+    {
+        //$user = $this->getUser();
+        /**
+         *@var Observation 
+         */
+        $observation = $em->getRepository(Observation::class)->find($id);
+
+        if (is_null($observation)) {
+            throw new HttpException(404, "observation not found");
+        }
+
+
+        $observation->setAskAt(new \DateTime());
+
+        //$data = $em->getRepository(Observation::class)->findBy(["productor" => $productor]);
+        //dd($data);
+        //$dataArr = $normalizer->normalize($data);
+
+
+        //$em->persist($obs);
+
+        $em->flush();
+
+        $data = [
+            "id" => $observation->getId(),
+            "title" => $observation->getTitle(),
+            "content" => $observation->getContent(),
+            "askAt" => $observation->getAskAt(),
+            "productor" => [
+                "id" => $observation->getProductor()?->getId(),
+                "name" => $observation->getProductor()?->getName(),
+                "firstname" => $observation->getProductor()?->getFirstName(),
+                "lastname" => $observation->getProductor()?->getLastName()
+            ],
+            "validator" => $observation->getUserId()
+        ];
+        
+        return new JsonResponse(["data" => $data, "code" => 201], 201);
+
     }
 
 

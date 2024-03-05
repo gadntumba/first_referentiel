@@ -38,7 +38,7 @@ class Productor
     /**
      * 
      * 
-     * @Groups({"read:productor:level_0", "event:kafka"})
+     * @Groups({"read:productor:level_0", "event:kafka", "read:observ"})
      * 
      */
     #[ORM\Id]
@@ -48,21 +48,21 @@ class Productor
 
     /**
      * 
-     * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
+     * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection", "read:observ"})
      */
     #[ORM\Column(type:"string", length:255)]
     private $name;
 
     /**
      * 
-     * @Groups({"read:productor:personnal_id_data","read:collection","write:Productor"})
+     * @Groups({"read:productor:personnal_id_data","read:collection","write:Productor", "read:observ"})
      */
     #[ORM\Column(type:"string", length:255)]
     private $firstName;
 
     /**
      * 
-     * @Groups({"read:productor:personnal_id_data","write:Productor","read:item","read:collection"})
+     * @Groups({"read:productor:personnal_id_data","write:Productor","read:item","read:collection", "read:observ"})
      */
     #[ORM\Column(type:"string", length:255)]
     private $lastName;
@@ -70,7 +70,7 @@ class Productor
     #[Assert\Choice(choices: Productor::GENRES, message: 'Choisir le genre valid.')]
     /**
      * 
-     * @Groups({"read:productor:personnal_id_data","read:item","read:collection","write:Productor"})
+     * @Groups({"read:productor:personnal_id_data","read:item","read:collection","write:Productor", "read:observ"})
      * @Assert\Choice(choices=Productor::GENRES)
      */
     #[ORM\Column(type:"string", length:255)]
@@ -78,7 +78,7 @@ class Productor
 
     /**
      * 
-     * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
+     * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection", "read:observ"})
      * @Assert\Length(
      *  min = 10,
      *  max = 10 
@@ -279,6 +279,9 @@ class Productor
      */
     private ?Instigator $instigator = null;
 
+    #[ORM\OneToMany(mappedBy: 'productor', targetEntity: Observation::class)]
+    private Collection $observations;
+
     public function __construct()
     {
         $this->AgriculturalActivity = new ArrayCollection();
@@ -287,6 +290,7 @@ class Productor
         $this->raisingactivity = new ArrayCollection();
         $this->smartphone = new ArrayCollection();
         $this->entrepreneurialActivities = new ArrayCollection();
+        $this->observations = new ArrayCollection();
         
     }
 
@@ -819,6 +823,36 @@ class Productor
     public function setInstigator(?Instigator $instigator): static
     {
         $this->instigator = $instigator;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Observation>
+     */
+    public function getObservations(): Collection
+    {
+        return $this->observations;
+    }
+
+    public function addObservation(Observation $observation): static
+    {
+        if (!$this->observations->contains($observation)) {
+            $this->observations->add($observation);
+            $observation->setProductor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeObservation(Observation $observation): static
+    {
+        if ($this->observations->removeElement($observation)) {
+            // set the owning side to null (unless already changed)
+            if ($observation->getProductor() === $this) {
+                $observation->setProductor(null);
+            }
+        }
 
         return $this;
     }

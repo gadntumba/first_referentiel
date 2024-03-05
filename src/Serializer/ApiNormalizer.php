@@ -39,7 +39,7 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
 
     public function normalize($object, $format = null, array $context = [])
     {
-        //dd($object);
+        //dd($context);
         $data = $this->decorated->normalize($object, $format, $context);
 
         if (is_array($data)) {
