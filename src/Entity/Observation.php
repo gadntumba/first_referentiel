@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ObservationRepository;
 use Doctrine\DBAL\Types\Types;
+use App\Entity\Utils\TimestampTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -46,6 +47,9 @@ class Observation
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $askAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $sendAt = null;
 
     public function getId(): ?int
     {
@@ -108,6 +112,18 @@ class Observation
     public function setAskAt(?\DateTimeInterface $askAt): static
     {
         $this->askAt = $askAt;
+
+        return $this;
+    }
+
+    public function getSendAt(): ?\DateTimeInterface
+    {
+        return $this->sendAt;
+    }
+
+    public function setSendAt(?\DateTimeInterface $sendAt): static
+    {
+        $this->sendAt = $sendAt;
 
         return $this;
     }

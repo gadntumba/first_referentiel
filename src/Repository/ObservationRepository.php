@@ -45,4 +45,21 @@ class ObservationRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    /**
+     * @return Observation[] Returns an array of Observation objects
+     */
+    public function findByNotAsk(): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.askAt is null')
+            ->orderBy('o.id', 'ASC')
+            //->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
+
+
 }

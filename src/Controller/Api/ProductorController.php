@@ -38,6 +38,8 @@ use App\Entity\HouseKeeping;
 use App\Entity\Observation;
 use App\Services\CopyEntityValuesService;
 use App\Services\FileUploader;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Dompdf\Dompdf;
 use Imagine\Filter\Basic\Copy;
 use Pusher\Pusher;
@@ -1085,10 +1087,11 @@ class ProductorController extends AbstractController
 
     }
 
-    function sendNotification(EntityManagerInterface $em, Observation $obs, Productor $productor, Pusher $pusher) : void {
+    private function sendNotification(EntityManagerInterface $em, Observation $obs, Productor $productor, Pusher $pusher) : void {
         
         $obs->setProductor($productor);
         $obs->setUserId($this->getUser()?->getNormalUsername());
+        $obs->setSendAt(new DateTime());
         
         $em->persist($obs);
 
@@ -1099,6 +1102,7 @@ class ProductorController extends AbstractController
             'event-'.$productor->getInvestigatorId(), 
             [
                 "idObs"         => $obs->getId(),
+                "sendAt"         => $obs->getSendAt()->format(DateTimeInterface::RFC3339_EXTENDED),
                 "idProd"         => $productor->getId(),
                 "title"         => $obs->getTitle(),
                 "content"                   => $obs->getContent(),
@@ -1448,8 +1452,24 @@ class ProductorController extends AbstractController
         $this->sendNotification($em, $obs, $productor, $pusher);
 
         //dd($result);
+        
 
-        return new JsonResponse(["message" => "Ok"], 201);
+        return new JsonResponse([
+            "message" => "Ok",
+            "data" =>  [
+                "idObs"         => $obs->getId(),
+                "sendAt"         => $obs->getSendAt()->format(DateTimeInterface::RFC3339_EXTENDED),
+                "idProd"         => $productor->getId(),
+                "title"         => $obs->getTitle(),
+                "content"                   => $obs->getContent(),
+                "validatorPhone"         => $this->getUser()?->getNormalUsername(),
+                "productor"         => [
+                    "names" => $productor->getName() . " " . $productor->getFirstName(). " " . $productor->getLastName(),
+                    "phoneNumber" => $productor->getPhoneNumber(),
+                ],
+            ]
+
+        ], 201);
 
     }
 

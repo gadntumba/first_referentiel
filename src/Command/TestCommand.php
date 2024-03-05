@@ -2,7 +2,9 @@
 
 namespace App\Command;
 
+use App\Entity\Observation;
 use App\Entity\Productor;
+use App\Repository\ObservationRepository;
 use App\Repository\ProductorRepository;
 use App\Repository\TownRepository;
 use App\Services\ManagerGetInstigator;
@@ -47,6 +49,15 @@ class TestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        /**
+         * @var ObservationRepository
+         */
+        $obsRepository = $this->em->getRepository(Observation::class);
+
+        $data = $obsRepository->findByNotAsk();
+
+        dd($data);
+        
         $this->managerGetInstigator->getIfNotExist();
         return Command::SUCCESS;
 
