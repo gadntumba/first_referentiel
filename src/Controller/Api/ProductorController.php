@@ -1085,7 +1085,7 @@ class ProductorController extends AbstractController
 
     }
     /**
-     * @Route("/api/productors/{id}/delete", methods={"POST"}, name="productor_status")
+     * @Route("/api/productors/{id}/delete", methods={"POST"}, name="productor_delete")
      */
     public function delete(Request $request, string $id, EntityManagerInterface $em, Pusher $pusher) 
     {
