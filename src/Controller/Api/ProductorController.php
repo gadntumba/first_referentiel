@@ -252,7 +252,6 @@ class ProductorController extends AbstractController
                 $this->persistIfNotPersited($entrepreneurialChip, $em);
             }
 
-
             $errors = $validator->validate($productor);
 
             if (count($errors) > 0) {
@@ -494,7 +493,6 @@ class ProductorController extends AbstractController
             array_push($data, $itemArr);
         }
         
-
         $resp = [
             "data" => $data,
             "totalItems" => $paginator->getTotalItems(),
@@ -1082,6 +1080,34 @@ class ProductorController extends AbstractController
         $em->flush($productor);
         $itemArr = $this->transform($productor);
 
+        //dd($itemArr);
+        return new JsonResponse($itemArr, 200);
+
+    }
+    /**
+     * @Route("/api/productors/{id}/delete", methods={"POST"}, name="productor_status")
+     */
+    public function delete(Request $request, string $id, EntityManagerInterface $em, Pusher $pusher) 
+    {
+        if (!$this->isGranted("ROLE_ADMIN")) 
+        {
+            throw new HttpException(403, "ACCESS DENIED");
+        }
+
+        $productor = $this->repository->find($id);
+
+        if (is_null($productor)) 
+        {
+            return new JsonResponse([
+                "message" => "Not found"
+            ], 404);
+        }
+
+        $productor->setIsNormal(false);
+
+        $itemArr = $this->transform($productor);
+
+        $em->flush();
         //dd($itemArr);
         return new JsonResponse($itemArr, 200);
 
