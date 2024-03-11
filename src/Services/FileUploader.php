@@ -74,6 +74,17 @@ class FileUploader
         //dd();
         //return '';
     }
+    
+    public function downloadStreamGoogle(string $url) {
+        $arrUrl = explode("/", $url);
+        $name = array_pop($arrUrl);
+        $bucket        = $this->googleStorage->bucket('agromwinda_platform');
+        $obj = $bucket->object($name);
+
+        return $obj->downloadAsStream();
+        //dd();
+        //return '';
+    }
  
     public function getuploadPath()
     {

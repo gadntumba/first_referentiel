@@ -893,5 +893,24 @@ class ProductorRepository extends ServiceEntityRepository
         
     }
 
+    /**
+     * @return Productor[] Returns an array of Productor objects
+     */
+    public function findByNotValidated()
+    {
+        return $this->createQueryBuilder('p')
+                ->leftJoin('p.housekeeping', 'h')
+                ->leftJoin('h.address', 'a')
+                ->leftJoin('a.town', 'to')
+                ->leftJoin('to.city', 'c')
+            ->andWhere('p.isNormal = 1')
+            ->andWhere('p.isActive = 0')
+            ->orderBy('p.id', 'ASC')
+            //->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     
 }

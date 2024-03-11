@@ -9,6 +9,7 @@ use App\Repository\ProductorRepository;
 use App\Repository\TownRepository;
 use App\Services\ManagerGetInstigator;
 use App\Services\ManagerLoadSubscriber;
+use App\Services\ManagerMakeValidateFile;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -20,6 +21,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use \PhpOffice\PhpSpreadsheet\RichText\RichText;
+use \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use \PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use  PhpOffice\PhpSpreadsheet\Spreadsheet;
+use \PhpOffice\PhpSpreadsheet\Worksheet\Row;
 
 #[AsCommand(
     name: 'app:test',
@@ -34,7 +40,8 @@ class TestCommand extends Command
         private InsertAgromwindaPlacesCommand $managerMatcherLocation,
         private ProductorRepository $productorRepository,
         private TownRepository $townRepository,
-        private ManagerGetInstigator $managerGetInstigator
+        private ManagerGetInstigator $managerGetInstigator,
+        private ManagerMakeValidateFile $managerMakeValidateFile
     ) {
         parent::__construct();
     }
@@ -49,6 +56,77 @@ class TestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        $cityData = $this->managerMakeValidateFile->getCityData("https://storage.cloud.google.com/agromwinda_platform/bukavu-consolide-65eb86887ed53.xlsx");
+        $assets = $this->managerMakeValidateFile->getNotValidatedData();
+        $res = $this->managerMakeValidateFile->getApproximativeData($cityData, $assets);
+        $res = $this->managerMakeValidateFile->getCerteData($cityData, $assets);
+
+        dd($res);
+
+        /**
+         * @var ProductorRepository
+         */
+        $productorRepository = $this->em->getRepository(Productor::class);
+        //findByNotValidated
+        $data = $productorRepository->findByNotValidated();
+
+        $assets = array_map(
+            function (Productor $item) {
+                $el = [];
+                $el["name"] = $item->getName();
+                $el["lastname"] = $item->getLastName();
+                $el["firstname"] = $item->getFirstName();
+                $el["town"] = $item->getHousekeeping()?->getAddress()?->getTown()?->getName();
+                $el["city"] = $item->getHousekeeping()?->getAddress()?->getTown()?->getCity()?->getName();
+                $el["validation"] = "non valide";
+                return $el;                
+            },
+            $data
+        );
+
+
+        //count()
+
+        $path = $this->managerMakeValidateFile->downloadDataAndSave("https://storage.cloud.google.com/agromwinda_platform/bukavu-consolide-65eb86887ed53.xlsx");
+        
+        $reader = new Xlsx();
+        $spreadsheet = $reader->load($path);
+        //var_dump("ok");
+        //die();
+        //$spreadsheet->addSheet();
+        $sheets = $spreadsheet->getAllSheets();
+        $w = new Worksheet();
+        //$w->setC;
+        $sheet = $sheets[0];
+        $countRow = $sheet->getHighestRow();
+
+        $cityData = [];
+
+        for ($i=2; $i < $countRow; $i++) { 
+            $el = [];
+           // $el["code"] = trim($sheet->getCell("A".$i)->getValue());
+           //var_dump($sheet->getCell("B".$i)->getValue());
+           //die();
+            $el["row"] = $i;
+            $el["name"] = trim($sheet->getCell("A".$i)->getValue());
+            $el["lastname"] = trim($sheet->getCell("B".$i)->getValue());
+            $el["firstname"] = trim($sheet->getCell("C".$i)->getValue());
+            $el["phone1"] = trim($sheet->getCell("D".$i)->getValue());
+            $el["phone2"] = trim($sheet->getCell("E".$i)->getValue());
+            $el["phone3"] = trim($sheet->getCell("F".$i)->getValue());
+
+            array_push($cityData, $el);
+            
+        }
+
+        //dd($cityData[0]);
+        $res = $this->managerMakeValidateFile->getApproximativeData($cityData, $assets);
+        //$res = $this->managerMakeValidateFile->getCerteData($cityData, $assets);
+
+        dd($res);
+        
+
+        
         /**
          * @var ObservationRepository
          */

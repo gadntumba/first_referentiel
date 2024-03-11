@@ -13,6 +13,15 @@ parameters:
     agromwinda_host: "%env(AGROMWINDA_HOST)%"
     agromwinda_load_mode: "%env(AGROMWINDA_LOAD_MODE)%"
     google_service_url: '%kernel.project_dir%/%env(GOOGLE_SERVICE_URL)%'
+    # validate files url
+    bukavu_validation_file_url: "%env(BUKAVU_VALIDATION_FILE_URL)%"
+    bunia_validation_file_url: "%env(BUNIA_VALIDATION_FILE_URL)%"
+    goma_validation_file_url: "%env(GOMA_VALIDATION_FILE_URL)%"
+    kananga_validation_file_url: "%env(KANANGA_VALIDATION_FILE_URL)%"
+    kin_validation_file_url: "%env(KIN_VALIDATION_FILE_URL)%"
+    matadi_validation_file_url: "%env(MATADI_VALIDATION_FILE_URL)%"
+    mbujimayi_validation_file_url: "%env(MBUJIMAYI_VALIDATION_FILE_URL)%"
+
 
 services:
     # default configuration for services in *this* file
