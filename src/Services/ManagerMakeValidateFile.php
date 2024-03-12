@@ -7,19 +7,97 @@ use \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use \PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use App\Entity\Productor;
 use App\Repository\ProductorRepository;
-
-
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ManagerMakeValidateFile 
 {
     const INDEXS = ["name", "firstname", "lastname"];
+    const CITIES_NAMES = ["bukavu", "bunia", "goma", "kananga", "kin", "matadi", "mbujimayi"];
+
+    Const MODES = ["certe", "approx"];
 
     public function __construct(
         private FileUploader $fileUploader,
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
+        private ContainerBagInterface $containerBag,
+        private SluggerInterface $slugger
     ) 
     {
         
+    }
+
+    public function makeFile(string $cityName, string $mode="certe", string $dirName="/var/www") : void 
+    {
+
+        if (
+            !in_array($cityName, self::CITIES_NAMES) ||
+            !in_array($mode, self::MODES) 
+        ) 
+        {
+            throw new HttpException(404, "method or mode not found");
+        }
+
+        $url = $this->containerBag->get($cityName."_validation_file_url");
+        //dump($cityName);
+        //dump($mode);
+        //dd($url);
+
+        $cityData = $this->getCityData($url);
+        $assets = $this->getNotValidatedData();
+        
+        if ($mode == "certe") {
+            $filters = $this->getCerteData($cityData, $assets); 
+        }else {
+            $filters = $this->getApproximativeData($cityData, $assets);
+        }
+
+        $props = [
+            "Nom",
+            "Postnom",
+            "Prénom",
+            "Téléphone 1",
+            "Téléphone 2",
+            "Téléphone 3"
+        ];
+        
+        $resultArr = [];
+        
+        array_push($resultArr, implode(",", $props) );
+        
+        foreach ($filters as $key => $it) 
+        {
+        
+            //var_dump($itemPhonenumber["phoneNumber"]);
+            //var_dump($itemPhonenumber?$itemPhonenumber["phoneNumber"]:"");
+            //$itemPhonenumber?$itemPhonenumber["phoneNumber"]:""
+            //die();
+            $resIt = implode(",",[
+                $it["name"],
+                $it["lastname"],
+                $it["firstname"],
+                $it["phone1"],
+                $it["phone2"],
+                $it["phone3"]        
+            ]);
+        
+            array_push(
+                $resultArr, 
+                $resIt
+            );
+        }
+
+        $content = implode("\n", $resultArr);
+
+        $sufix = $this->slugger->slug((new \DateTime())->format(\DateTimeInterface::RFC3339_EXTENDED));
+
+        $dir = $this->containerBag->get("kernel.project_dir")."/var";
+
+        $filePath = $dir ."/". $cityName . "-" . $mode . "-" .  $sufix . ".csv";
+
+        //%kernel.project_dir%/var/
+        file_put_contents($filePath, $content);        
     }
 
     public function getCerteData(array $cityData, array $notValidedData) 

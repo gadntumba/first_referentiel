@@ -56,6 +56,12 @@ class TestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        
+        $this->managerMakeValidateFile->makeFile("bukavu");
+
+        return Command::SUCCESS;
+
+        
         $cityData = $this->managerMakeValidateFile->getCityData("https://storage.cloud.google.com/agromwinda_platform/bukavu-consolide-65eb86887ed53.xlsx");
         $assets = $this->managerMakeValidateFile->getNotValidatedData();
         $res = $this->managerMakeValidateFile->getApproximativeData($cityData, $assets);
