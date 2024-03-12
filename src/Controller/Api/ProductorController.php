@@ -1044,7 +1044,7 @@ class ProductorController extends AbstractController
      */
     public function visibled(Request $request, string $id, EntityManagerInterface $em, Pusher $pusher) 
     {
-        if (!$this->isGranted("ROLE_ADMIN")) 
+        if (!$this->isGranted("ROLE_ADMIN") && !$this->isGranted("ROLE_VALIDATOR")) 
         {
             throw new HttpException(403, "ACCESS DENIED");
         }
