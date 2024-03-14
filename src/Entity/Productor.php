@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -281,6 +282,9 @@ class Productor
 
     #[ORM\OneToMany(mappedBy: 'productor', targetEntity: Observation::class)]
     private Collection $observations;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $validateAt = null;
 
     public function __construct()
     {
@@ -853,6 +857,18 @@ class Productor
                 $observation->setProductor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getValidateAt(): ?\DateTimeInterface
+    {
+        return $this->validateAt;
+    }
+
+    public function setValidateAt(?\DateTimeInterface $validateAt): static
+    {
+        $this->validateAt = $validateAt;
 
         return $this;
     }

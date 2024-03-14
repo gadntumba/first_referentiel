@@ -33,6 +33,7 @@ use ApiPlatform\Exception\ItemNotFoundException;
 use ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter;
 use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Dto\FilterUserDto;
+use App\Entity\EntrepreneurialActivity;
 use App\Entity\EntrepreneurialActivity\Document;
 use App\Entity\HouseKeeping;
 use App\Entity\Observation;
@@ -381,6 +382,112 @@ class ProductorController extends AbstractController
             //dd($th);
             //throw $th;
         }
+        
+    }
+    /**
+     * @Route("/api/productors/{id}/update", methods={"POST"}, name="productor_update")
+     */
+    function update(
+        EntityManagerInterface $em,
+         $id,
+         ProductorRepository $productorRepository,
+        Request $request
+    ) : Response 
+    {
+        $dataChanged = $this->getRequestParams($request, true);
+        $productor = $productorRepository->find($id);
+        $user = $this->getUser();
+
+        if (!$productor) {
+            throw new HttpException(404, "productor not found");
+        }
+
+        if($productor->getInvestigatorId() !=  $user->getNormalUsername()) {
+
+            throw new HttpException(422, "PhoneNumber is alrady exists");
+            
+        }
+        
+        /**
+         * @var EntrepreneurialActivity
+         */
+        $activity = array_pop([...$productor->getEntrepreneurialActivities()->toArray()]);
+
+        $activities = $activity->getActivities()??[];
+        $taxes = $activity->getTaxes()??[];
+        $activity->setDocumentType($dataChanged["documentType"]);
+
+        $activities[0] = $dataChanged["desc"];
+        $activity["documentType"] = $dataChanged["documentType"];
+
+        $activities[4] = $dataChanged["legalStatus"];
+        //["activities"][5] sectorAgroForestry
+        //["activities"][6] sectorIndustry
+        $activities[15] = $dataChanged["affiliationStructure"];
+        $activities[16] = $dataChanged["turneOverAmount"];
+        $activities[47] = $dataChanged["otherContectNames"];
+        $activities[48] = $dataChanged["otherContectPhoneNumber"];
+        $activities[49] = $dataChanged["otherContectAddress"];
+        $activities[50] = $dataChanged["instigatorOpinion"];
+
+        $activities[5] = $dataChanged["sectorAgroForestry"];
+        $activities[6] = $dataChanged["sectorIndustry"];
+        $activities[7] = $dataChanged["sectorServices"];
+        $activities[8] = $dataChanged["sectorGreeEconomy"];
+        $activities[9] = $dataChanged["otherActivitySector"];
+        $activities[10] = $dataChanged["transformFruitAndVegetableActivity"];
+        $activities[11] = $dataChanged["juiceMakerActivity"];
+        $activities[12] = $dataChanged["condimengActivity"];
+        $activities[13] = $dataChanged["FumageSalaisonSechageActity"];
+        //$activities[14] = $dataChanged["otherActity"];
+        $activities[15] = $dataChanged["affiliationStructure"];
+        $activities[16] = $dataChanged["turneOverAmount"];
+
+        //$activities[17] = $dataChanged["journalierStaff"];
+        //$activities[18] = $dataChanged["pernanentStaff"];
+        //$activities[56] = $dataChanged["familyStaff"];
+
+        $taxes[18] = $dataChanged["concourFinancing"];
+        $taxes[19] = $dataChanged["padepmeFinancing"];
+        $taxes[20] = $dataChanged["otherFinancing"];
+        //$taxes[21] = $dataChanged["haveCredit"];
+        $taxes[22] = $dataChanged["institutCredit"];
+        $taxes[23] = $dataChanged["amountCredit"];
+        $taxes[24] = $dataChanged["noDificuty"];
+        $taxes[25] = $dataChanged["trainningDificuty"];
+        $taxes[26] = $dataChanged["financingDificuty"];
+        $taxes[27] = $dataChanged["tracaserieDificuty"];
+        $taxes[28] = $dataChanged["marketAccessDificuty"];
+        $taxes[29] = $dataChanged["productionDificuty"];
+        $taxes[30] = $dataChanged["otherDificuty"];
+        $taxes[31] = $dataChanged["activityLinkwasteProcessing"];
+        $taxes[32] = $dataChanged["activityLinkImprovedStoves"];
+        $taxes[33] = $dataChanged["activityLinkRecycling"];
+        $taxes[34] = $dataChanged["otherActivityLink"];
+        $taxes[35] = $dataChanged["indidualCustomer"];
+        $taxes[36] = $dataChanged["supermarketCustomer"];
+        $taxes[37] = $dataChanged["businessCustomer"];
+        $taxes[38] = $dataChanged["onLineCustomer"];
+        $taxes[39] = $dataChanged["dealerCustomer"];
+        $taxes[40] = $dataChanged["otherCustomer"];
+        $taxes[41] = $dataChanged["visionManyBranches"];
+        $taxes[42] = $dataChanged["visionDiversifyClient"];
+        $taxes[43] = $dataChanged["visionUsePackaging"];
+        $taxes[44] = $dataChanged["visionInprouveTurneOver"];
+        $taxes[45] = $dataChanged["visionMakeFactory"];
+        $taxes[46] = $dataChanged["visionOther"];
+
+        $activity->setActivities($activities);
+        $taxes = $activity->setTaxes($taxes);
+
+
+        $productor->setIsActive(null);
+        
+        $em->flush();
+
+        $data = $this->transform($productor);
+
+        return new JsonResponse($data, 201);
         
     }
     /**
@@ -1057,7 +1164,9 @@ class ProductorController extends AbstractController
                 "message" => "Not found"
             ], 404);
         }
+
         $requestData = $this->getRequestParams($request, false);
+
         if (!isset($requestData["status"]) || is_null($requestData["status"])) {
             $status = null;
 
@@ -1076,6 +1185,7 @@ class ProductorController extends AbstractController
 
         $productor->setIsActive($status);
         $productor->setValidatorId($this->getUser()?->getNormalUsername());
+        $productor->setValidateAt(new \DateTime());
 
         $em->flush($productor);
         $itemArr = $this->transform($productor);
@@ -1295,9 +1405,9 @@ class ProductorController extends AbstractController
             ]
             
         );
-        if (isset($itemArr['activityData']["entrepreneurialActivities"][0])) 
+        if (count($itemArr['activityData']["entrepreneurialActivities"]) > 0) 
         {
-            $freeFieldData = $itemArr['activityData']["entrepreneurialActivities"][0];
+            $freeFieldData = array_pop([...$itemArr['activityData']["entrepreneurialActivities"]]);
             
             $otherData = [];
 
