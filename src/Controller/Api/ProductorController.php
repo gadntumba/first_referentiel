@@ -572,14 +572,23 @@ class ProductorController extends AbstractController
 
         $onlyActived = !$this->isGranted("ROLE_ADMIN") && 
             !$this->isGranted("ROLE_ANALYST") && 
-            !$this->isGranted("ROLE_VOUCHER_COORDINATOR")
+            !$this->isGranted("ROLE_VOUCHER_COORDINATOR") &&
+            !$this->isGranted("ROLE_INVESTIGATOR") 
         ;
+
+        $isInvestigator = $this->isGranted("ROLE_INVESTIGATOR");
+        
 
         //dd($onlyActived);
         
         $isTest = $this->getParameter("agromwinda_load_mode") == "TEST"? true : false;
 
-        $paginator = $this->repository->getBooksByFavoriteAuthor($filter, $page, $onlyActived, $isTest);
+        $paginator = $this->repository->getBooksByFavoriteAuthor(
+            $filter, $page, 
+            $onlyActived, $isTest, 
+            $isInvestigator, $this->getUser()
+        );
+        
         //$stats = $this->repository->getBooksByFavoriteAuthorStats($filter, $page, $onlyActived, $isTest);//
         //$statsDays = $this->repository->getBooksByFavoriteAuthorStatsDay($filter, $page, $onlyActived, $isTest);//
         //getBooksByFavoriteAuthorStatsDay
