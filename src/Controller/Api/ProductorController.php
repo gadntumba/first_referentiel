@@ -149,6 +149,8 @@ class ProductorController extends AbstractController
                 [AbstractNormalizer::OBJECT_TO_POPULATE => $productorValidator]
             );
 
+            //dd("OK");
+
             $phoneNumber = $productorValidator->getPersonnalIdentityData()->getPhone();
 
         } catch (UnexpectedValueException $th) {
@@ -262,14 +264,18 @@ class ProductorController extends AbstractController
                     422
                 );
             }
+
             //dd($user->getId());
+            
             $productor->setInvestigatorId($user->getNormalUsername());
             $isTest = $this->getParameter("agromwinda_load_mode") == "TEST"? true : false;
             $productor->setIsNormal(!$isTest);
 
             //dd($productor);
             //dump($productor);
+
             $em->flush();
+            //dd($user->getId());
             $itemArr = $this->transform($productor);
 
             $em->getConnection()->commit();
@@ -588,7 +594,7 @@ class ProductorController extends AbstractController
             $onlyActived, $isTest, 
             $isInvestigator, $this->getUser()
         );
-        
+
         //$stats = $this->repository->getBooksByFavoriteAuthorStats($filter, $page, $onlyActived, $isTest);//
         //$statsDays = $this->repository->getBooksByFavoriteAuthorStatsDay($filter, $page, $onlyActived, $isTest);//
         //getBooksByFavoriteAuthorStatsDay
@@ -1414,9 +1420,14 @@ class ProductorController extends AbstractController
             ]
             
         );
+
+        //dd(count($itemArr['activityData']["entrepreneurialActivities"]));
+
         if (count($itemArr['activityData']["entrepreneurialActivities"]) > 0) 
         {
-            $freeFieldData = array_pop([...$itemArr['activityData']["entrepreneurialActivities"]]);
+            $newData = [...$itemArr['activityData']["entrepreneurialActivities"]];
+            
+            $freeFieldData = array_pop($newData);
             
             $otherData = [];
 
