@@ -491,7 +491,7 @@ class ProductorRepository extends ServiceEntityRepository
     public function getBooksByFavoriteAuthor(
         FilterUserDto $filterUserDto = null, 
         int $page = 1, bool $onlyActived = true, 
-        bool $isTest=true, bool $isInvestigator=false, $user
+        bool $isTest=true, bool $isInvestigator=false, $user=null
     ): ApiPlatformPaginator
     {
         $firstResult = ($page -1) * self::PAGINATOR_PER_PAGE;
@@ -521,11 +521,13 @@ class ProductorRepository extends ServiceEntityRepository
             $queryBuilder->setParameter('actived', true);
         }
 
-        if ($isInvestigator) 
+        if ($isInvestigator && !$onlyActived) 
         {
-            $queryBuilder->andWhere('u.isActive is null');
+            //dd($user?->getNormalUsername());
+            $queryBuilder->andWhere('u.isActive = :actived');
             $queryBuilder->andWhere('u.investigatorId = :investigatorId');
-            $queryBuilder->setParameter('investigatorId', $user?->getNormalUsername());            
+            $queryBuilder->setParameter('investigatorId', $user?->getNormalUsername());   
+            $queryBuilder->setParameter('actived', false);         
         }
 
         if($filterUserDto && $filterUserDto->getSearch()) {
