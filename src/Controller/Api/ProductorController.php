@@ -426,7 +426,7 @@ class ProductorController extends AbstractController
         $activity->setDocumentType($dataChanged["documentType"]);
 
         $activities[0] = $dataChanged["desc"];
-        $activity["documentType"] = $dataChanged["documentType"];
+        $activity->setDocumentType($dataChanged["documentType"]);
 
         $activities[4] = $dataChanged["legalStatus"];
         //["activities"][5] sectorAgroForestry
