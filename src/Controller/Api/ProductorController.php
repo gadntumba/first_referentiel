@@ -37,6 +37,7 @@ use App\Entity\EntrepreneurialActivity;
 use App\Entity\EntrepreneurialActivity\Document;
 use App\Entity\HouseKeeping;
 use App\Entity\Observation;
+use App\Repository\EntrepreneurialActivity\DocumentRepository;
 use App\Services\CopyEntityValuesService;
 use App\Services\FileUploader;
 use DateTimeImmutable;
@@ -54,6 +55,12 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 class ProductorController extends AbstractController
 {
+    const PIC_ACTIVITY_TYPE="activity";
+    const PIC_INCUMBENT= "incumbentPhoto";
+    const PIC_PIECE_OF_ID="photoPieceOfIdentification";
+
+    const PIC_TYPE=[self::PIC_ACTIVITY_TYPE, self::PIC_INCUMBENT, self::PIC_PIECE_OF_ID];
+
     /**
      * @var DenormalizerInterface
      */
@@ -498,6 +505,83 @@ class ProductorController extends AbstractController
         $data = $this->transform($productor);
 
         return new JsonResponse($data, 201);
+        
+    }
+    /**
+     * @Route("/api/productors/{id}/update_pic", methods={"POST"}, name="productor_update_pic")
+     * 
+     */
+    public function updatePic(
+        EntityManagerInterface $em,
+         $id,
+         ProductorRepository $productorRepository,
+         DocumentRepository $documentRepository,
+        Request $request) : Response 
+    {
+        $dataChanged = $this->getRequestParams($request, true);
+        $productor = $productorRepository->find($id);
+        $user = $this->getUser();
+
+        if (!$productor) {
+            throw new HttpException(404, "productor not found");
+        }
+
+        if($productor->getInvestigatorId() !=  $user->getNormalUsername()) {
+
+            throw new HttpException(422, "User can't update this subscriber");
+            
+        }
+
+        //const PIC_TYPE=[self::PIC_ACTIVITY_TYPE, self::PIC_INCUMBENT, self::PIC_PIECE_OF_ID];
+
+        $picType = $this->getParam($dataChanged, "type");
+
+        $uploadedFile = $this->getParam($dataChanged, "file", null);
+
+        if (is_null($uploadedFile)) {
+            throw new HttpException(422, "File chouldn't empty");
+        }
+
+        if (
+            $picType == self::PIC_PIECE_OF_ID
+        ) 
+        {
+            $path = $this->fileUploader->uploadGoogle($uploadedFile);
+            $productor->setPhotoPieceOfIdentification($path);
+            
+        }
+        elseif ($picType == self::PIC_INCUMBENT) {
+            $path = $this->fileUploader->uploadGoogle($uploadedFile);
+            $productor->setIncumbentPhoto($path);            
+        }
+        elseif ($picType == self::PIC_ACTIVITY_TYPE) 
+        {
+            $idPic = $this->getParam($dataChanged, "idPic", null);
+            $doc = $documentRepository->find($idPic);
+
+            if (is_null($doc)) 
+            {
+                throw new HttpException(404, "Doc not found");                
+            }
+
+            $path = $this->fileUploader->uploadGoogle($uploadedFile);
+            $doc->setPath($path);
+            
+        }
+        else {
+            throw new HttpException(400, "pic type not found");
+        }
+
+        $productor->setIsActive(false);
+        
+        $em->flush();
+
+        $data = $this->transform($productor);
+
+        return new JsonResponse($data, 201);
+
+
+
         
     }
     /**
