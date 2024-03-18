@@ -410,14 +410,16 @@ class ProductorController extends AbstractController
 
         if($productor->getInvestigatorId() !=  $user->getNormalUsername()) {
 
-            throw new HttpException(422, "PhoneNumber is alrady exists");
+            throw new HttpException(422, "User can't update this subscriber");
             
         }
+
+        $activities = [...$productor->getEntrepreneurialActivities()->toArray()];
         
         /**
          * @var EntrepreneurialActivity
          */
-        $activity = array_pop([...$productor->getEntrepreneurialActivities()->toArray()]);
+        $activity = array_pop($activities);
 
         $activities = $activity->getActivities()??[];
         $taxes = $activity->getTaxes()??[];
