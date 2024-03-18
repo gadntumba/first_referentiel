@@ -423,67 +423,69 @@ class ProductorController extends AbstractController
 
         $activities = $activity->getActivities()??[];
         $taxes = $activity->getTaxes()??[];
-        $activity->setDocumentType($dataChanged["documentType"]);
+        
+        $activity->setDocumentType($this->getParam($dataChanged,"documentType"));
 
-        $activities[0] = $dataChanged["desc"];
-        $activity->setDocumentType($dataChanged["documentType"]);
+        $activities[0] = $this->getParam($dataChanged,"desc");
+        //$activity->setDocumentType($this->getParam($dataChanged,"documentType");
+        
 
-        $activities[4] = $dataChanged["legalStatus"];
+        $activities[4] = $this->getParam($dataChanged,"legalStatus");
         //["activities"][5] sectorAgroForestry
         //["activities"][6] sectorIndustry
-        $activities[15] = $dataChanged["affiliationStructure"];
-        $activities[16] = $dataChanged["turneOverAmount"];
-        $activities[47] = $dataChanged["otherContectNames"];
-        $activities[48] = $dataChanged["otherContectPhoneNumber"];
-        $activities[49] = $dataChanged["otherContectAddress"];
-        $activities[50] = $dataChanged["instigatorOpinion"];
+        $activities[15] = $this->getParam($dataChanged,"affiliationStructure");
+        $activities[16] = $this->getParam($dataChanged,"turneOverAmount");
+        $activities[47] = $this->getParam($dataChanged,"otherContectNames");
+        $activities[48] = $this->getParam($dataChanged,"otherContectPhoneNumber");
+        $activities[49] = $this->getParam($dataChanged,"otherContectAddress");
+        $activities[50] = $this->getParam($dataChanged,"instigatorOpinion");
 
-        $activities[5] = $dataChanged["sectorAgroForestry"];
-        $activities[6] = $dataChanged["sectorIndustry"];
-        $activities[7] = $dataChanged["sectorServices"];
-        $activities[8] = $dataChanged["sectorGreeEconomy"];
-        $activities[9] = $dataChanged["otherActivitySector"];
-        $activities[10] = $dataChanged["transformFruitAndVegetableActivity"];
-        $activities[11] = $dataChanged["juiceMakerActivity"];
-        $activities[12] = $dataChanged["condimengActivity"];
-        $activities[13] = $dataChanged["FumageSalaisonSechageActity"];
-        //$activities[14] = $dataChanged["otherActity"];
-        $activities[15] = $dataChanged["affiliationStructure"];
-        $activities[16] = $dataChanged["turneOverAmount"];
+        $activities[5] = $this->getParam($dataChanged,"sectorAgroForestry");
+        $activities[6] = $this->getParam($dataChanged,"sectorIndustry");
+        $activities[7] = $this->getParam($dataChanged,"sectorServices");
+        $activities[8] = $this->getParam($dataChanged,"sectorGreeEconomy");
+        $activities[9] = $this->getParam($dataChanged,"otherActivitySector");
+        $activities[10] = $this->getParam($dataChanged,"transformFruitAndVegetableActivity");
+        $activities[11] = $this->getParam($dataChanged,"juiceMakerActivity");
+        $activities[12] = $this->getParam($dataChanged,"condimengActivity");
+        $activities[13] = $this->getParam($dataChanged,"FumageSalaisonSechageActity");
+        //$activities[14] = $this->getParam($dataChanged,"otherActity");
+        $activities[15] = $this->getParam($dataChanged,"affiliationStructure");
+        $activities[16] = $this->getParam($dataChanged,"turneOverAmount");
 
-        //$activities[17] = $dataChanged["journalierStaff"];
-        //$activities[18] = $dataChanged["pernanentStaff"];
-        //$activities[56] = $dataChanged["familyStaff"];
+        //$activities[17] = $this->getParam($dataChanged,"journalierStaff");
+        //$activities[18] = $this->getParam($dataChanged,"pernanentStaff");
+        //$activities[56] = $this->getParam($dataChanged,"familyStaff");
 
-        $taxes[18] = $dataChanged["concourFinancing"];
-        $taxes[19] = $dataChanged["padepmeFinancing"];
-        $taxes[20] = $dataChanged["otherFinancing"];
-        //$taxes[21] = $dataChanged["haveCredit"];
-        $taxes[22] = $dataChanged["institutCredit"];
-        $taxes[23] = $dataChanged["amountCredit"];
-        $taxes[24] = $dataChanged["noDificuty"];
-        $taxes[25] = $dataChanged["trainningDificuty"];
-        $taxes[26] = $dataChanged["financingDificuty"];
-        $taxes[27] = $dataChanged["tracaserieDificuty"];
-        $taxes[28] = $dataChanged["marketAccessDificuty"];
-        $taxes[29] = $dataChanged["productionDificuty"];
-        $taxes[30] = $dataChanged["otherDificuty"];
-        $taxes[31] = $dataChanged["activityLinkwasteProcessing"];
-        $taxes[32] = $dataChanged["activityLinkImprovedStoves"];
-        $taxes[33] = $dataChanged["activityLinkRecycling"];
-        $taxes[34] = $dataChanged["otherActivityLink"];
-        $taxes[35] = $dataChanged["indidualCustomer"];
-        $taxes[36] = $dataChanged["supermarketCustomer"];
-        $taxes[37] = $dataChanged["businessCustomer"];
-        $taxes[38] = $dataChanged["onLineCustomer"];
-        $taxes[39] = $dataChanged["dealerCustomer"];
-        $taxes[40] = $dataChanged["otherCustomer"];
-        $taxes[41] = $dataChanged["visionManyBranches"];
-        $taxes[42] = $dataChanged["visionDiversifyClient"];
-        $taxes[43] = $dataChanged["visionUsePackaging"];
-        $taxes[44] = $dataChanged["visionInprouveTurneOver"];
-        $taxes[45] = $dataChanged["visionMakeFactory"];
-        $taxes[46] = $dataChanged["visionOther"];
+        $taxes[18] = $this->getParam($dataChanged,"concourFinancing");
+        $taxes[19] = $this->getParam($dataChanged,"padepmeFinancing");
+        $taxes[20] = $this->getParam($dataChanged,"otherFinancing");
+        //$taxes[21] = $this->getParam($dataChanged,"haveCredit");
+        $taxes[22] = $this->getParam($dataChanged,"institutCredit");
+        $taxes[23] = $this->getParam($dataChanged,"amountCredit");
+        $taxes[24] = $this->getParam($dataChanged,"noDificuty");
+        $taxes[25] = $this->getParam($dataChanged,"trainningDificuty");
+        $taxes[26] = $this->getParam($dataChanged,"financingDificuty");
+        $taxes[27] = $this->getParam($dataChanged,"tracaserieDificuty");
+        $taxes[28] = $this->getParam($dataChanged,"marketAccessDificuty");
+        $taxes[29] = $this->getParam($dataChanged,"productionDificuty");
+        $taxes[30] = $this->getParam($dataChanged,"otherDificuty");
+        $taxes[31] = $this->getParam($dataChanged,"activityLinkwasteProcessing");
+        $taxes[32] = $this->getParam($dataChanged,"activityLinkImprovedStoves");
+        $taxes[33] = $this->getParam($dataChanged,"activityLinkRecycling");
+        $taxes[34] = $this->getParam($dataChanged,"otherActivityLink");
+        $taxes[35] = $this->getParam($dataChanged,"indidualCustomer");
+        $taxes[36] = $this->getParam($dataChanged,"supermarketCustomer");
+        $taxes[37] = $this->getParam($dataChanged,"businessCustomer");
+        $taxes[38] = $this->getParam($dataChanged,"onLineCustomer");
+        $taxes[39] = $this->getParam($dataChanged,"dealerCustomer");
+        $taxes[40] = $this->getParam($dataChanged,"otherCustomer");
+        $taxes[41] = $this->getParam($dataChanged,"visionManyBranches");
+        $taxes[42] = $this->getParam($dataChanged,"visionDiversifyClient");
+        $taxes[43] = $this->getParam($dataChanged,"visionUsePackaging");
+        $taxes[44] = $this->getParam($dataChanged,"visionInprouveTurneOver");
+        $taxes[45] = $this->getParam($dataChanged,"visionMakeFactory");
+        $taxes[46] = $this->getParam($dataChanged,"visionOther");
 
         $activity->setActivities($activities);
         $taxes = $activity->setTaxes($taxes);
@@ -1721,6 +1723,12 @@ class ProductorController extends AbstractController
         return new JsonResponse(["data" => $data, "code" => 201], 201);
 
     }
+
+    //private
+    function getParam(array $arr, string $key, $default=null) {
+        return isset($arr[$key])?$arr[$key]: $default;
+    }
+    //end private
 
 
 }
