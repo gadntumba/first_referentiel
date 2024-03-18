@@ -491,7 +491,7 @@ class ProductorController extends AbstractController
         $taxes = $activity->setTaxes($taxes);
 
 
-        $productor->setIsActive(null);
+        $productor->setIsActive(false);
         
         $em->flush();
 
