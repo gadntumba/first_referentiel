@@ -524,10 +524,10 @@ class ProductorRepository extends ServiceEntityRepository
         if ($isInvestigator && !$onlyActived) 
         {
             //dd($user?->getNormalUsername());
-            $queryBuilder->andWhere('u.isActive = :actived');
+            $queryBuilder->andWhere('u.isActive is null');
             $queryBuilder->andWhere('u.investigatorId = :investigatorId');
             $queryBuilder->setParameter('investigatorId', $user?->getNormalUsername());   
-            $queryBuilder->setParameter('actived', false);         
+            //$queryBuilder->setParameter('actived', false);         
         }
 
         if($filterUserDto && $filterUserDto->getSearch()) {
