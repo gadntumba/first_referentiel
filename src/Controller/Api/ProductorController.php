@@ -143,9 +143,9 @@ class ProductorController extends AbstractController
 
            // dd($requestData);
 
-            $logger->info('############### Start data json productor #########');
-            $logger->info(\json_encode($requestData));
-            $logger->info('########## End Data jso productor ##########');
+            //$logger->info('############### Start data json productor #########');
+            //$logger->info(\json_encode($requestData));
+            //$logger->info('########## End Data jso productor ##########');
             /**
              * @var ProductorProductor
              */
@@ -582,6 +582,48 @@ class ProductorController extends AbstractController
 
 
 
+        
+    }
+    /**
+     * @Route("/api/productors/{id}/feedback", methods={"POST"}, name="productor_update_pic")
+     * 
+     */
+    public function updateFeedBack(
+        EntityManagerInterface $em,
+         $id,
+         ProductorRepository $productorRepository,
+         DocumentRepository $documentRepository, Pusher $pusher,
+        Request $request) : Response 
+    {
+        $dataChanged = $this->getRequestParams($request, true);
+        $productor = $productorRepository->find($id);
+        //$user = $this->getUser();
+
+        if (!$productor) {
+            throw new HttpException(404, "productor not found");
+        }
+
+        //const PIC_TYPE=[self::PIC_ACTIVITY_TYPE, self::PIC_INCUMBENT, self::PIC_PIECE_OF_ID];
+
+        if (!$this->isGranted("ROLE_ADMIN") && !$this->isGranted("ROLE_VALIDATOR")) 
+        {
+            throw new HttpException(403, "ACCESS DENIED");
+        }
+
+        $productor->setFeedBack($dataChanged);
+
+        $productor->setIsActive(null);
+        $obs = new Observation();
+        $obs->setTitle("Invalidation");
+        $obs->setContent("pas contenu");
+
+        $this->sendNotification($em, $obs, $productor, $pusher);
+        
+        $em->flush();
+
+        $data = $this->transform($productor);
+
+        return new JsonResponse($data, 201);
         
     }
     /**

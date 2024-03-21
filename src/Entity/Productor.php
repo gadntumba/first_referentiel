@@ -284,7 +284,18 @@ class Productor
     private Collection $observations;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
     private ?\DateTimeInterface $validateAt = null;
+
+    #[ORM\Column(nullable: true)]
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
+    private ?array $feedBack = null;
 
     public function __construct()
     {
@@ -869,6 +880,18 @@ class Productor
     public function setValidateAt(?\DateTimeInterface $validateAt): static
     {
         $this->validateAt = $validateAt;
+
+        return $this;
+    }
+
+    public function getFeedBack(): ?array
+    {
+        return $this->feedBack;
+    }
+
+    public function setFeedBack(?array $feedBack): static
+    {
+        $this->feedBack = $feedBack;
 
         return $this;
     }
