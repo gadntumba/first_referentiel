@@ -1849,6 +1849,17 @@ class ProductorController extends AbstractController
         return new JsonResponse(["data" => $data, "code" => 201], 201);
 
     }
+    /**
+     * @Route("/api/productors/{phone}/invalid-productors", methods={"POST"}, name="productor_update_invalid_productor_instigator")
+     * 
+     */
+    public function getInvalide(string $phone) : Response  
+    {
+        $data = $this->repository->findByInvestigator($phone);
+
+        return new JsonResponse($data, 200);
+        
+    }
 
     //private
     function getParam(array $arr, string $key, $default=null) {

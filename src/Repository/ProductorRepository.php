@@ -921,5 +921,24 @@ class ProductorRepository extends ServiceEntityRepository
         ;
     }
 
+
+    /**
+     * @return Productor[] Returns an array of Productor objects
+     */
+    function findByInvestigator(string $phone) : array 
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.investigatorId = :val')
+            ->andWhere('p.isActive is null')
+            ->setParameter('val', $phone)
+            ->orderBy('p.id', 'ASC')
+            //->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        
+    }
+
     
 }

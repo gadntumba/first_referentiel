@@ -7,12 +7,12 @@ parameters:
     public_directory: '%kernel.project_dir%/public'
     public_key_file_path: '%kernel.project_dir%/%env(OAUTH2_PUBLIC_KEY_FILE_NAME)%'
     uploads_directory: '%public_directory%/uploads'
+    google_service_url: '%kernel.project_dir%/%env(GOOGLE_SERVICE_URL)%'
     photo_host: '%env(PHOTO_HOST)%'
     oauth_client_id: "%env(OAUTH2_CLIENT_ID)%"
     oauth_client_secret: "%env(OAUTH2CLIENT_SECRET)%"
     agromwinda_host: "%env(AGROMWINDA_HOST)%"
     agromwinda_load_mode: "%env(AGROMWINDA_LOAD_MODE)%"
-    google_service_url: '%kernel.project_dir%/%env(GOOGLE_SERVICE_URL)%'
     # validate files url
     bukavu_validation_file_url: "%env(BUKAVU_VALIDATION_FILE_URL)%"
     bunia_validation_file_url: "%env(BUNIA_VALIDATION_FILE_URL)%"
