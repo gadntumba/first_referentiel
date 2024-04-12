@@ -1850,7 +1850,7 @@ class ProductorController extends AbstractController
 
     }
     /**
-     * @Route("/api/productors/{phone}/invalid-productors", methods={"POST"}, name="productor_update_invalid_productor_instigator")
+     * @Route("/api/productors/{phone}/invalid-productors", methods={"GET"}, name="productor_update_invalid_productor_instigator")
      * 
      */
     public function getInvalide(string $phone) : Response  
