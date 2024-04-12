@@ -1856,8 +1856,15 @@ class ProductorController extends AbstractController
     public function getInvalide(string $phone) : Response  
     {
         $data = $this->repository->findByInvestigator($phone);
+        $me = $this;
+        $jsonData = array_map(
+            function ($item) use($me) {
+                return $me->transform($item);
+            },
+            $data
+        );
 
-        return new JsonResponse($data, 200);
+        return new JsonResponse( $jsonData, 200);
         
     }
 
