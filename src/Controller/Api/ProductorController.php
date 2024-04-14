@@ -2004,6 +2004,36 @@ class ProductorController extends AbstractController
         
     }
 
+
+    #[Route('/api/productors/photo/show/{filename}', name: 'productor_photo', methods:["GET"])]
+    public function getFile(
+        Request $request, 
+        $filename, 
+        FileUploader $fileUploader
+    ): Response
+    {
+        $prefix = "https://storage.cloud.google.com/agromwinda_platform/";
+        
+        $path = $prefix . $filename;
+
+        //$data = $fileUploader->downloadGoogle($path);
+        $data = $fileUploader->downloadStreamGoogle($path);
+
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        //$resp = $this->httpClient->request("GET", $path);
+        //$data = $resp->getContent();
+        //dd($data);
+        //$data = file_get_contents($path);
+        //$base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        
+        //$user->setPhoto($link);
+
+        //$user
+
+        return new Response($data, 200, ["Content-type" => "image/" . $type]);
+
+    }
+
     //private
     function getParam(array $arr, string $key, $default=null) {
         return isset($arr[$key])?$arr[$key]: $default;
