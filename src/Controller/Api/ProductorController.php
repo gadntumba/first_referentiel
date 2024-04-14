@@ -1892,10 +1892,14 @@ class ProductorController extends AbstractController
                     
                     $freeFieldData = array_pop($newData);
                     //subscriber?.activityData?.entrepreneurialActivities[0]?.town
-                    $activityTownName = $freeFieldData["town"]["name"];
-                    $activityAddressLine = $freeFieldData["addressLine"];
-                    //dd($freeFieldData);
-                   $desc = $freeFieldData["activities"]? $freeFieldData["activities"][0] : "";
+                    if ($freeFieldData) {
+                        
+                        $activityTownName = isset($freeFieldData["town"])? $freeFieldData["town"]["name"] : "";
+                        $activityAddressLine = $freeFieldData["addressLine"];
+                        //dd($freeFieldData);
+                       $desc = $freeFieldData["activities"]? $freeFieldData["activities"][0] : "";
+                        # code...
+                    }
                 }else {
                     $desc = "";
                     $activityTownName = "";
@@ -1971,7 +1975,7 @@ class ProductorController extends AbstractController
             '"'.'Numéro 2'.'";' 
             ;
         $csvArrData = [$firstLine, ...$csvArrData];
-        
+
         $response =  new StreamedResponse(
             function () use($csvArrData) {
                 //$writer->save('php://output');
