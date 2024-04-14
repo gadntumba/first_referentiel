@@ -46,7 +46,10 @@ use Dompdf\Dompdf;
 use Imagine\Filter\Basic\Copy;
 use Pusher\Pusher;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 
@@ -1865,6 +1868,135 @@ class ProductorController extends AbstractController
         );
 
         return new JsonResponse( $jsonData, 200);
+        
+    }
+    /**
+     * @Route("/api/productors/{phone}/invalid-not-productors", methods={"GET"}, name="productor_update_not_invalid_productor_instigator")
+     * 
+     */
+    public function getNotInvalide(string $phone) : Response  
+    {
+        //dd($phone);
+        $data = $this->repository->findByInvestigatorNotIvalid($phone);
+
+        //dd($data);
+        $me = $this;
+        $csvArrData = array_map(
+            function ($item) use($me) {
+                $dataTransform = $me->transform($item);
+                $otherData = isset($dataTransform['activityData']["entrepreneurialActivities"][0]["otherData"])?$dataTransform['activityData']["entrepreneurialActivities"][0]["otherData"]:null ;
+                
+                if (count($dataTransform['activityData']["entrepreneurialActivities"]) > 0) 
+                {
+                    $newData = [...$dataTransform['activityData']["entrepreneurialActivities"]];
+                    
+                    $freeFieldData = array_pop($newData);
+                    //subscriber?.activityData?.entrepreneurialActivities[0]?.town
+                    $activityTownName = $freeFieldData["town"]["name"];
+                    $activityAddressLine = $freeFieldData["addressLine"];
+                    //dd($freeFieldData);
+                   $desc = $freeFieldData["activities"]? $freeFieldData["activities"][0] : "";
+                }else {
+                    $desc = "";
+                    $activityTownName = "";
+                    $activityAddressLine = "";
+                }
+
+                $line = '"'.$dataTransform["personnalIdentityData"]["firstName"].'";' .
+                        '"'.$dataTransform["personnalIdentityData"]["name"].'";' .
+                        '"'.$dataTransform["personnalIdentityData"]["lastName"].'";' .
+                        '"'.$dataTransform["personnalIdentityData"]["phoneNumber"].'";' .
+                        '"'.$desc.'";'.
+
+                        '"'.$dataTransform["housekeeping"]["address"]["town"]["city"]["name"].'";' .
+                        '"'.$dataTransform["housekeeping"]["address"]["town"]["name"].'";' .
+                        '"'.$dataTransform["housekeeping"]["address"]["line"].'";' .
+
+                        '"'.$activityTownName.'";' .
+                        '"'.$activityAddressLine.'";' .
+
+                        ""
+                ;
+
+                if ($otherData) {
+                    $line = $line .
+                        '"'.$otherData["sectorAgroForestry"].'";' .
+
+                        '"'.$otherData["sectorAgroForestry"].'";' .
+                        '"'.$otherData["sectorIndustry"].'";' .
+                        '"'.$otherData["sectorServices"].'";' .
+                        '"'.$otherData["sectorGreeEconomy"].'";' .
+                        '"'.$otherData["otherActivitySector"].'";' .
+
+                        '"'.$otherData["otherContectPhoneNumber"].'";' .
+                        
+                        "";
+                }else {
+                    $line = $line .
+                        '";' .
+                        '";' .
+                        '";' .
+                        '";' .
+                        '";' .
+                        '";' .
+                        "";
+                }
+
+                return $line;
+
+            },
+            $data
+        );
+
+        $firstLine = '"'.'Pré nom'.'";' .
+            '"'.'Nom'.'";' .
+            '"'.'Post nom'.'";' .
+            '"'.'Numero 1'.'";' .
+            '"'.'Description'.'";'.
+
+            '"'.'Ville'.'";' .
+            '"'.'Commune '.'";' .
+            '"'.'Adresse'.'";' .
+
+            '"'.'Commune Activité'.'";' .
+            '"'.'Adresse Activité'.'";' .
+            '"'.'secteur Agro foresterie'.'";' .
+
+            '"'.'secteur Agro foresterie'.'";' .
+            '"'.'secteur industrie'.'";' .
+            '"'.'Services'.'";' .
+            '"'.'Aconomie verte'.'";' .
+            '"'. 'autres'.'";' .
+
+            '"'.'Numéro 2'.'";' 
+            ;
+        $csvArrData = [$firstLine, ...$csvArrData];
+        
+        $response =  new StreamedResponse(
+            function () use($csvArrData) {
+                //$writer->save('php://output');
+
+                $csvData = implode("\n", $csvArrData);
+                
+                file_put_contents('php://output', $csvData);
+            }
+        );
+
+        $slugger = new AsciiSlugger();
+        
+        $slugProject = $slugger->slug($phone);
+
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            'producer-' . strtoupper($slugProject) . '.csv'
+        );
+
+        $response->headers->set('Content-Disposition', $disposition);
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Cache-Control', 'max-age=0');
+
+
+        return $response;
         
     }
 
