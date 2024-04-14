@@ -947,8 +947,9 @@ class ProductorRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.investigatorId = :val')
-            ->andWhere('p.isActive is not null')
+            //->andWhere('p.isNormal = :isNormal')
             ->setParameter('val', $phone)
+            //->setParameter('isNormal', true)
             ->orderBy('p.id', 'ASC')
             //->setMaxResults(10)
             ->getQuery()
