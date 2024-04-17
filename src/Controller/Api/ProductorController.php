@@ -2003,6 +2003,23 @@ class ProductorController extends AbstractController
         return $response;
         
     }
+    /**
+     * @Route("/api/productors/stats/by/investigator/day", methods={"GET"}, name="productor_update_day_by_instigator")
+     * 
+     */
+    public function getStatsByInvestigarAndDay(Request $req) : Response 
+    {
+        $date = $req->query->get("date", null);
+        if (is_null($date)) {
+            $dateTime = new DateTime();
+        }else {
+            $dateTime = new DateTime($date);
+        }
+        $data = $this->repository->countByInvestigator($dateTime);
+
+        return new JsonResponse($data);
+
+    }
 
 
     #[Route('/api/productors/photo/show/{filename}', name: 'productor_photo', methods:["GET"])]

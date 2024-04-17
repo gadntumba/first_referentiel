@@ -17,6 +17,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use App\Dto\FilterUserDto;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use ApiPlatform\Doctrine\Orm\Paginator as ApiPlatformPaginator;
+use DateTime;
 use Doctrine\Common\Collections\Criteria;
 
 /**
@@ -951,6 +952,40 @@ class ProductorRepository extends ServiceEntityRepository
             ->setParameter('val', $phone)
             ->setParameter('isNormal', true)
             ->orderBy('p.id', 'ASC')
+            //->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        
+    }
+
+    /**
+     * @return Productor[] Returns an array of Productor objects
+     */
+    function countByInvestigator(DateTime $dateTime = null) : array 
+    {
+        if(is_null($dateTime)) {
+            $dateTime = new DateTime();
+        }
+        //DateTimeInterface::RFC3339_EXTENDED
+        //Y-m-d\TH:i:s
+        $startDate = new DateTime($dateTime->format("Y-m-d\T"."00:00:00"));
+        $endDate = new DateTime($dateTime->format("Y-m-d\T"."23:59:59"));
+        //$dateTime->add;
+        
+        return $this->createQueryBuilder('p')
+            //->andWhere('p.investigatorId = :val')
+            ->select('invest.id as id, invest.name as name, invest.firstname as firstname,  invest.lastname as lastname, invest.phoneNumber as phoneNumber, count(p.id) total, sum(case when p.isActive = 1 then 1 else 0 end) validated')
+            ->andWhere('p.isNormal = :isNormal')
+            ->andWhere('p.createdAt between :startDate and :endDate')
+            ->join('p.instigator', 'invest')
+            //->setParameter('val', $phone)
+            ->setParameter('isNormal', true)
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->groupBy('invest.id')
+            //->orderBy('invest.id')
             //->setMaxResults(10)
             ->getQuery()
             ->getResult()
