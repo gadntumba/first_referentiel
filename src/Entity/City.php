@@ -252,7 +252,7 @@ class City
 
     public function getSomeoneCanNotValidator(): ?array
     {
-        return $this->someoneCanNotValidator;
+        return $this->someoneCanNotValidator?$this->someoneCanNotValidator:[];
     }
 
     public function setSomeoneCanNotValidator(?array $someoneCanNotValidator): static
