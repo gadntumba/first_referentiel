@@ -36,6 +36,7 @@ class AdminController extends AbstractController
         }
 
         $arr = $city->getSomeoneCanNotValidator();
+        
         array_push($arr, $investigator);
 
         $city->setSomeoneCanNotValidator($arr);
@@ -46,7 +47,7 @@ class AdminController extends AbstractController
        return new JsonResponse([
 
        ]);
-       
+
     }
 
 
