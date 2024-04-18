@@ -127,7 +127,6 @@ class ProductorController extends AbstractController
         LoggerInterface $logger
     )
     {
-
         /**
          * @var OAuthUser
          */
@@ -1313,6 +1312,15 @@ class ProductorController extends AbstractController
             return new JsonResponse([
                 "message" => "Not found"
             ], 404);
+        }
+
+        $someoneCanNotValidator = $productor->getHousekeeping()?->getAddress()?->getTown()?->getCity()?->getSomeoneCanNotValidator();
+        if (
+            !is_null($someoneCanNotValidator) &&
+            in_array($this->getUser()?->getNormalUsername(), $someoneCanNotValidator)
+        ) 
+        {
+            throw new HttpException(403, "access denied");
         }
 
         $requestData = $this->getRequestParams($request, false);
