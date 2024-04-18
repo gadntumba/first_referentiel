@@ -35,15 +35,27 @@ class ManagerGetInstigator
 
         foreach ($productorConcerns as $key => $productorConcern) {
             $investigatorId = $productorConcern->getInvestigatorId();
-            $instigator = $this->instigatorRepository->findOneBy(["phoneNumber" => $investigatorId]);
-            if (is_null($instigator) ) {
+            $instigatorOld = $this->instigatorRepository->findOneBy(["phoneNumber" => $investigatorId]);
+            $instigator = null;
+
+            if (is_null($instigatorOld) ) 
+            {
                 $instigator = $this->loadInvigotor($productorConcern);
                 dump("load instigator : " . $investigatorId);
             }
-            if (is_null($instigator)) {
+
+            if (is_null($instigatorOld)) 
+            {
                 $instigator = $this->loadInvigotor($productorConcern, "0");  
                 dump("load instigator (with prefix 0) : " . $investigatorId);              
             }
+
+            if (is_null($instigator)) 
+            {
+                $instigator = $this->loadInvigotor($productorConcern, "", $instigatorOld);
+            }
+
+            //$instigator = $this->loadInvigotor($productorConcern, "", $instigator); 
 
             $productorConcern->setInstigator($instigator);
 
@@ -71,7 +83,7 @@ class ManagerGetInstigator
         
     }
 
-    function loadInvigotor(Productor $productor, string $prefixId="") : ?Instigator 
+    function loadInvigotor(Productor $productor, string $prefixId="", Instigator $investigator=null) : ?Instigator 
     {
         $investigatorId = $prefixId . $productor->getInvestigatorId();
 
@@ -92,20 +104,28 @@ class ManagerGetInstigator
             $arr = $response->toArray(false);
 
             //dd($arr["user"]);
-
-            if ($isOK && isset($arr["user"])) {
+            if (is_null($investigator)) {
                 $investigator = new Instigator();
+                $this->em->persist($investigator);
+            }
+
+            if ($isOK && isset($arr["user"])) 
+            {
+                //$investigator = new Instigator();
                 $investigator->setName(isset($arr["user"]["name"]) ? $arr["user"]["name"] :null );
                 $investigator->setFirstname(isset($arr["user"]["firstname"]) ? $arr["user"]["firstname"] : null);
                 $investigator->setLastname(isset($arr["user"]["lastname"]) ? $arr["user"]["lastname"] : null);
-                $investigator->setPhoneNumber(isset($arr["user"]["phone_number"])? $arr["user"]["phone_number"] : null);
-                $this->em->persist($investigator);
-                $this->em->flush();
+                //$investigator->setPhoneNumber(isset($arr["user"]["phone_number"])? $arr["user"]["phone_number"] : null);
+                $investigator->setPhoneNumber($productor->getInvestigatorId());
+                //productor
                 return $investigator;
-            }else {
+
+            }else 
+            {
                 return null;
 
             }
+            $this->em->flush();
             
         } catch (\Throwable $th) {
             return null;

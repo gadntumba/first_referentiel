@@ -109,6 +109,9 @@ class City
     #[ORM\OneToMany(mappedBy: 'city', targetEntity: Organization::class)]
     private Collection $organizations;
 
+    #[ORM\Column(nullable: true)]
+    private ?array $someoneCanNotValidator = null;
+
     public function __construct()
     {
         $this->towns = new ArrayCollection();
@@ -243,6 +246,18 @@ class City
                 $organization->setCity(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSomeoneCanNotValidator(): ?array
+    {
+        return $this->someoneCanNotValidator;
+    }
+
+    public function setSomeoneCanNotValidator(?array $someoneCanNotValidator): static
+    {
+        $this->someoneCanNotValidator = $someoneCanNotValidator;
 
         return $this;
     }
