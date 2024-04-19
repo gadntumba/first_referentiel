@@ -709,7 +709,7 @@ class ProductorRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder("u");
 
         $queryBuilder->select(
-            "count(u.id) total, sum(case when u.isActive = 1 then 1 else 0 end) validated"
+            "count(u.id) total, sum(case when u.isActive = 1 then 1 else 0 end) validated, sum(case when u.isActive is null then 1 else 0 end) invalidated"
             //"u"
         )
         
@@ -732,7 +732,7 @@ class ProductorRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder("u");
 
         $queryBuilder->select(
-            "c.id as cityId, c.name as cityName, count(u.id) total, sum(case when u.isActive = 1 then 1 else 0 end) validated"
+            "c.id as cityId, c.name as cityName, count(u.id) total, sum(case when u.isActive = 1 then 1 else 0 end) validated, sum(case when u.isActive is null then 1 else 0 end) invalidated"
             //"u"
         )
         ->leftJoin('u.housekeeping', 'h')
@@ -759,7 +759,7 @@ class ProductorRepository extends ServiceEntityRepository
         $queryBuilder = $this->createQueryBuilder("u");
 
         $queryBuilder->select(
-            "i.id investId, i.phoneNumber investPhone, i.name instName, i.firstname investFirstname, c.id as cityId, c.name as cityName, count(u.id) total, sum(case when u.isActive = 1 then 1 else 0 end) validated"
+            "i.id investId, i.phoneNumber investPhone, i.name instName, i.firstname investFirstname, c.id as cityId, c.name as cityName, count(u.id) total, sum(case when u.isActive = 1 then 1 else 0 end) validated, sum(case when u.isActive is null then 1 else 0 end) invalidated"
             //"u"
         )
         ->leftJoin('u.housekeeping', 'h')//instigator

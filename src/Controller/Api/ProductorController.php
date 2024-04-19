@@ -1315,6 +1315,7 @@ class ProductorController extends AbstractController
         }
 
         $someoneCanNotValidator = $productor->getHousekeeping()?->getAddress()?->getTown()?->getCity()?->getSomeoneCanNotValidator();
+        
         if (
             !is_null($someoneCanNotValidator) &&
             in_array($this->getUser()?->getNormalUsername(), $someoneCanNotValidator)
