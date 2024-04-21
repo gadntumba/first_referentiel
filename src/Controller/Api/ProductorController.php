@@ -2029,6 +2029,34 @@ class ProductorController extends AbstractController
         return new JsonResponse($data);
 
     }
+    /**
+     * @Route("/api/productors/stats/by/investigator/period", methods={"GET"}, name="productor_update_period_by_instigator")
+     * 
+     */
+    public function getStatsByInvestigarAndPeriod(Request $req) : Response 
+    {
+        $dateend = $req->query->get("dateend", null);
+        $datestart = $req->query->get("datestart", null);
+
+        if (is_null($dateend)) {
+            $dateTimeend = new DateTime();
+        }else {
+            $dateTimeend = new DateTime($dateend);
+        }
+        if (is_null($datestart)) {
+            $datestartTime = new DateTime();
+        }else {
+            $datestartTime = new DateTime($datestart);
+        }
+
+        //dump($dateTimeend);
+        //dd($datestartTime);
+
+        $data = $this->repository->countByInvestigatorPeriod($datestartTime, $dateTimeend);
+
+        return new JsonResponse($data);
+
+    }
 
 
     #[Route('/api/productors/photo/show/{filename}', name: 'productor_photo', methods:["GET"])]

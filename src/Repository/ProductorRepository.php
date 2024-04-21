@@ -999,5 +999,49 @@ class ProductorRepository extends ServiceEntityRepository
         
     }
 
+
+    /**
+     * @return Productor[] Returns an array of Productor objects
+     */
+    function countByInvestigatorPeriod(DateTime $dateTimeStart = null, DateTime $dateTimeEnd = null) : array 
+    {
+        if(is_null($dateTimeStart)) {
+            $dateTimeStart = new DateTime();
+        }
+        //DateTimeInterface::RFC3339_EXTENDED
+        if(is_null($dateTimeEnd)) {
+            $dateTimeEnd = new DateTime();
+        }
+        
+        //Y-m-d\TH:i:s
+        $startDate = new DateTime($dateTimeStart->format("Y-m-d\T"."00:00:00"));
+        $endDate = new DateTime($dateTimeEnd->format("Y-m-d\T"."23:59:59"));
+        //$dateTime->add;
+        
+        return $this->createQueryBuilder('p')
+            //->andWhere('p.investigatorId = :val')
+            ->select('invest.id as id, invest.name as name, invest.firstname as firstname,  invest.lastname as lastname, invest.phoneNumber as phoneNumber, c.name as cityname, count(p.id) total, sum(case when p.isActive = 1 then 1 else 0 end) validated')
+            ->andWhere('p.isNormal = :isNormal')
+            ->andWhere('p.createdAt between :startDate and :endDate')
+            ->join('p.instigator', 'invest')
+
+            ->leftJoin('p.housekeeping', 'h')
+            ->leftJoin('h.address', 'a')
+            ->leftJoin('a.town', 'to')
+            ->leftJoin('to.city', 'c')
+            //->setParameter('val', $phone)
+            ->setParameter('isNormal', true)
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->groupBy('invest.id, c.id')
+            ->orderBy('total')
+            //->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        
+    }
+
     
 }
