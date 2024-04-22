@@ -2038,14 +2038,18 @@ class ProductorController extends AbstractController
         $dateend = $req->query->get("dateend", null);
         $datestart = $req->query->get("datestart", null);
 
-        if (is_null($dateend)) {
+        if (is_null($dateend)) 
+        {
             $dateTimeend = new DateTime();
-        }else {
+        }else 
+        {
             $dateTimeend = new DateTime($dateend);
         }
-        if (is_null($datestart)) {
+        if (is_null($datestart)) 
+        {
             $datestartTime = new DateTime();
-        }else {
+        }else 
+        {
             $datestartTime = new DateTime($datestart);
         }
 
@@ -2056,6 +2060,47 @@ class ProductorController extends AbstractController
 
         return new JsonResponse($data);
 
+    }
+    /**
+     * @Route("/api/productors/stats/by/groups", methods={"GET"}, name="productor_update_by_group")
+     * 
+     */
+    function getByGroup() : Response 
+    {
+        $data = $this->repository->findAll();
+        $merge = [];
+
+        foreach ($data as $key => $item) 
+        {
+            $arr = $item->getEntrepreneurialActivities()?->toArray();
+            
+            $act = array_pop($arr);
+
+            if(!is_null($act)) 
+            {
+                if (isset($arr["activities"]["15"])) 
+                {
+                    if (!isset($merge[$arr["activities"]["15"]])) {
+                        $merge[$arr["activities"]["15"]] = [
+                            "name" => $arr["activities"]["15"],
+                            "count" => 0,
+                        ];
+
+                    }
+
+                    $count = $merge[$arr["activities"]["15"]]['count'];
+
+                    $merge[$arr["activities"]["15"]]['count'] = $count + 1;
+                    
+                }
+
+            }
+
+
+        }
+
+
+        return new JsonResponse($merge, 200);
     }
 
 
