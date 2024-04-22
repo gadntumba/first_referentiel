@@ -2074,6 +2074,8 @@ class ProductorController extends AbstractController
         for ($i=0; $i < $normalCount; $i+=1000)
         {
             $data = $this->repository->findBy([], null, 1000, $i+1);
+            dump(count($data));
+            continue;
             
     
             foreach ($data as $key => $item) 
@@ -2106,6 +2108,8 @@ class ProductorController extends AbstractController
             }
             
         }
+        
+        dd();
 
         return new JsonResponse($merge, 200);
     }
