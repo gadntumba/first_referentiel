@@ -2077,8 +2077,8 @@ class ProductorController extends AbstractController
         for ($i=0; $i < $normalCount; $i+=1000)
         {
             dump($i+1);
-            $data = $this->repository->findBy([], null, 1000, $i+1);
-            dump(count($data));
+            $this->repository->findBy([], null, 1000, $i+1);
+            //dump(count($data));
             continue;
             
     
