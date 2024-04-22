@@ -2067,38 +2067,45 @@ class ProductorController extends AbstractController
      */
     function getByGroup() : Response 
     {
-        $data = $this->repository->findAll();
+        $count = $this->repository->count([]);
+        $normalCount = round($count/1000)*1000;
         $merge = [];
 
-        foreach ($data as $key => $item) 
+        for ($i=0; $i < $normalCount; $i+=1000)
         {
-            $arr = $item->getEntrepreneurialActivities()?->toArray();
+            $data = $this->repository->findBy([], null, 1000, 0);
             
-            $act = array_pop($arr);
-
-            if(!is_null($act)) 
+    
+            foreach ($data as $key => $item) 
             {
-                if (isset($arr["activities"]["15"])) 
+                $arr = $item->getEntrepreneurialActivities()?->toArray();
+                
+                $act = array_pop($arr);
+    
+                if(!is_null($act)) 
                 {
-                    if (!isset($merge[$arr["activities"]["15"]])) {
-                        $merge[$arr["activities"]["15"]] = [
-                            "name" => $arr["activities"]["15"],
-                            "count" => 0,
-                        ];
-
+                    if (isset($arr["activities"]["15"])) 
+                    {
+                        if (!isset($merge[$arr["activities"]["15"]])) {
+                            $merge[$arr["activities"]["15"]] = [
+                                "name" => $arr["activities"]["15"],
+                                "count" => 0,
+                            ];
+    
+                        }
+    
+                        $count = $merge[$arr["activities"]["15"]]['count'];
+    
+                        $merge[$arr["activities"]["15"]]['count'] = $count + 1;
+                        
                     }
-
-                    $count = $merge[$arr["activities"]["15"]]['count'];
-
-                    $merge[$arr["activities"]["15"]]['count'] = $count + 1;
-                    
+    
                 }
-
+    
+    
             }
-
-
+            
         }
-
 
         return new JsonResponse($merge, 200);
     }
