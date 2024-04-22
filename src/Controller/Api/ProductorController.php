@@ -2070,12 +2070,13 @@ class ProductorController extends AbstractController
         $count = $this->repository->count([]);
         $normalCount = round($count/1000)*1000;
         $merge = [];
-        $data = $this->repository->findBy([], null, 1000, 1000+1);
-        dump(count($data));
-        dd();
+        //$data = $this->repository->findBy([], null, 1000, 1000+1);
+        //dump(count($data));
+        //dd();
 
         for ($i=0; $i < $normalCount; $i+=1000)
         {
+            dump($i+1);
             $data = $this->repository->findBy([], null, 1000, $i+1);
             dump(count($data));
             continue;
