@@ -2086,10 +2086,17 @@ class ProductorController extends AbstractController
                 $arr = $item->getEntrepreneurialActivities()?->toArray();
                 dump($item->getName());
                 
+                
+                /**
+                 * @var EntrepreneurialActivity
+                 */
                 $act = array_pop($arr);
+
     
                 if(!is_null($act)) 
                 {
+                    dd($act->getName());
+                    $act->getName();
 
 
                     if (isset($arr["activities"]["15"])) 
