@@ -2095,25 +2095,27 @@ class ProductorController extends AbstractController
     
                 if(!is_null($act)) 
                 {
+                    dump($act->getName());
                     dd($act->getName());
                     $act->getName();
 
-
-                    if (isset($arr["activities"]["15"])) 
+                    $myKey = $act->getActivities();
+                    
+                    if (isset($myKey["15"])) 
                     {
-                        if (!isset($merge[$arr["activities"]["15"]])) {
-                            $merge[$arr["activities"]["15"]] = [
-                                "name" => $arr["activities"]["15"],
+                        if (!isset($merge[$myKey["15"]])) {
+                            $merge[$myKey["15"]] = [
+                                "name" => $myKey["15"],
                                 "count" => 0,
                             ];
     
                         }
     
-                        $count = $merge[$arr["activities"]["15"]]['count'];
+                        $count = $merge[$myKey["15"]]['count'];
     
-                        $merge[$arr["activities"]["15"]]['count'] = $count + 1;
-                        dump($arr["activities"]["15"]);
-                        dump($merge[$arr["activities"]["15"]]['count']);
+                        $merge[$myKey["15"]]['count'] = $count + 1;
+                        dump($myKey["15"]);
+                        dump($merge[$myKey["15"]]['count']);
                         
                     }
     
