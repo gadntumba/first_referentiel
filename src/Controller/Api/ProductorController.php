@@ -2090,7 +2090,6 @@ class ProductorController extends AbstractController
                 if(!is_null($act)) 
                 {
 
-                   // dump($arr["activities"]["15"]);
 
                     if (isset($arr["activities"]["15"])) 
                     {
@@ -2105,6 +2104,8 @@ class ProductorController extends AbstractController
                         $count = $merge[$arr["activities"]["15"]]['count'];
     
                         $merge[$arr["activities"]["15"]]['count'] = $count + 1;
+                        dump($arr["activities"]["15"]);
+                        dump($merge[$arr["activities"]["15"]]['count']);
                         
                     }
     
@@ -2115,7 +2116,7 @@ class ProductorController extends AbstractController
             
         }
 
-        //dd();
+        dd();
 
         return new JsonResponse($merge, 200);
     }
