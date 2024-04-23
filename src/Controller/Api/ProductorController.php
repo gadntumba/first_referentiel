@@ -2089,6 +2089,9 @@ class ProductorController extends AbstractController
     
                 if(!is_null($act)) 
                 {
+                    
+                    dump($arr["activities"]["15"]);
+
                     if (isset($arr["activities"]["15"])) 
                     {
                         if (!isset($merge[$arr["activities"]["15"]])) {
