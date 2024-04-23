@@ -2076,11 +2076,10 @@ class ProductorController extends AbstractController
 
         for ($i=0; $i < $normalCount; $i+=100)
         {
-            dump($i+1);
-            $this->repository->findBy([], null, 30, $i+1);
+            //dump($i+1);
+            $data = $this->repository->findBy([], null, 30, $i+1);
             //dump(count($data));
             continue;
-            
     
             foreach ($data as $key => $item) 
             {
@@ -2113,7 +2112,7 @@ class ProductorController extends AbstractController
             
         }
 
-        dd();
+        //dd();
 
         return new JsonResponse($merge, 200);
     }
