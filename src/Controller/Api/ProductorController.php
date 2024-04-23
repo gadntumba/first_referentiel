@@ -2084,6 +2084,7 @@ class ProductorController extends AbstractController
             foreach ($data as $key => $item) 
             {
                 $arr = $item->getEntrepreneurialActivities()?->toArray();
+                dump($item->getName());
                 
                 $act = array_pop($arr);
     
