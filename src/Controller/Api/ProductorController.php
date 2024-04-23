@@ -2096,7 +2096,7 @@ class ProductorController extends AbstractController
                 if(!is_null($act)) 
                 {
                     dump($act->getName());
-                    dd($act->getName());
+                    //dd($act->getName());
                     $act->getName();
 
                     $myKey = $act->getActivities();
