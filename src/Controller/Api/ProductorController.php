@@ -2079,7 +2079,7 @@ class ProductorController extends AbstractController
             //dump($i+1);
             $data = $this->repository->findBy([], null, 30, $i+1);
             //dump(count($data));
-            continue;
+            //continue;
     
             foreach ($data as $key => $item) 
             {
@@ -2089,8 +2089,8 @@ class ProductorController extends AbstractController
     
                 if(!is_null($act)) 
                 {
-                    
-                    dump($arr["activities"]["15"]);
+
+                   // dump($arr["activities"]["15"]);
 
                     if (isset($arr["activities"]["15"])) 
                     {
