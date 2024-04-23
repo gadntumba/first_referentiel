@@ -2084,7 +2084,7 @@ class ProductorController extends AbstractController
             foreach ($data as $key => $item) 
             {
                 $arr = $item->getEntrepreneurialActivities()?->toArray();
-                dump($item->getName());
+                //dump($item->getName());
                 
                 
                 /**
@@ -2095,7 +2095,7 @@ class ProductorController extends AbstractController
     
                 if(!is_null($act)) 
                 {
-                    dump($act->getName());
+                    //dump($act->getName());
                     //dd($act->getName());
                     $act->getName();
 
@@ -2114,8 +2114,8 @@ class ProductorController extends AbstractController
                         $count = $merge[$myKey["15"]]['count'];
     
                         $merge[$myKey["15"]]['count'] = $count + 1;
-                        dump($myKey["15"]);
-                        dump($merge[$myKey["15"]]['count']);
+                        //dump($myKey["15"]);
+                        //dump($merge[$myKey["15"]]['count']);
                         
                     }
     
@@ -2126,7 +2126,7 @@ class ProductorController extends AbstractController
             
         }
 
-        dd();
+        //dd();
 
         return new JsonResponse($merge, 200);
     }
