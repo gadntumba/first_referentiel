@@ -12,9 +12,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrganizationRepository::class)]
-#[ApiResource(
+/*#[ApiResource(
     normalizationContext:["groups" => ["read:organization"]]
-)]
+)]*/
 class Organization
 {
     #[ORM\Id]
@@ -36,6 +36,9 @@ class Organization
 
     #[ORM\OneToMany(mappedBy: 'organization', targetEntity: Productor::class)]
     private Collection $productors;
+
+    #[ORM\Column(length: 255)]
+    private ?string $myHash = null;
 
     public function __construct()
     {
@@ -97,6 +100,18 @@ class Organization
                 $productor->setOrganization(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMyHash(): ?string
+    {
+        return $this->myHash;
+    }
+
+    public function setMyHash(string $myHash): static
+    {
+        $this->myHash = $myHash;
 
         return $this;
     }

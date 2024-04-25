@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Entity\EntrepreneurialActivity;
 use App\Entity\Observation;
 use App\Entity\Productor;
 use App\Repository\ObservationRepository;
@@ -26,6 +27,8 @@ use \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use \PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use  PhpOffice\PhpSpreadsheet\Spreadsheet;
 use \PhpOffice\PhpSpreadsheet\Worksheet\Row;
+
+
 
 #[AsCommand(
     name: 'app:test',
@@ -56,6 +59,50 @@ class TestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+
+        $data = $this->productorRepository->findAll();
+        $groups = [];
+
+        foreach ($data as $key => $productor) 
+        {
+            
+            /**
+             * @var EntrepreneurialActivity
+             */
+            $activity = $productor->getEntrepreneurialActivities()->last();
+
+            if(is_null($activity)) {
+                //$io->info("Ok : ". $productor->getId());
+                continue;
+            }
+
+            $activities = $activity->getActivities();
+
+            if (is_null($activities)) {
+                continue;
+            }
+
+            if (!isset($activities["15"])) {
+               continue; 
+            }
+            $key = strtolower($this->fctRetirerAccents($activities["15"]));
+            //$groups[$key];
+
+            if (!isset($groups[$key])) {
+
+                $groups[$key] = [
+                    "name" => $activities["15"],
+                    "count" => 0,
+                ];
+
+               //continue; 
+            }
+            $groups[$key]["count"] = $groups[$key]["count"] + 1;
+            #$io->info("Ok : ". $activities["15"]);
+
+        }
+
+        dd(count($groups));
         
         $this->managerMakeValidateFile->makeFile("bukavu");
 
@@ -183,5 +230,16 @@ class TestCommand extends Command
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
 
         return Command::SUCCESS;
+    }
+
+
+    private function fctRetirerAccents($varMaChaine)
+    {
+        $search  = array('c/ ',' ','À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'à', 'á', 'â', 'ã', 'ä', 'å', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ð', 'ò', 'ó', 'ô', 'õ', 'ö', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ');
+        //Préférez str_replace à strtr car strtr travaille directement sur les octets, ce qui pose problème en UTF-8
+        $replace = array('','-','A', 'A', 'A', 'A', 'A', 'A', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 'a', 'a', 'a', 'a', 'a', 'a', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y');
+
+        $varMaChaine = str_replace($search, $replace, $varMaChaine);
+        return $varMaChaine; //On retourne le résultat
     }
 }
