@@ -30,7 +30,7 @@ class OrganizationController  extends AbstractController
      */
     function all() : Response 
     {
-        $data = $this->repository->findBy([], ["name" => "ASC"]);
+        $data = $this->repository->findBy([], ["name" => "ASC"], 30);
         
         $res = array_map(
             function(Organization $item) : array {

@@ -48,7 +48,7 @@ class MatchOrganizationCommand extends Command
         $groups = [];
 
         foreach ($data as $key => $productor) 
-        {  
+        {
             $productor->getId();
 
             if (!is_null($productor->getOrganization())) {
