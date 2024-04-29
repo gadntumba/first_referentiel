@@ -53,6 +53,9 @@ class MetaDataBrut
     #[Assert\NotNull()]
     private ?string $cheetTitle = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isCharged = null;
+
     public function __construct()
     {
         $this->dataBruts = new ArrayCollection();
@@ -173,6 +176,18 @@ class MetaDataBrut
     public function setCheetTitle(string $cheetTitle): static
     {
         $this->cheetTitle = $cheetTitle;
+
+        return $this;
+    }
+
+    public function isIsCharged(): ?bool
+    {
+        return $this->isCharged;
+    }
+
+    public function setIsCharged(?bool $isCharged): static
+    {
+        $this->isCharged = $isCharged;
 
         return $this;
     }

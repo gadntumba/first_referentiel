@@ -23,7 +23,7 @@ class MetaDataBrutService
         
     }
 
-    function create(array $data = []) : MetaDataBrut
+    public function create(array $data = []) : MetaDataBrut
     {
         $metaData = new MetaDataBrut();
 
@@ -43,7 +43,23 @@ class MetaDataBrutService
             throw new ValidationException($violationList);
         }
         
+        $this->em->persist($metaData);
+        
+        $this->em->flush();
+        
         return $metaData;
+    }
+
+    public function search(
+        string $cityName,string $fileName,string $source,string $cheetTitle
+    ) : ?MetaDataBrut 
+    {
+        $criteria = compact("cityName","fileName","source","cheetTitle");
+        
+        //dd($criteria);
+
+        return $this->metaDataBrutRepository->findOneBy($criteria);
+        
     }
     
 }

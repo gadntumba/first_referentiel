@@ -24,6 +24,9 @@ class DataBrut
     #[ORM\ManyToOne(inversedBy: 'dataBruts')]
     private ?MetaDataBrut $mataData = null;
 
+    #[ORM\Column]
+    private ?int $rowId = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +64,18 @@ class DataBrut
     public function setMataData(?MetaDataBrut $mataData): static
     {
         $this->mataData = $mataData;
+
+        return $this;
+    }
+
+    public function getRowId(): ?int
+    {
+        return $this->rowId;
+    }
+
+    public function setRowId(int $rowId): static
+    {
+        $this->rowId = $rowId;
 
         return $this;
     }

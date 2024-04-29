@@ -6,8 +6,10 @@ use App\Entity\MetaDataBrut;
 use App\Entity\Organization;
 use App\Repository\MetaDataBrutRepository;
 use App\Repository\OrganizationRepository;
+use App\Services\DataBrutService;
 use App\Services\MetaDataBrutService;
 use Doctrine\ORM\EntityManagerInterface;
+use Google\Cloud\Core\Compute\Metadata;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +24,8 @@ class DataBrutController  extends AbstractController
     public function __construct(
         private EntityManagerInterface $em,
         private MetaDataBrutRepository $metaDataBrutRepository,
-        private MetaDataBrutService $service
+        private MetaDataBrutService $service,
+        private DataBrutService $dataBrutService
     ) 
     {
         
@@ -35,14 +38,16 @@ class DataBrutController  extends AbstractController
      */
     public function all() : Response 
     {
-        $data = $this->metaDataBrutRepository->findBy([], ["name" => "ASC"], 30);
+        $data = $this->metaDataBrutRepository->findBy([], ["source" => "ASC"], 30);
         
         $res = array_map(
             function(MetaDataBrut $item) : array {
                 return [
                     "id" => $item->getId(),
                     "fileName" => $item->getFileName(),
-                    "cityId" => $item->getSource()
+                    "source" => $item->getSource(),
+                    "cheetTitle" => $item->getCheetTitle(),
+                    "cityName" => $item->getCityName(),
                 ];
             },
             $data
@@ -52,6 +57,19 @@ class DataBrutController  extends AbstractController
             "data" => $res
         ]);
         
+    }
+
+    /**
+     * @Route("/api/data-bruts/meta-data/{id}", methods={"GET","HEAD"}, name="meta_brut_metadata")
+     * 
+     */
+    function allDataBrutUCP(MetaDataBrut $metaData) : Response 
+    {
+        return new JsonResponse(
+            [
+                "data" => $this->dataBrutService->getListMetaData($metaData)
+            ]
+        ) ;
     }
 
 

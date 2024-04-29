@@ -74,7 +74,9 @@ class ImportDataBrutService
         private FileUploader $fileUploader,
         private EntityManagerInterface $em,
         private ContainerBagInterface $containerBag,
-        private SluggerInterface $slugger
+        private SluggerInterface $slugger,
+        private MetaDataBrutService $service,
+        private DataBrutService $serviceDatabrut,
     ) 
     {
         
@@ -132,7 +134,7 @@ class ImportDataBrutService
                 //var_dump($otherContent2);
                 //die();
                 $data = [
-                    "fileName" => $fileName,
+                    "fileName" => $url,
                     "source" => $source,
                     "cityName" => $cityName,
                     "cheetTitle" => $cheet->getTitle(),
@@ -140,19 +142,46 @@ class ImportDataBrutService
                     "otherContent" => $otherContent,
                     "otherContent2" => $otherContent2,
                 ];
-            
-                dd($data);
-        
-                //$allData = [];    
-                //die();
+
+                $metaData = $this->service->search($data["cityName"], $data["fileName"], $data["source"], $data["cheetTitle"]);
+
+                if (is_null($metaData)) 
+                {
+                    $metaData = $this->service->create($data); 
+                    
+                }
+
+
+                if ($metaData->isIsCharged()) {
+                    continue;
+                }
+                //dd($metaData->isIsCharged());
+                
+                $allDataSheet = $this->getData(
+                    $cheet,
+                    $thisSchema,
+                    $item["name"],
+                    3
+                );
+
+                foreach ($allDataSheet as $key => $itemSheet) 
+                {
+                   $rowId = (int) (isset($itemSheet["row"])? $itemSheet["row"] : 0);
+                   $entity = $this->serviceDatabrut->create($itemSheet, $metaData,$rowId, $source);
+
+                   //dump($entity);
+                   dump("-- ".$data["cityName"] ." ". $data["fileName"] ." ". $data["source"] ." ". $data["cheetTitle"] ." :: ". $rowId);
+                   //dd();
+                                
+                }
+
+                $metaData->setIsCharged(true);
+                
+                $this->em->flush();
+                
                 
             }
-            
-            //$allGoma = getTransformConsolidateUrl("https://storage.cloud.google.com/agromwinda_platform/bukavu-consolide-65eb86887ed53.xlsx",2);
-            /*$itemGoma = $item["name"];
-            $itemGoma = $allGoma[2];
-            var_dump($itemGoma);*/
-            
+                        
         }
         
     }
@@ -160,12 +189,7 @@ class ImportDataBrutService
     // en private
 
     private function getData(Worksheet $sheet, array $matching = [], string $cityName, $firstColumn=9) {
-        //$reader = new Xlsx();
-        //$spreadsheet = $reader->load(dirname(__DIR__) ."/".$fileName);
-        //var_dump("ok");
-        //die();
-        //$spreadsheet->addSheet();
-        //$fileNameList = isset($matching["fileNameList"])?$matching["fileNameList"]:"A";
+        
         $organization = isset($matching["organization"])?$matching["organization"]:"A";
         $city = $cityName;
         $name = isset($matching["name"])?$matching["name"]:"B";
@@ -176,28 +200,18 @@ class ImportDataBrutService
         $phoneNumber3 = isset($matching["phoneNumber3"])?$matching["phoneNumber3"]:"G";
         $emailOrganization = isset($matching["emailOrganization"])?$matching["emailOrganization"]:"H";
 
-        //$sheets = $spreadsheet->getAllSheets();
-        //$w = new Worksheet();
-        //$w->setC;
-        //$sheet = $sheets[1];
         $countRow = $sheet->getHighestRow();
         $countColumn = $sheet->getHighestColumn();
-        $colsName = $this->convertToExcelColumn($countColumn);
+
         $data = [];
         $tampon = [];
         $totalLine=0;
-        //$fileNameList = fctRetirerAccents(strtolower($fileName));
-        /*var_dump($countRow);
-        die();*/
+
         for ($i=$firstColumn; $i <= $countRow; $i++) {
             
             $el = [];
-        // $el["code"] = trim($sheet->getCell("A".$i)->getValue());
-        //var_dump($sheet->getCell("B".$i)->getValue());
-        //die();
             $el["row"] = $i;
         
-            //$el["fileName"] =  $fileNameList;
             $el["organization"] = trim($sheet->getCell($organization.$i)->getValue());
             $el["city"] = $cityName;
             $el["name"] = trim($sheet->getCell($name.$i)->getValue());
@@ -211,6 +225,7 @@ class ImportDataBrutService
 
             array_push($data, $el);
         }
+
         return $data;
         
     }
@@ -242,8 +257,13 @@ class ImportDataBrutService
         
                 foreach ($colsName as $key => $colName) 
                 {
+                    try {
+                        $el[$colName.$firstColumn] = trim($sheet->getCell($colName.$firstColumn)->getValue());
+                        
+                    } catch (\Throwable $th) {
+                        dd($th);
+                    }
         
-                    $el[$colName.$firstColumn] = trim($sheet->getCell($colName.$firstColumn)->getValue());
         
                 }
                 //var_dump($el);
@@ -278,7 +298,12 @@ class ImportDataBrutService
 
     private function getSpreadsheet(string $fileName) : Spreadsheet {
         $reader = new Xlsx();
-        $spreadsheet = $reader->load(dirname(__DIR__) ."/".$fileName);
+        try {
+            $spreadsheet = $reader->load($fileName);
+            
+        } catch (\Throwable $th) {
+            dd($th);
+        }
 
         return $spreadsheet;
     }
@@ -286,22 +311,27 @@ class ImportDataBrutService
     private function downloadDataAndSave(string $url) : string 
     {
         $stream = $this->fileUploader->downloadStreamGoogle($url);
+        $dir = $this->containerBag->get("kernel.project_dir");
 
         $path = "/tmp/". uniqid("agrodata-").".xlsx";
+        //dd($path);
 
         file_put_contents($path, $stream->getContents());
 
         return $path;
         
     }
-    private function convertToExcelColumn($number) {
+    private function convertToExcelColumn($number) 
+    {
         $columnName = '';
-    
-        while ($number > 0) {
-            $remainder = ($number - 1) % 26;
-            $columnName = chr(65 + $remainder) . $columnName;
-            $number = intval(($number - $remainder) / 26);
-        }
+            
+            while ($number > 0) {
+                $remainder = ($number - 1) % 26;
+                //dd($number);
+                $columnName = chr(65 + $remainder) . $columnName;
+                $number = intval(($number - $remainder) / 26);
+            }
+        
     
         return $columnName;
     }
