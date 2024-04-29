@@ -710,7 +710,7 @@ class ProductorController extends AbstractController
 
         $onlyActived = !$this->isGranted("ROLE_ADMIN") && 
             !$this->isGranted("ROLE_ANALYST") && 
-            !$this->isGranted("ROLE_VOUCHER_COORDINATOR") &&
+            !$this->isGranted("ROLE_VALIDATOR") &&
             !$this->isGranted("ROLE_INVESTIGATOR") 
         ;
 
