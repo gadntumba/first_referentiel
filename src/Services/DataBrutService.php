@@ -103,10 +103,10 @@ class DataBrutService
     }
 
     public function search(
-        string $cityName,string $fileName,string $source,string $cheetTitle
+        MetaDataBrut $mataData, int $rowId
     ) : ?DataBrut 
     {
-        $criteria = compact("cityName","fileName","source","cheetTitle");
+        $criteria = compact("mataData","rowId");
         
         //dd($criteria);
 

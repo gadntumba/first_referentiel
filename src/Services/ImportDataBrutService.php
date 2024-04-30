@@ -167,11 +167,27 @@ class ImportDataBrutService
                 foreach ($allDataSheet as $key => $itemSheet) 
                 {
                    $rowId = (int) (isset($itemSheet["row"])? $itemSheet["row"] : 0);
-                   $entity = $this->serviceDatabrut->create($itemSheet, $metaData,$rowId, $source);
+                   $entity = $this->serviceDatabrut->search($metaData,$rowId);
 
+                   if (!is_null($entity)) 
+                   {
+                    dump("already");
+                    unset($entity);
+                    continue;
+                   }
+                   dump("start ". $rowId);
+
+
+                   $entity = $this->serviceDatabrut->create($itemSheet, $metaData,$rowId, $source);
+                    //dd($key);
                    //dump($entity);
                    dump("-- ".$data["cityName"] ." ". $data["fileName"] ." ". $data["source"] ." ". $data["cheetTitle"] ." :: ". $rowId);
                    //dd();
+                   if (($key + 1)%10 == 0) {
+                    $this->em->flush();  
+                    unset($entity);                  
+                   }
+                   //;
                                 
                 }
 

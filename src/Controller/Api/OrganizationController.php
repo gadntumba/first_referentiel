@@ -7,6 +7,7 @@ use App\Repository\OrganizationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -28,9 +29,16 @@ class OrganizationController  extends AbstractController
      * @Route("/api/organizations", methods={"GET","HEAD"}, name="organization_stats_count_sinner")
      * 
      */
-    function all() : Response 
+    function all(Request $request) : Response 
     {
-        $data = $this->repository->findBy([], ["name" => "ASC"], 30);
+        $page = (int) $request->query->get("page", 1);
+        if (!is_int($page)) {
+          $page = 1;  
+        }
+        $offset = 30*($page - 1) + 1;
+        
+        //$page = 
+        $data = $this->repository->findBy([], ["name" => "ASC"], 30, $offset);
         
         $res = array_map(
             function(Organization $item) : array {
