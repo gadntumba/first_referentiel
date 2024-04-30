@@ -39,6 +39,7 @@ class OrganizationController  extends AbstractController
         
         //$page = 
         $data = $this->repository->findBy([], ["name" => "ASC"], 30, $offset);
+        $count = $this->repository->count([]);
         
         $res = array_map(
             function(Organization $item) : array {
@@ -55,7 +56,8 @@ class OrganizationController  extends AbstractController
         );
 
         return new JsonResponse([
-            "data" => $res
+            "data" => $res,
+            "count" => $count,
         ]);
         
     }
