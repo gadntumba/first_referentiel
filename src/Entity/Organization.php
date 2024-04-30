@@ -22,7 +22,7 @@ class Organization
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     #[Assert\NotNull()]
     #[Assert\NotBlank()]
     #[Groups(["read:organization", "read:productor:personnal_id_data"])]
@@ -37,7 +37,7 @@ class Organization
     #[ORM\OneToMany(mappedBy: 'organization', targetEntity: Productor::class)]
     private Collection $productors;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     private ?string $myHash = null;
 
     public function __construct()

@@ -258,7 +258,7 @@ class Productor
      * @Groups({"read:productor:personnal_id_data","read:collection","write:Productor"})
      * 
      */
-    #[ORM\ManyToOne(inversedBy: 'productors')]
+    #[ORM\ManyToOne(inversedBy: 'productors', cascade:['persist'])]
     private ?Organization $organization = null;
     /**
      * 
