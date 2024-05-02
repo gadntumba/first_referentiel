@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\DataBrut;
+use App\Entity\MetaDataBrut;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,4 +46,20 @@ class DataBrutRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    /**
+     * 
+     */
+    public function findLasRowId(MetaDataBrut $metaData): ?array
+    {
+        return $this->createQueryBuilder('d')
+            ->select('max(d.rowId)')
+            ->JOIN('d.mataData', 'md')
+            ->andWhere('md.id = :mataData')
+            //->andWhere('d.rowId = :rowId')
+            ->setParameter('mataData', $metaData->getId())
+            //->setParameter('rowId', $rowId)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

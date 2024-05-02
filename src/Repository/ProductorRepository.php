@@ -1073,6 +1073,34 @@ class ProductorRepository extends ServiceEntityRepository
         
     }
 
+
+    /**
+     * @return Productor[] Returns an array of Productor objects
+     */
+    function countByAcitivitiesByCities() : array 
+    {
+        
+        return $this->createQueryBuilder('p')
+            //->andWhere('p.investigatorId = :val')
+            ->select('c.id as cityId, c.name as cityName, p.activityType, count(p.id) total, sum(case when p.isActive = 1 then 1 else 0 end) validated')
+            ->leftJoin('p.housekeeping', 'h')
+            ->leftJoin('h.address', 'a')
+            ->leftJoin('a.town', 'to')
+            ->leftJoin('to.city', 'c')
+            ->andWhere('p.isNormal = :isNormal')
+            //->join('p.instigator', 'invest')
+            //->setParameter('val', $phone)
+            ->setParameter('isNormal', true)
+            ->groupBy('p.activityType', 'c.id')
+            ->orderBy('c.name, total')
+            //->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        
+    }
+
     /**
      * 
      */

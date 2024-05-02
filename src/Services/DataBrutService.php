@@ -113,5 +113,23 @@ class DataBrutService
         return $this->repository->findOneBy($criteria);
         
     }
+
+    public function lastRow(
+        MetaDataBrut $mataData
+    )  
+    {
+        //$criteria = compact("mataData","rowId");
+        
+        //dd($criteria);
+
+        $res = $this->repository->findLasRowId($mataData);
+
+        if (is_null($res)) {
+            return 0;            
+        }
+
+        return array_pop($res);
+        
+    }
     
 }

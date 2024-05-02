@@ -164,9 +164,16 @@ class ImportDataBrutService
                     3
                 );
 
+                $lastRow = $this->serviceDatabrut->lastRow($metaData);
+
+                //dd($lastRow);
+
                 foreach ($allDataSheet as $key => $itemSheet) 
                 {
                    $rowId = (int) (isset($itemSheet["row"])? $itemSheet["row"] : 0);
+                   if ($lastRow >= $rowId ) {
+                    continue;
+                   }
                    $entity = $this->serviceDatabrut->search($metaData,$rowId);
 
                    if (!is_null($entity)) 
@@ -175,6 +182,7 @@ class ImportDataBrutService
                     unset($entity);
                     continue;
                    }
+                   //dd($entity);
                    dump("start ". $rowId);
 
 
