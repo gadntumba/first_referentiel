@@ -36,6 +36,19 @@ class Productor
 {
     use TimestampTrait;
     const GENRES = ['M', 'F'];
+    const ACTIVITY_SECTOR_AGROFORESTRY = "sectorAgroForestry";
+    const ACTIVITY_SECTOR_INDUSTRY = "sectorIndustry";
+    const ACTIVITY_SECTOR_SERVICES = 'sectorServices';
+    const ACTIVITY_SECTOR_GREE_ECONOMY = "sectorGreeEconomy";
+    const ACTIVITY_SECTOR_OTHER = "other";
+    const ACTIVITIES = [
+        self::ACTIVITY_SECTOR_AGROFORESTRY, 
+        self::ACTIVITY_SECTOR_GREE_ECONOMY, 
+        self::ACTIVITY_SECTOR_INDUSTRY, 
+        self::ACTIVITY_SECTOR_OTHER, 
+        self::ACTIVITY_SECTOR_SERVICES
+    ];
+    
     /**
      * 
      * 
@@ -296,6 +309,9 @@ class Productor
      * @Groups({"read:productor:level_0"})
      */
     private ?array $feedBack = null;
+
+    #[ORM\Column(length: 255, nullable:true)]
+    private ?string $activityType = null;
 
     public function __construct()
     {
@@ -892,6 +908,18 @@ class Productor
     public function setFeedBack(?array $feedBack): static
     {
         $this->feedBack = $feedBack;
+
+        return $this;
+    }
+
+    public function getActivityType(): ?string
+    {
+        return $this->activityType;
+    }
+
+    public function setActivityType(string $activityType): static
+    {
+        $this->activityType = $activityType;
 
         return $this;
     }
