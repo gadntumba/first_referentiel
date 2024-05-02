@@ -35,8 +35,8 @@ class ActivityController extends AbstractController
         try {
             $activitiesByCities = $this->repository->countByAcitivitiesByCities();
         } catch (\Throwable $th) {
-            //throw $th;
-            dd($th->getMessage());
+            throw $th;
+            //dd($th->getMessage());
         }
         //countByAcitivitiesByCities
 
