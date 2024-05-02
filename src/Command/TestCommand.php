@@ -5,6 +5,7 @@ namespace App\Command;
 use App\Entity\EntrepreneurialActivity;
 use App\Entity\Observation;
 use App\Entity\Productor;
+use App\Repository\DataBrutRepository;
 use App\Repository\ObservationRepository;
 use App\Repository\ProductorRepository;
 use App\Repository\TownRepository;
@@ -44,6 +45,7 @@ class TestCommand extends Command
         private ProductorRepository $productorRepository,
         private TownRepository $townRepository,
         private ManagerGetInstigator $managerGetInstigator,
+        private DataBrutRepository $dataBrutRepository,
         private ManagerMakeValidateFile $managerMakeValidateFile
     ) {
         parent::__construct();
@@ -59,6 +61,14 @@ class TestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+
+        $groups = $this->dataBrutRepository->findByGroups();
+        $cities = $this->dataBrutRepository->findByCities();
+        //findByCities
+        $count = $this->dataBrutRepository->count([]);
+
+        dd($cities);
+        //dd($count);
 
         $data = $this->productorRepository->findAll();
         $groups = [];

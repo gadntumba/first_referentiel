@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\MetaDataBrut;
 use App\Entity\Organization;
+use App\Repository\DataBrutRepository;
 use App\Repository\MetaDataBrutRepository;
 use App\Repository\OrganizationRepository;
 use App\Services\DataBrutService;
@@ -24,6 +25,7 @@ class DataBrutController  extends AbstractController
     public function __construct(
         private EntityManagerInterface $em,
         private MetaDataBrutRepository $metaDataBrutRepository,
+        private DataBrutRepository $dataBrutRepository,
         private MetaDataBrutService $service,
         private DataBrutService $dataBrutService
     ) 
@@ -103,6 +105,25 @@ class DataBrutController  extends AbstractController
                 "cheetTitle" => $metaData->getCheetTitle(), 
                 "source" => $metaData->getSource(),
             ]
+        ]);
+    }
+    /**
+     * @Route("/api/metadata/stats", methods={"GET"}, name="metadata_stats_0")
+     * 
+     */
+    function stats() : Response {
+        try {
+            $groups = $this->dataBrutRepository->findByGroups();
+            $cities = $this->dataBrutRepository->findByCities();
+            //code...
+        } catch (\Throwable $th) {
+            //throw $th;
+            dd($th->getMessage());
+        }
+
+        return new JsonResponse([
+            "groups" => $groups,
+            "cities" => $cities,
         ]);
     }
 

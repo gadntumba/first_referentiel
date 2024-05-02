@@ -125,8 +125,6 @@ class ImportDataBrutService
                     [1, 2]
                 );
         
-                
-        
                 $otherContent = array_shift($allColumns);
                 $otherContent2 = array_shift($allColumns);
                 
@@ -166,7 +164,7 @@ class ImportDataBrutService
 
                 $lastRow = $this->serviceDatabrut->lastRow($metaData);
 
-                //dd($lastRow);
+                //dd(count($allDataSheet));
 
                 foreach ($allDataSheet as $key => $itemSheet) 
                 {

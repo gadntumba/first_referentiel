@@ -62,4 +62,42 @@ class DataBrutRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
+    /**
+     * 
+     */
+    public function findByGroups(): ?array
+    {
+        return $this->createQueryBuilder('d')
+            ->select("JSON_EXTRACT(d.content , '$.organization') org, md.cheetTitle, count(d.id) total")
+            ->JOIN('d.mataData', 'md')
+            //->andWhere('md.id = :mataData')
+            //->andWhere('d.rowId = :rowId')
+            //->setParameter('mataData', $metaData->getId())
+            //->setParameter('rowId', $rowId)
+            //JSON_EXTRACT(`content` , '$.organization')
+            ->groupBy('org','md.cheetTitle')
+            ->orderBy('org')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    /**
+     * 
+     */
+    public function findByCities(): ?array
+    {
+        return $this->createQueryBuilder('d')
+            ->select("md.cityName cityName, md.cheetTitle, count(d.id) total")
+            ->JOIN('d.mataData', 'md')
+            //->andWhere('md.id = :mataData')
+            //->andWhere('d.rowId = :rowId')
+            //->setParameter('mataData', $metaData->getId())
+            //->setParameter('rowId', $rowId)
+            //JSON_EXTRACT(`content` , '$.organization')
+            ->groupBy('md.cityName','md.cheetTitle')
+            ->orderBy('md.cityName')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

@@ -12,6 +12,8 @@ doctrine:
         dql:
             datetime_functions:
                 DATE_FORMAT: DoctrineExtensions\Query\Mysql\DateFormat
+            string_functions:
+                JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract
         mappings:
             App:
                 is_bundle: false
