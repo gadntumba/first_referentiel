@@ -507,6 +507,7 @@ class ProductorRepository extends ServiceEntityRepository
             ->leftJoin('s.territorry', 'te')
             ->leftJoin('te.province', 'pr')
             ->leftJoin('c.province', 'pu')
+            
             /*->setParameter('author', $user->getFavoriteAuthor()->getId())
             ->andWhere('b.publicatedOn IS NOT NULL');*/
             ;   
@@ -529,6 +530,18 @@ class ProductorRepository extends ServiceEntityRepository
             $queryBuilder->andWhere('u.investigatorId = :investigatorId');
             $queryBuilder->setParameter('investigatorId', $user?->getNormalUsername());   
             //$queryBuilder->setParameter('actived', false);         
+        }
+
+        if ($filterUserDto && $filterUserDto->getInvests() && count($filterUserDto->getInvests()) > 0 ) 
+        {
+            $queryBuilder->andWhere('u.investigatorId IN (:invests)');
+            $queryBuilder->setParameter('invests', $filterUserDto->getInvests());
+        }
+        //activityType
+        //investigatorId
+        if ($filterUserDto && $filterUserDto->getActivities() && count($filterUserDto->getActivities()) > 0 ) {
+            $queryBuilder->andWhere('u.activityType IN (:activities)');
+            $queryBuilder->setParameter('activities', $filterUserDto->getActivities());
         }
 
         if($filterUserDto && $filterUserDto->getSearch()) {

@@ -50,11 +50,14 @@ class MatchOrganizationCommand extends Command
         foreach ($data as $key => $productor) 
         {
             $productor->getId();
+            $organisation = $productor->getOrganization();
 
-            if (!is_null($productor->getOrganization())) {
+            if (!is_null($organisation) && !is_null($organisation->getCity())) 
+            {
                 $io->info("Already : ". $productor->getName());
                 continue;
-            }      
+            }
+
             /**
              * @var EntrepreneurialActivity
              */

@@ -14,6 +14,9 @@ class FilterUserDto {
     private array $territories = [];
     private array $sectors = [];
     private array $towns = [];
+    private array $invests = [];
+    private array $activities = [];
+    
     private ?\DateTime $dateStart = null;
     private ?\DateTime $dateEnd = null;
 
@@ -183,6 +186,46 @@ class FilterUserDto {
     public function setSearch($search)
     {
         $this->search = $search;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of invests
+     */ 
+    public function getInvests()
+    {
+        return $this->invests;
+    }
+
+    /**
+     * Set the value of invests
+     *
+     * @return  self
+     */ 
+    public function setInvests($invests)
+    {
+        $this->invests = $invests;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of activities
+     */ 
+    public function getActivities()
+    {
+        return $this->activities;
+    }
+
+    /**
+     * Set the value of activities
+     *
+     * @return  self
+     */ 
+    public function setActivities($activities)
+    {
+        $this->activities = $activities;
 
         return $this;
     }

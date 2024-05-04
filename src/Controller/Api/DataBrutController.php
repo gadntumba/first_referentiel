@@ -117,8 +117,8 @@ class DataBrutController  extends AbstractController
             $cities = $this->dataBrutRepository->findByCities();
             //code...
         } catch (\Throwable $th) {
-            //throw $th;
-            dd($th->getMessage());
+            throw $th;
+           //dd($th->getMessage());
         }
 
         return new JsonResponse([

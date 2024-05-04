@@ -7,6 +7,7 @@ use App\Entity\Observation;
 use App\Entity\Productor;
 use App\Repository\DataBrutRepository;
 use App\Repository\ObservationRepository;
+use App\Repository\OrganizationRepository;
 use App\Repository\ProductorRepository;
 use App\Repository\TownRepository;
 use App\Services\ManagerGetInstigator;
@@ -46,6 +47,7 @@ class TestCommand extends Command
         private TownRepository $townRepository,
         private ManagerGetInstigator $managerGetInstigator,
         private DataBrutRepository $dataBrutRepository,
+        private OrganizationRepository $organizationRepository,
         private ManagerMakeValidateFile $managerMakeValidateFile
     ) {
         parent::__construct();
@@ -61,9 +63,66 @@ class TestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        $dir = $this->containerBag->get("kernel.project_dir")."/var";
+        $reader = new Xlsx();
+        $path = $dir."/excelFile/agrodata_structure.xlsx";
+        $spreadsheet = $reader->load($path);
+        //var_dump("ok");
+        //die();
+        //$spreadsheet->addSheet();
+        $sheets = $spreadsheet->getAllSheets();
+        $w = new Worksheet();
+        //$w->setC;
+        $sheet = $sheets[0];
+        $countRow = $sheet->getHighestRow();
 
-        $groups = $this->dataBrutRepository->findByGroups();
-        $cities = $this->dataBrutRepository->findByCities();
+        $cityData = [];
+
+        for ($i=2; $i < $countRow; $i++) { 
+            $el = [];
+           // $el["code"] = trim($sheet->getCell("A".$i)->getValue());
+           //var_dump($sheet->getCell("B".$i)->getValue());
+           //die();
+            $el["row"] = $i;
+            $el["id"] = trim($sheet->getCell("A".$i)->getValue());
+            $el["name"] = trim($sheet->getCell("B".$i)->getValue());
+            $el["cityName"] = trim($sheet->getCell("C".$i)->getValue());
+
+            array_push($cityData, $el);
+            
+        }
+
+        for ($key=962; $key < count($cityData); $key++) {
+            $item = $cityData[$key];
+            $entity = $this->organizationRepository->find($item["id"]);
+
+            if (is_null($entity)) {
+                continue;
+            }
+            //962
+
+            dump($entity?->getName());
+            dump($entity?->getMyHash());
+            dump($item["name"]);
+            dump($key);
+
+            $entity?->setName($item["name"]);
+
+            if (($key+1) % 10 == 0) {
+                $this->em->flush();
+                //dd("ok");
+            }
+        }
+
+        dd("OK");
+
+        dd($cityData[0]);
+        //organizationRepository
+        $groups = $this->dataBrutRepository->findBy([]);
+        dd($groups);
+        ///home/nkusu/Téléchargements/agrodata_structure.xlsx
+        //$groups = $this->dataBrutRepository->findByGroups();
+        //$cities = $this->dataBrutRepository->findByCities();
         //findByCities
         $count = $this->dataBrutRepository->count([]);
 

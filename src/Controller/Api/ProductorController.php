@@ -702,6 +702,10 @@ class ProductorController extends AbstractController
         $filter->setCities(isset($arrQuery['cities'])?$arrQuery['cities']:[]);
         $filter->setTerritories(isset($arrQuery['territories'])?$arrQuery['territories']:[]);
         $filter->setTowns(isset($arrQuery['towns'])?$arrQuery['towns']:[]);
+
+        $filter->setInvests(isset($arrQuery['invests'])?$arrQuery['invests']:[]);
+        $filter->setActivities(isset($arrQuery['activities'])?$arrQuery['activities']:[]);
+
         $filter->setSectors(isset($arrQuery['sectors'])?$arrQuery['sectors']:[]);
         $filter->setDateStart(isset($arrQuery['datestart'])?$arrQuery['datestart']:null);
         $filter->setDateEnd(isset($arrQuery['dateend'])?$arrQuery['dateend']:null);
