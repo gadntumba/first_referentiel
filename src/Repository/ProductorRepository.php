@@ -1085,6 +1085,33 @@ class ProductorRepository extends ServiceEntityRepository
 
         
     }
+    /**
+     */
+    function countByAcitivitiesMulti(string $activityName) : array 
+    {
+        
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.activitiesType like :activityName ')
+            ->select('count(p.id) total, sum(case when p.isActive = 1 then 1 else 0 end) validated')
+            ->andWhere('p.isNormal = :isNormal')
+            //->join('p.instigator', 'invest')
+
+            ->leftJoin('p.housekeeping', 'h')
+            ->leftJoin('h.address', 'a')
+            ->leftJoin('a.town', 'to')
+            ->leftJoin('to.city', 'c')
+            //->setParameter('val', $phone)
+            ->setParameter('isNormal', true)
+            ->setParameter('activityName', '%"'.$activityName.'"%' )
+            //->groupBy('p.activityType')
+            ->orderBy('total')
+            //->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        
+    }
 
 
     /**
@@ -1105,6 +1132,34 @@ class ProductorRepository extends ServiceEntityRepository
             //->setParameter('val', $phone)
             ->setParameter('isNormal', true)
             ->groupBy('p.activityType', 'c.id')
+            ->orderBy('c.name, total')
+            //->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        
+    }
+
+    /**
+     * 
+     */
+    function countByAcitivitiesByCitiesMulti(string $activityName) : array 
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.activitiesType like :activityName ')
+            //->andWhere('p.investigatorId = :val')
+            ->select('c.id as cityId, c.name as cityName, count(p.id) total, sum(case when p.isActive = 1 then 1 else 0 end) validated')
+            ->leftJoin('p.housekeeping', 'h')
+            ->leftJoin('h.address', 'a')
+            ->leftJoin('a.town', 'to')
+            ->leftJoin('to.city', 'c')
+            ->andWhere('p.isNormal = :isNormal')
+            //->join('p.instigator', 'invest')
+            //->setParameter('val', $phone)
+            ->setParameter('isNormal', true)
+            ->setParameter('activityName', '%"'.$activityName.'"%' )
+            ->groupBy('c.id')
             ->orderBy('c.name, total')
             //->setMaxResults(10)
             ->getQuery()

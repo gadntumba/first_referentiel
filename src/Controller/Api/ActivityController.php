@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Productor;
 use App\Repository\ProductorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,10 +31,51 @@ class ActivityController extends AbstractController
     {
         $count = $this->repository->count(["isNormal" => true]);
         //$count = count($data);
-        //dd($count);
-        $activities = $this->repository->countByAcitivities();
+        //dd($count); countByAcitivitiesMulti
+        //$activities = $this->repository->countByAcitivities();
+
+        $activitiesGreen = $this->repository->countByAcitivitiesMulti(Productor::ACTIVITY_SECTOR_GREE_ECONOMY);
+        $activitiesIndus = $this->repository->countByAcitivitiesMulti(Productor::ACTIVITY_SECTOR_INDUSTRY);
+        $activitiesService = $this->repository->countByAcitivitiesMulti(Productor::ACTIVITY_SECTOR_SERVICES);
+        $activities = [];
+
+        $activitiesGreen = array_pop($activitiesGreen);
+        $activitiesGreen["activityType"] = Productor::ACTIVITY_SECTOR_GREE_ECONOMY;
+        $activitiesIndus = array_pop($activitiesIndus);
+        $activitiesIndus["activityType"] = Productor::ACTIVITY_SECTOR_INDUSTRY;
+        $activitiesService = array_pop($activitiesService);
+        $activitiesService["activityType"] = Productor::ACTIVITY_SECTOR_SERVICES;
+
+        array_push($activities,$activitiesGreen);
+        array_push($activities,$activitiesIndus);
+        array_push($activities,$activitiesService);
+
+       // dd($activities);
+        //countByAcitivitiesByCitiesMulti
+
         try {
-            $activitiesByCities = $this->repository->countByAcitivitiesByCities();
+            //$activitiesByCities = $this->repository->countByAcitivitiesByCities();
+            $activitiesCitiesGreen = $this->repository->countByAcitivitiesByCitiesMulti(Productor::ACTIVITY_SECTOR_GREE_ECONOMY);
+            $activitiesCitiesIndus = $this->repository->countByAcitivitiesByCitiesMulti(Productor::ACTIVITY_SECTOR_INDUSTRY);
+            $activitiesCitiesService = $this->repository->countByAcitivitiesByCitiesMulti(Productor::ACTIVITY_SECTOR_SERVICES);
+            $activitiesCities = [];
+
+            //$activitiesCitiesGreen = array_pop($activitiesCitiesGreen);
+            foreach ($activitiesCitiesGreen as $key => $activity) {
+                //dd($activitiesCitiesGreen);
+                $activity["activityType"] = Productor::ACTIVITY_SECTOR_GREE_ECONOMY;
+                array_push($activitiesCities,$activity);
+            }
+
+            foreach ($activitiesCitiesIndus as $key => $activity) {
+                $activity["activityType"] = Productor::ACTIVITY_SECTOR_INDUSTRY;
+                array_push($activitiesCities,$activity);
+            }
+            foreach ($activitiesCitiesService as $key => $activity) {
+                $activity["activityType"] = Productor::ACTIVITY_SECTOR_SERVICES;
+                array_push($activitiesCities,$activity);
+            }
+
         } catch (\Throwable $th) {
             throw $th;
             //dd($th->getMessage());
@@ -41,6 +83,7 @@ class ActivityController extends AbstractController
         //countByAcitivitiesByCities
 
         //dd($activitiesByCities);
+        
 
         foreach ($activities as $key => $activity) 
         {
@@ -51,7 +94,7 @@ class ActivityController extends AbstractController
 
         return new JsonResponse([
             "data" => $activities,
-            "cities" => $activitiesByCities,
+            "cities" => $activitiesCities,
         ]);
 
     }

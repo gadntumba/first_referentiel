@@ -58,7 +58,16 @@ class MatchActivityCommand extends Command
         foreach ($data as $key => $productor) 
         {
             $productor->getId();
-            if (!is_null($productor->getActivityType()) && !empty($productor->getActivityType())) {
+
+           /* if (!is_null($productor->getActivityType()) && !empty($productor->getActivityType())) 
+            {
+
+                $io->info("Already : ". $productor->getName());
+                continue;
+            }*/
+            if (!is_null($productor->getActivitiesType()) && !empty($productor->getActivitiesType())) 
+            {
+
                 $io->info("Already : ". $productor->getName());
                 continue;
             }
@@ -88,6 +97,7 @@ class MatchActivityCommand extends Command
             $otherActivitySector = isset($activities["9"])?$activities["9"]:null;
 
             //dd(empty($sectorAgroForestry));
+            $activitiesType = [];
             if (
                 is_null($sectorAgroForestry) && 
                 is_null($sectorIndustry) && 
@@ -97,37 +107,48 @@ class MatchActivityCommand extends Command
             ) 
             {
                continue; 
-            }else if (
+            }
+            
+            if (
                 !is_null($sectorAgroForestry) && !empty($sectorAgroForestry)
             ) 
             {
+                array_push($activitiesType, Productor::ACTIVITY_SECTOR_AGROFORESTRY);
 
-                $productor->setActivityType(Productor::ACTIVITY_SECTOR_AGROFORESTRY);
+               // $productor->setActivityType(Productor::ACTIVITY_SECTOR_AGROFORESTRY);
 
-            }else if (
+            }if (
                 !is_null($sectorIndustry)  && !empty($sectorIndustry)
             ) 
             {
+                array_push($activitiesType, Productor::ACTIVITY_SECTOR_INDUSTRY);
 
-                $productor->setActivityType(Productor::ACTIVITY_SECTOR_INDUSTRY);
 
-            }else if (
+                //$productor->setActivityType(Productor::ACTIVITY_SECTOR_INDUSTRY);
+
+            }if (
                 !is_null($sectorServices) && !empty($sectorServices)
             ) 
             {
-                $productor->setActivityType(Productor::ACTIVITY_SECTOR_SERVICES); 
-            } else if (
+                array_push($activitiesType, Productor::ACTIVITY_SECTOR_SERVICES);
+                //$productor->setActivityType(Productor::ACTIVITY_SECTOR_SERVICES); 
+            } if (
                 !is_null($sectorGreeEconomy) && !empty($sectorGreeEconomy)
             ) 
             {
-                $productor->setActivityType(Productor::ACTIVITY_SECTOR_GREE_ECONOMY);
-            }else if (
+                array_push($activitiesType, Productor::ACTIVITY_SECTOR_GREE_ECONOMY);
+                //$productor->setActivityType(Productor::ACTIVITY_SECTOR_GREE_ECONOMY);
+            }
+            if (
                 !is_null($otherActivitySector) && !empty($otherActivitySector)
             ) 
             {
-                $productor->setActivityType(Productor::ACTIVITY_SECTOR_OTHER);
+                array_push($activitiesType, Productor::ACTIVITY_SECTOR_OTHER);
+                //$productor->setActivityType(Productor::ACTIVITY_SECTOR_OTHER);
             }
             //$groups[$key]["count"] = $groups[$key]["count"] + 1;
+            $productor->setActivitiesType($activitiesType);
+            
             $io->info("Ok : ". $productor->getName());
 
         }

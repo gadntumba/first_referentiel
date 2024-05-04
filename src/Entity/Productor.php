@@ -313,6 +313,9 @@ class Productor
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $activityType = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?array $activitiesType = null;
+
     public function __construct()
     {
         $this->AgriculturalActivity = new ArrayCollection();
@@ -920,6 +923,18 @@ class Productor
     public function setActivityType(string $activityType): static
     {
         $this->activityType = $activityType;
+
+        return $this;
+    }
+
+    public function getActivitiesType(): ?array
+    {
+        return $this->activitiesType;
+    }
+
+    public function setActivitiesType(?array $activitiesType): static
+    {
+        $this->activitiesType = $activitiesType;
 
         return $this;
     }
