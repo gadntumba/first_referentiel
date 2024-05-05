@@ -763,6 +763,106 @@ class ProductorController extends AbstractController
 
         return new JsonResponse($resp, 200);
     }
+    /**
+     * @Route("/api/productors/others/geojson", methods={"GET","HEAD"}, name="productor_list_geojson")
+     * 
+     */
+    public function geojson(Request $req)
+    {        
+        $query = $req->query;
+        //dd($query->all());
+        $arrQuery = $query->all();
+        $filter = new FilterUserDto;
+
+        $filter->setSearch(isset($arrQuery['search'])?$arrQuery['search']: null);
+        $filter->setProvinces(isset($arrQuery['provinces'])?$arrQuery['provinces']:[]);
+        $filter->setCities(isset($arrQuery['cities'])?$arrQuery['cities']:[]);
+        $filter->setTerritories(isset($arrQuery['territories'])?$arrQuery['territories']:[]);
+        $filter->setTowns(isset($arrQuery['towns'])?$arrQuery['towns']:[]);
+
+        $filter->setInvests(isset($arrQuery['invests'])?$arrQuery['invests']:[]);
+        $filter->setActivities(isset($arrQuery['activities'])?$arrQuery['activities']:[]);
+
+        $filter->setSectors(isset($arrQuery['sectors'])?$arrQuery['sectors']:[]);
+        $filter->setDateStart(isset($arrQuery['datestart'])?$arrQuery['datestart']:null);
+        $filter->setDateEnd(isset($arrQuery['dateend'])?$arrQuery['dateend']:null);
+        //dd($filter);
+        $page = isset($arrQuery['page'])?(int)$arrQuery['page']:1;
+
+        $onlyActived = !$this->isGranted("ROLE_ADMIN") && 
+            !$this->isGranted("ROLE_ANALYST") && 
+            !$this->isGranted("ROLE_VALIDATOR") &&
+            !$this->isGranted("ROLE_INVESTIGATOR") 
+        ;
+
+        $isInvestigator = $this->isGranted("ROLE_INVESTIGATOR") && !$this->isGranted("ROLE_ADMIN") && 
+        !$this->isGranted("ROLE_ANALYST") && 
+        !$this->isGranted("ROLE_VOUCHER_COORDINATOR");
+        //dd($isInvestigator);
+
+        //dd($onlyActived);
+        
+        $isTest = $this->getParameter("agromwinda_load_mode") == "TEST"? true : false;
+        $i = 0;
+
+        $limit = 30;
+
+        $geoData = [
+            "type"=> "FeatureCollection",
+            "features"=> [
+              
+            ]
+        ];
+
+        $features = [];
+
+        do {
+
+            $offset = ($i*30)+1;
+
+            $producers = $this->repository->getBooksByGeoJson(
+                $filter, $page, 
+                $onlyActived, $isTest, 
+                $isInvestigator, $this->getUser(), $offset, $limit
+            );
+
+            $count = count($producers);
+
+            foreach ($producers as $key => $producer) 
+            {
+                $feature = [
+                    "type"=> "Feature",
+                    "geometry"=> [
+                      "type"=> "Point",
+                      "coordinates"=> [$producer->getLatitude(), $producer->getLongitude()]
+                    ],
+                    "properties"=> [
+                      "names"=> $producer->getFirstName() . " " . $producer->getName() . " " . $producer->getLastName(),
+                      "phone"=> $producer->getPhoneNumber(),
+                    ]
+                ];
+                array_push($features, $feature);
+
+                unset($producer);
+            }
+
+            unset($producers);
+            //dump($i);
+            //dump($count);
+
+            $i++;
+            
+        } while ($count == $limit);
+
+        $geoData["features"] = $features;
+
+        //dump($i);
+        //dd(($i*30)+1);
+        $resp = [
+            "geoData" => $geoData
+        ];
+        return new JsonResponse($resp, 200);
+    }
 
     /**
      * @Route("/api/stats", methods={"GET","HEAD"}, name="productor_stats")
