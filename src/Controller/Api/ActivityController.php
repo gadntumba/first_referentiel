@@ -37,6 +37,7 @@ class ActivityController extends AbstractController
         $activitiesGreen = $this->repository->countByAcitivitiesMulti(Productor::ACTIVITY_SECTOR_GREE_ECONOMY);
         $activitiesIndus = $this->repository->countByAcitivitiesMulti(Productor::ACTIVITY_SECTOR_INDUSTRY);
         $activitiesService = $this->repository->countByAcitivitiesMulti(Productor::ACTIVITY_SECTOR_SERVICES);
+        $activitiesTransformation = $this->repository->countByAcitivitiesMulti(Productor::ACTIVITY_SECTOR_AGROFORESTRY);
         $activities = [];
 
         $activitiesGreen = array_pop($activitiesGreen);
@@ -45,10 +46,13 @@ class ActivityController extends AbstractController
         $activitiesIndus["activityType"] = Productor::ACTIVITY_SECTOR_INDUSTRY;
         $activitiesService = array_pop($activitiesService);
         $activitiesService["activityType"] = Productor::ACTIVITY_SECTOR_SERVICES;
+        $activitiesTransformation = array_pop($activitiesTransformation);
+        $activitiesTransformation["activityType"] = Productor::ACTIVITY_SECTOR_AGROFORESTRY;
 
         array_push($activities,$activitiesGreen);
         array_push($activities,$activitiesIndus);
         array_push($activities,$activitiesService);
+        array_push($activities,$activitiesTransformation);
 
        // dd($activities);
         //countByAcitivitiesByCitiesMulti
@@ -58,6 +62,7 @@ class ActivityController extends AbstractController
             $activitiesCitiesGreen = $this->repository->countByAcitivitiesByCitiesMulti(Productor::ACTIVITY_SECTOR_GREE_ECONOMY);
             $activitiesCitiesIndus = $this->repository->countByAcitivitiesByCitiesMulti(Productor::ACTIVITY_SECTOR_INDUSTRY);
             $activitiesCitiesService = $this->repository->countByAcitivitiesByCitiesMulti(Productor::ACTIVITY_SECTOR_SERVICES);
+            $activitiesCitiesTransformation = $this->repository->countByAcitivitiesByCitiesMulti(Productor::ACTIVITY_SECTOR_AGROFORESTRY);
             $activitiesCities = [];
 
             //$activitiesCitiesGreen = array_pop($activitiesCitiesGreen);
@@ -73,6 +78,10 @@ class ActivityController extends AbstractController
             }
             foreach ($activitiesCitiesService as $key => $activity) {
                 $activity["activityType"] = Productor::ACTIVITY_SECTOR_SERVICES;
+                array_push($activitiesCities,$activity);
+            }
+            foreach ($activitiesCitiesTransformation as $key => $activity) {
+                $activity["activityType"] = Productor::ACTIVITY_SECTOR_AGROFORESTRY;
                 array_push($activitiesCities,$activity);
             }
 
