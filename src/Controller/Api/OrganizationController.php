@@ -41,17 +41,22 @@ class OrganizationController  extends AbstractController
         $offset = 30*($page - 1) + 1;
         
         //$page = 
-        $data = $this->repository->findBy([], ["name" => "ASC"], 30, $offset);
+        //findByGroupName
+
+        $data = $this->repository->findByGroupName(30, $offset);
+        //dd($data);
+
+        //$data = $this->repository->findBy([], ["name" => "ASC"], 30, $offset);
         $count = $this->repository->count([]);
         
         $res = array_map(
-            function(Organization $item) : array {
+            function(array $item) : array {
                 return [
-                    "id" => $item->getId(),
-                    "name" => $item->getName(),
-                    "cityId" => $item->getCity()?->getId(),
-                    "cityName" => $item->getCity()?->getName(),
-                    "count" => count($item->getProductors()),
+                    "id" => $item["id"] ,
+                    "name" => $item["name"] ,
+                    "cityId" => $item["cityId"] ,
+                    "cityName" => $item["cityName"]  ,
+                    "count" => $item["total"] 
 
                 ];
             },
