@@ -805,7 +805,7 @@ class ProductorController extends AbstractController
         $isTest = $this->getParameter("agromwinda_load_mode") == "TEST"? true : false;
         $i = 0;
 
-        $limit = 30;
+        $limit = 250;
 
         $geoData = [
             "type"=> "FeatureCollection",
@@ -816,17 +816,20 @@ class ProductorController extends AbstractController
 
         $features = [];
 
-        do {
-
-            $offset = ($i*30)+1;
+            $offset = ($page*$limit)+1;
 
             $producers = $this->repository->getBooksByGeoJson(
                 $filter, $page, 
                 $onlyActived, $isTest, 
                 $isInvestigator, $this->getUser(), $offset, $limit
             );
+            //dd($producers);
 
-            $count = count($producers);
+            $count = $this->repository->getBooksByGeoJsonCount(
+                $filter, $page, 
+                $onlyActived, $isTest, 
+                $isInvestigator, $this->getUser()
+            );
 
             foreach ($producers as $key => $producer) 
             {
@@ -834,11 +837,11 @@ class ProductorController extends AbstractController
                     "type"=> "Feature",
                     "geometry"=> [
                       "type"=> "Point",
-                      "coordinates"=> [$producer->getLongitude(), $producer->getLatitude()]
+                      "coordinates"=> [$producer["longitude"], $producer["latitude"]]
                     ],
                     "properties"=> [
-                      "names"=> $producer->getFirstName() . " " . $producer->getName() . " " . $producer->getLastName(),
-                      "phone"=> $producer->getPhoneNumber(),
+                      "names"=> $producer["name"] . " " . $producer["firstName"] . " " . $producer["lastName"],
+                      "phone"=> $producer["phoneNumber"],
                     ]
                 ];
                 array_push($features, $feature);
@@ -850,17 +853,20 @@ class ProductorController extends AbstractController
             //dump($i);
             //dump($count);
 
-            $i++;
-            
-        } while ($count == $limit);
-
         $geoData["features"] = $features;
 
         //dump($i);
         //dd(($i*30)+1);
+        $arrCount = array_pop($count);
+        $countUnique = $arrCount? array_pop($arrCount): 0;
         $resp = [
-            "geoData" => $geoData
+            "geoData" => $geoData,
+            "count" => $countUnique,
+            "countPerPage" => $limit,
+            "NbrPage" => ceil($countUnique / $limit) ,
+            "NbrPageReal" => $countUnique / $limit,
         ];
+
         return new JsonResponse($resp, 200);
     }
 

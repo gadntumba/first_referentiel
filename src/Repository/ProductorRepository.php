@@ -625,7 +625,6 @@ class ProductorRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Productor[]
      */
     public function getBooksByGeoJson(
         FilterUserDto $filterUserDto = null, 
@@ -634,9 +633,11 @@ class ProductorRepository extends ServiceEntityRepository
     ): array
     {
         $firstResult = ($page -1) * self::PAGINATOR_PER_PAGE;
-
+        //$producer->getLongitude(), $producer->getLatitude()
+        //$producer->getFirstName() . " " . $producer->getName() . " " . $producer->getLastName()
+        //$producer->getPhoneNumber()
         $queryBuilder = $this->createQueryBuilder("u");
-        $queryBuilder->select('u')
+        $queryBuilder->select('u.longitude, u.latitude, u.name, u.firstName, u.lastName, u.phoneNumber')
             ->leftJoin('u.housekeeping', 'h')
             ->leftJoin('h.address', 'a')
             ->leftJoin('a.town', 'to')
@@ -749,6 +750,116 @@ class ProductorRepository extends ServiceEntityRepository
 
         return $paginator;
 
+    }
+    /**
+     */
+    public function getBooksByGeoJsonCount(
+        FilterUserDto $filterUserDto = null, 
+        int $page = 1, bool $onlyActived = true, 
+        bool $isTest=true, bool $isInvestigator=false, $user=null
+    ): array
+    {
+        $firstResult = ($page -1) * self::PAGINATOR_PER_PAGE;
+        //$producer->getLongitude(), $producer->getLatitude()
+        //$producer->getFirstName() . " " . $producer->getName() . " " . $producer->getLastName()
+        //$producer->getPhoneNumber()
+        $queryBuilder = $this->createQueryBuilder("u");
+        $queryBuilder->select('count(u.id)')
+            ->leftJoin('u.housekeeping', 'h')
+            ->leftJoin('h.address', 'a')
+            ->leftJoin('a.town', 'to')
+            ->leftJoin('a.sector', 's')
+            ->leftJoin('to.city', 'c')
+            ->leftJoin('s.territorry', 'te')
+            ->leftJoin('te.province', 'pr')
+            ->leftJoin('c.province', 'pu')
+            
+            /*->setParameter('author', $user->getFavoriteAuthor()->getId())
+            ->andWhere('b.publicatedOn IS NOT NULL');*/
+            ;   
+            //dd($isTest);
+            if (!$isTest) {
+                //dd(!$isTest);
+                $queryBuilder->andWhere('u.isNormal = :normal');
+                $queryBuilder->setParameter('normal', true);
+            }
+
+        if ($onlyActived) {
+            $queryBuilder->andWhere('u.isActive = :actived');
+            $queryBuilder->setParameter('actived', true);
+        }
+
+        if ($isInvestigator && !$onlyActived) 
+        {
+            //dd($user?->getNormalUsername());
+            $queryBuilder->andWhere('u.isActive is null');
+            $queryBuilder->andWhere('u.investigatorId = :investigatorId');
+            $queryBuilder->setParameter('investigatorId', $user?->getNormalUsername());   
+            //$queryBuilder->setParameter('actived', false);         
+        }
+
+        if ($filterUserDto && $filterUserDto->getInvests() && count($filterUserDto->getInvests()) > 0 ) 
+        {
+            $queryBuilder->andWhere('u.investigatorId IN (:invests)');
+            $queryBuilder->setParameter('invests', $filterUserDto->getInvests());
+        }
+        //activityType
+        //investigatorId
+        if ($filterUserDto && $filterUserDto->getActivities() && count($filterUserDto->getActivities()) > 0 ) {
+            $queryBuilder->andWhere('u.activityType IN (:activities)');
+            $queryBuilder->setParameter('activities', $filterUserDto->getActivities());
+        }
+
+        if($filterUserDto && $filterUserDto->getSearch()) {
+
+            $search = strtolower($filterUserDto->getSearch()) ;
+            $queryBuilder->andWhere('u.id LIKE :id OR lower(u.name) LIKE :name OR lower(u.lastName) LIKE :lastName OR lower(u.firstName) LIKE :firstName OR lower(u.phoneNumber) LIKE :phoneNumber')
+                ->setParameter('id', "%" .$search. "%")
+                ->setParameter('name', "%" .$search. "%")
+                ->setParameter('lastName', "%" .$search. "%")
+                ->setParameter('firstName', "%" .$search. "%")
+                ->setParameter('phoneNumber', "%" .$search. "%")
+            ;
+
+        }
+        if($filterUserDto && $filterUserDto->getDateStart() && $filterUserDto->getDateEnd()) {
+
+            $queryBuilder->andWhere('u.createdAt BETWEEN :dateStart AND :dateEnd');
+            $queryBuilder->setParameter('dateStart', $filterUserDto->getDateStart()->format("Y-m-d"));
+            $queryBuilder->setParameter('dateEnd', $filterUserDto->getDateEnd()->format("Y-m-d"));
+
+        }
+
+        if ($filterUserDto && $filterUserDto->getTowns() && count($filterUserDto->getTowns()) > 0 ) {
+            $queryBuilder->andWhere('to is not null and to.id IN (:towns)');
+            $queryBuilder->setParameter('towns', $filterUserDto->getTowns());
+        }
+
+        if ($filterUserDto && $filterUserDto->getSectors() && count($filterUserDto->getSectors()) > 0 ) {
+            $queryBuilder->andWhere('s is not null and s.id IN (:sectors)');
+            $queryBuilder->setParameter('sectors', $filterUserDto->getSectors());
+        }
+
+        if ($filterUserDto && $filterUserDto->getCities() && count($filterUserDto->getCities()) > 0 ) {
+            //dd($filterUserDto->getCities());
+            $queryBuilder->andWhere('c is not null and c.id IN (:cities)');
+            $queryBuilder->setParameter('cities', $filterUserDto->getCities());
+        }
+
+        if ($filterUserDto && $filterUserDto->getTerritories() && count($filterUserDto->getTerritories()) > 0 ) {
+            $queryBuilder->andWhere('te is not null and te.id IN (:te)');
+            $queryBuilder->setParameter('te', $filterUserDto->getTerritories());
+        }
+
+        if ($filterUserDto && $filterUserDto->getProvinces() && count($filterUserDto->getProvinces()) > 0 ) {
+            $queryBuilder->andWhere('pr is not null and pr.id IN (:provs) or pu is not null and pu.id IN (:provs)');
+            $queryBuilder->setParameter('provs', $filterUserDto->getProvinces());
+        }
+
+        $query=$queryBuilder->getQuery();
+
+        return $query->getResult();
+        
     }
 
 
