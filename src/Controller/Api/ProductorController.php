@@ -834,7 +834,7 @@ class ProductorController extends AbstractController
                     "type"=> "Feature",
                     "geometry"=> [
                       "type"=> "Point",
-                      "coordinates"=> [$producer->getLatitude(), $producer->getLongitude()]
+                      "coordinates"=> [$producer->getLongitude(), $producer->getLatitude()]
                     ],
                     "properties"=> [
                       "names"=> $producer->getFirstName() . " " . $producer->getName() . " " . $producer->getLastName(),
