@@ -863,6 +863,7 @@ class ProductorController extends AbstractController
             "geoData" => $geoData,
             "count" => $countUnique,
             "countPerPage" => $limit,
+            "page" => $page,
             "NbrPage" => ceil($countUnique / $limit) ,
             "NbrPageReal" => $countUnique / $limit,
         ];
