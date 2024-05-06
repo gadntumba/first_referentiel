@@ -29,6 +29,11 @@ class ActivityController extends AbstractController
     )]
     public function list(): Response 
     {
+        if (!$this->isGranted("ROLE_ADMIN")) 
+        {
+            throw new HttpException(403, "ACCESS DENIED");
+        }
+        
         $count = $this->repository->count(["isNormal" => true]);
         //$count = count($data);
         //dd($count); countByAcitivitiesMulti

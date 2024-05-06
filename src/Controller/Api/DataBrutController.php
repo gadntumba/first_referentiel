@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * 
@@ -36,7 +37,7 @@ class DataBrutController  extends AbstractController
 
     /**
      * @Route("/api/metadata", methods={"GET","HEAD"}, name="metadata_all")
-     * 
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function all() : Response 
     {
@@ -63,9 +64,9 @@ class DataBrutController  extends AbstractController
 
     /**
      * @Route("/api/data-bruts/meta-data/{id}", methods={"GET","HEAD"}, name="meta_brut_metadata")
-     * 
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    function allDataBrutUCP(MetaDataBrut $metaData) : Response 
+    public function allDataBrutUCP(MetaDataBrut $metaData) : Response 
     {
         return new JsonResponse(
             [
@@ -77,7 +78,7 @@ class DataBrutController  extends AbstractController
 
     /**
      * @Route("/api/metadata", methods={"POST"}, name="metadata_create")
-     * 
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function setMetaData(Request $request) : Response 
     {
@@ -109,9 +110,9 @@ class DataBrutController  extends AbstractController
     }
     /**
      * @Route("/api/metadata/stats", methods={"GET"}, name="metadata_stats_0")
-     * 
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    function stats() : Response {
+    public function stats() : Response {
         try {
             $groups = $this->dataBrutRepository->findByGroups();
             $cities = $this->dataBrutRepository->findByCities();

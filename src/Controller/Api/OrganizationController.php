@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * 
@@ -32,8 +34,13 @@ class OrganizationController  extends AbstractController
      * @Route("/api/organizations", methods={"GET","HEAD"}, name="organization_stats_count_sinner")
      * 
      */
-    function all(Request $request) : Response 
+    public function all(Request $request) : Response 
     {
+        if (!$this->isGranted("ROLE_ADMIN")) 
+        {
+            throw new HttpException(403, "ACCESS DENIED");
+        }
+
         $page = (int) $request->query->get("page", 1);
         if (!is_int($page)) {
           $page = 1;  
@@ -75,6 +82,11 @@ class OrganizationController  extends AbstractController
      */
     function downloadAll(Request $request) : Response 
     { 
+        if (!$this->isGranted("ROLE_ADMIN")) 
+        {
+            throw new HttpException(403, "ACCESS DENIED");
+        }
+        
         //$data = $this->repository->findBy([], ["name" => "ASC"], 30, $offset);
         $data = $this->repository->findBy([]);
 

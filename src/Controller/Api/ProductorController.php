@@ -768,7 +768,11 @@ class ProductorController extends AbstractController
      * 
      */
     public function geojson(Request $req)
-    {        
+    {
+        if (!$this->isGranted("ROLE_ADMIN")) 
+        {
+            throw new HttpException(403, "ACCESS DENIED");
+        } 
         $query = $req->query;
         //dd($query->all());
         $arrQuery = $query->all();
