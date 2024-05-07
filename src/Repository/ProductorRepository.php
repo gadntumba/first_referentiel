@@ -556,11 +556,17 @@ class ProductorRepository extends ServiceEntityRepository
             ;
 
         }
-        if($filterUserDto && $filterUserDto->getDateStart() && $filterUserDto->getDateEnd()) {
 
+        //dd($filterUserDto);
+
+        if($filterUserDto && $filterUserDto->getDateStart() && $filterUserDto->getDateEnd()) {
+            //dump($filterUserDto->getDateEnd()->format("Y-m-d"));
+            //dd($filterUserDto->getDateStart()->format("Y-m-d"));
+            $dayEnd = (int) $filterUserDto->getDateEnd()->format("d");
             $queryBuilder->andWhere('u.createdAt BETWEEN :dateStart AND :dateEnd');
             $queryBuilder->setParameter('dateStart', $filterUserDto->getDateStart()->format("Y-m-d"));
             $queryBuilder->setParameter('dateEnd', $filterUserDto->getDateEnd()->format("Y-m-d"));
+            //DateTimeInterface::RFC3339_EXTENDED
 
         }
 

@@ -707,9 +707,12 @@ class ProductorController extends AbstractController
         $filter->setActivities(isset($arrQuery['activities'])?$arrQuery['activities']:[]);
 
         $filter->setSectors(isset($arrQuery['sectors'])?$arrQuery['sectors']:[]);
-        $filter->setDateStart(isset($arrQuery['datestart'])?$arrQuery['datestart']:null);
-        $filter->setDateEnd(isset($arrQuery['dateend'])?$arrQuery['dateend']:null);
+        $filter->setDateStart(isset($arrQuery['datestart'])? new DateTime($arrQuery['datestart']) :null);
+        $filter->setDateEnd(isset($arrQuery['dateend'])?new DateTime($arrQuery['dateend']) :null);
         //dd($filter);
+        //dump($arrQuery['dateend']);
+        //dump((new DateTime($arrQuery['dateend']))->format("Y-m-d"));
+        //dd();
         $page = isset($arrQuery['page'])?(int)$arrQuery['page']:1;
 
         $onlyActived = !$this->isGranted("ROLE_ADMIN") && 
@@ -788,8 +791,8 @@ class ProductorController extends AbstractController
         $filter->setActivities(isset($arrQuery['activities'])?$arrQuery['activities']:[]);
 
         $filter->setSectors(isset($arrQuery['sectors'])?$arrQuery['sectors']:[]);
-        $filter->setDateStart(isset($arrQuery['datestart'])?$arrQuery['datestart']:null);
-        $filter->setDateEnd(isset($arrQuery['dateend'])?$arrQuery['dateend']:null);
+        $filter->setDateStart(isset($arrQuery['datestart'])? new DateTime($arrQuery['datestart']) :null);
+        $filter->setDateEnd(isset($arrQuery['dateend'])?new DateTime($arrQuery['dateend']) :null);
         //dd($filter);
         $page = isset($arrQuery['page'])?(int)$arrQuery['page']:1;
 

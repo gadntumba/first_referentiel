@@ -5,6 +5,8 @@
  */
 namespace App\Dto;
 
+use DateTime;
+
 class FilterUserDto {
 
 
@@ -152,8 +154,8 @@ class FilterUserDto {
     public function getDateEnd()
     {
         if ($this->dateEnd) {
-            $this->dateEnd->modify("+1 day");
-            return $this->dateEnd;
+            //$this->dateEnd->modify("+1 day");
+            return new DateTime($this->dateEnd->format("Y-m-") . (string) (((int) $this->dateEnd->format("d") + 1)));
         }
         return $this->dateEnd;
     }
