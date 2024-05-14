@@ -33,10 +33,12 @@ use ApiPlatform\Exception\ItemNotFoundException;
 use ApiPlatform\Core\Bridge\Symfony\Routing\IriConverter;
 use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Dto\FilterUserDto;
+use App\Entity\DownloadItemProductor;
 use App\Entity\EntrepreneurialActivity;
 use App\Entity\EntrepreneurialActivity\Document;
 use App\Entity\HouseKeeping;
 use App\Entity\Observation;
+use App\Repository\DownloadItemProductorRepository;
 use App\Repository\EntrepreneurialActivity\DocumentRepository;
 use App\Services\CopyEntityValuesService;
 use App\Services\FileUploader;
@@ -765,6 +767,47 @@ class ProductorController extends AbstractController
         ];
 
         return new JsonResponse($resp, 200);
+    }
+
+    /**
+     * @Route("/api/productors/others/download", methods={"GET","HEAD"}, name="productor_list_download")
+     * 
+     */
+    public function download(Request $req, DownloadItemProductorRepository $repository) : Response 
+    {
+        $query = $req->query;
+        //dd($query->all());
+        $arrQuery = $query->all();
+
+        $cities = isset($arrQuery['cities'])?$arrQuery['cities']:[];
+        $page = (int) $query->get("page", 1);
+        //dd($cities);
+
+        //$data = $repository->count([]);
+        $offset = 1000*($page -1) +1;
+        $data = $repository->findAllNormal($cities, $offset);
+        //dd($data[0]);
+
+        $dataArr = array_map(
+            function (DownloadItemProductor $item) : array {
+                return [
+                    "id" => $item->getId(),
+                    "dataBrut" => $item->getDataBrut(),
+                    "cityId" => $item->getCity()?->getId(),
+                    "cityName" => $item->getCity()?->getName(),
+                    "townId" => $item->getTown()?->getId(),
+                    "townName" => $item->getTown()?->getName(),
+                    "dataBrut" => $item->getDataBrut(),
+                    //dataBrut
+                ];  
+            },
+            $data
+        );
+
+        return new JsonResponse([
+            "data" => $dataArr,
+        ]);
+        
     }
     /**
      * @Route("/api/productors/others/geojson", methods={"GET","HEAD"}, name="productor_list_geojson")
@@ -1590,6 +1633,8 @@ class ProductorController extends AbstractController
 
         
     }
+
+
     /**
      * 
      */

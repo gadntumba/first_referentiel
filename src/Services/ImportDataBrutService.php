@@ -33,6 +33,12 @@ class ImportDataBrutService
             "url" => "https://storage.cloud.google.com/agromwinda_platform/liste-consolidee-kinshasa-(1).xlsx",
         ],
         [
+            "name" => "matadi",
+            "source" => "UCP",
+            "filePath" => "data-received-by-ucp/Liste-consolidée-Matadi.xlsx",
+            "url" => "https://storage.cloud.google.com/agromwinda_platform/liste-consolidee-matadi.xlsx",
+        ],
+        [
             "name" => "mbuji-mayi",
             "source" => "UCP",
             "filePath" => "data-received-by-ucp/Liste-consolidé-MBUJI-MAYI.xlsx",
@@ -61,12 +67,6 @@ class ImportDataBrutService
             "source" => "UCP",
             "filePath" => "data-received-by-ucp/Liste-consolidée-Kananga-(1).xlsx",
             "url" => "https://storage.cloud.google.com/agromwinda_platform/liste-consolidee-kinshasa-(1).xlsx",
-        ],
-        [
-            "name" => "matadi",
-            "source" => "UCP",
-            "filePath" => "data-received-by-ucp/Liste-consolidée-Matadi.xlsx",
-            "url" => "https://storage.cloud.google.com/agromwinda_platform/liste-consolidee-matadi.xlsx",
         ]
     ];
 

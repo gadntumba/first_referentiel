@@ -112,11 +112,15 @@ class City
     #[ORM\Column(nullable: true)]
     private ?array $someoneCanNotValidator = null;
 
+    #[ORM\OneToMany(mappedBy: 'city', targetEntity: DownloadItemProductor::class)]
+    private Collection $downloadItemProductors;
+
     public function __construct()
     {
         $this->towns = new ArrayCollection();
         $this->supervisors = new ArrayCollection();
         $this->organizations = new ArrayCollection();
+        $this->downloadItemProductors = new ArrayCollection();
         
     }
 
@@ -258,6 +262,36 @@ class City
     public function setSomeoneCanNotValidator(?array $someoneCanNotValidator): static
     {
         $this->someoneCanNotValidator = $someoneCanNotValidator;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DownloadItemProductor>
+     */
+    public function getDownloadItemProductors(): Collection
+    {
+        return $this->downloadItemProductors;
+    }
+
+    public function addDownloadItemProductor(DownloadItemProductor $downloadItemProductor): static
+    {
+        if (!$this->downloadItemProductors->contains($downloadItemProductor)) {
+            $this->downloadItemProductors->add($downloadItemProductor);
+            $downloadItemProductor->setCity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDownloadItemProductor(DownloadItemProductor $downloadItemProductor): static
+    {
+        if ($this->downloadItemProductors->removeElement($downloadItemProductor)) {
+            // set the owning side to null (unless already changed)
+            if ($downloadItemProductor->getCity() === $this) {
+                $downloadItemProductor->setCity(null);
+            }
+        }
 
         return $this;
     }

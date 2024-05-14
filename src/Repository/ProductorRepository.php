@@ -29,6 +29,7 @@ use Doctrine\Common\Collections\Criteria;
 class ProductorRepository extends ServiceEntityRepository
 {
     public const PAGINATOR_PER_PAGE = 30;
+    public const PAGINATOR_PER_PAGE_DOWNLOAD = 250;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -1441,6 +1442,44 @@ class ProductorRepository extends ServiceEntityRepository
         ;
 
 
+    }
+    /**
+     * 
+     */
+
+    /**
+     * 
+     */
+    function dowloadData(array $cities=[],  $limit = 1000, $offset = 1) : array 
+    {
+
+        $queryBuilder = $this->createQueryBuilder('u')
+            //->select('u.name,u.firstName,u.lastName,u.phoneNumber, a.line, to.name townName, c.name cityName')
+            ->leftJoin('u.housekeeping', 'h')
+            ->leftJoin('h.address', 'a')
+            ->leftJoin('a.town', 'to')
+            ->leftJoin('a.sector', 's')
+            ->leftJoin('to.city', 'c')
+            ->leftJoin('s.territorry', 'te')
+            ->leftJoin('te.province', 'pr')
+            ->leftJoin('c.province', 'pu')
+            ->andWhere('u.isActive = :validate')
+            ->setParameter('validate', true)
+    ;
+
+    if ($cities && count($cities) > 0 ) {
+        //dd($filterUserDto->getCities());
+        $queryBuilder->andWhere('c is not null and c.id IN (:cities)');
+        $queryBuilder->setParameter('cities', $cities);
+    }
+
+    $queryBuilder->setFirstResult($offset);
+    $queryBuilder->setMaxResults($limit);
+
+    return $queryBuilder->getQuery()
+            ->getResult();
+        
+            
     }
     
 }

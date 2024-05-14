@@ -96,10 +96,14 @@ class Town
     #[ORM\OneToMany(mappedBy: 'town', targetEntity: EntrepreneurialActivity::class)]
     private Collection $entrepreneurialActivities;
 
+    #[ORM\OneToMany(mappedBy: 'town', targetEntity: DownloadItemProductor::class)]
+    private Collection $downloadItemProductors;
+
     public function __construct()
     {
         $this->addresses = new ArrayCollection();
         $this->entrepreneurialActivities = new ArrayCollection();
+        $this->downloadItemProductors = new ArrayCollection();
         
     }
 
@@ -198,6 +202,36 @@ class Town
             // set the owning side to null (unless already changed)
             if ($entrepreneurialActivity->getTown() === $this) {
                 $entrepreneurialActivity->setTown(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DownloadItemProductor>
+     */
+    public function getDownloadItemProductors(): Collection
+    {
+        return $this->downloadItemProductors;
+    }
+
+    public function addDownloadItemProductor(DownloadItemProductor $downloadItemProductor): static
+    {
+        if (!$this->downloadItemProductors->contains($downloadItemProductor)) {
+            $this->downloadItemProductors->add($downloadItemProductor);
+            $downloadItemProductor->setTown($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDownloadItemProductor(DownloadItemProductor $downloadItemProductor): static
+    {
+        if ($this->downloadItemProductors->removeElement($downloadItemProductor)) {
+            // set the owning side to null (unless already changed)
+            if ($downloadItemProductor->getTown() === $this) {
+                $downloadItemProductor->setTown(null);
             }
         }
 
