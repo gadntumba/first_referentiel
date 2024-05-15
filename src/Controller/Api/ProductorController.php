@@ -784,8 +784,9 @@ class ProductorController extends AbstractController
         //dd($cities);
 
         //$data = $repository->count([]);
-        $offset = 1000*($page -1) +1;
-        $data = $repository->findAllNormal($cities, $offset);
+        $count_shunk = 250;
+        $offset = $count_shunk*($page -1) +1;
+        $data = $repository->findAllNormal($cities, $offset, $count_shunk);
         //dd($data[0]);
 
         $dataArr = array_map(
