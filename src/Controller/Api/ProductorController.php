@@ -505,8 +505,14 @@ class ProductorController extends AbstractController
         $activity->setActivities($activities);
         $taxes = $activity->setTaxes($taxes);
 
+        if ($this->isGranted("ROLE_VALIDATOR")) {
+            
+            $productor->setIsActive(true);
+            
+        }else{
+            $productor->setIsActive(false);
 
-        $productor->setIsActive(false);
+        }
         $productor->setEditorAgentId($user->getNormalUsername());
         $productor->setEditAt(new DateTime());
         
