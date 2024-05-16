@@ -420,7 +420,7 @@ class ProductorController extends AbstractController
         }
 
         if(
-            $productor->getInvestigatorId() !=  $user->getNormalUsername() ||
+            $productor->getInvestigatorId() !=  $user->getNormalUsername() &&
             !$this->isGranted("ROLE_VALIDATOR")
         ) 
         {
