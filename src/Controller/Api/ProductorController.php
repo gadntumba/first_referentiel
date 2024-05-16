@@ -1751,6 +1751,7 @@ class ProductorController extends AbstractController
             
             $otherData = [];
 
+            $otherData["desc"] = isset($freeFieldData["activities"][2])? $freeFieldData["activities"][0] :null;
             $otherData["stateMarital"] = isset($freeFieldData["activities"][2])? $freeFieldData["activities"][2] :null;
             $otherData["otherIDCard"] = isset($freeFieldData["activities"][3])? $freeFieldData["activities"][3] :null;
             $otherData["legalStatus"] = isset($freeFieldData["activities"][4])? $freeFieldData["activities"][4] :null;
