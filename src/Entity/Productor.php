@@ -316,6 +316,12 @@ class Productor
     #[ORM\Column(nullable: true)]
     private ?array $activitiesType = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $editorAgentId = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $editAt = null;
+
     public function __construct()
     {
         $this->AgriculturalActivity = new ArrayCollection();
@@ -935,6 +941,30 @@ class Productor
     public function setActivitiesType(?array $activitiesType): static
     {
         $this->activitiesType = $activitiesType;
+
+        return $this;
+    }
+
+    public function getEditorAgentId(): ?string
+    {
+        return $this->editorAgentId;
+    }
+
+    public function setEditorAgentId(string $editorAgentId): static
+    {
+        $this->editorAgentId = $editorAgentId;
+
+        return $this;
+    }
+
+    public function getEditAt(): ?\DateTimeInterface
+    {
+        return $this->editAt;
+    }
+
+    public function setEditAt(?\DateTimeInterface $editAt): static
+    {
+        $this->editAt = $editAt;
 
         return $this;
     }

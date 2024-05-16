@@ -75,12 +75,12 @@ class LoadDownloadCommand extends Command
                     dd($activityDataBrut[0]);
                 }*/
 
-                if (!isset($activityDataBrut[0]) || empty($activityDataBrut[0])) {
+               /* if (!isset($activityDataBrut[0]) || empty($activityDataBrut[0])) {
                     $io->success('KO '.$productor->getId().' - '.$productor->getFirstName().' - '.$productor->getLastName()); 
                     //dump();
                     continue;
                     //dd($activityDataBrut[1]);
-                }
+                }*/
                 //continue;
                     //continue;
 
@@ -119,7 +119,7 @@ class LoadDownloadCommand extends Command
             }
             $i++;
 
-        } while (true);
+        } while (count($data));
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
 

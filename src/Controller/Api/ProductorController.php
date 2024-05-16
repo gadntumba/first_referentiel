@@ -419,7 +419,11 @@ class ProductorController extends AbstractController
             throw new HttpException(404, "productor not found");
         }
 
-        if($productor->getInvestigatorId() !=  $user->getNormalUsername()) {
+        if(
+            $productor->getInvestigatorId() !=  $user->getNormalUsername() ||
+            !$this->isGranted("ROLE_VALIDATOR")
+        ) 
+        {
 
             throw new HttpException(422, "User can't update this subscriber");
             
@@ -503,6 +507,8 @@ class ProductorController extends AbstractController
 
 
         $productor->setIsActive(false);
+        $productor->setEditorAgentId($user->getNormalUsername());
+        $productor->setEditAt(new DateTime());
         
         $em->flush();
 
@@ -787,12 +793,15 @@ class ProductorController extends AbstractController
         $count_shunk = 250;
         $offset = $count_shunk*($page -1) +1;
         $data = $repository->findAllNormal($cities, $offset, $count_shunk);
+        $count = $repository->count([]);
+        $allCount = $this->repository->count(["isActive" => true, "isNormal" => true]);
         //dd($data[0]);
 
         $dataArr = array_map(
             function (DownloadItemProductor $item) : array {
                 return [
                     "id" => $item->getId(),
+                    "productorId" => $item->getProductorId(),
                     "dataBrut" => $item->getDataBrut(),
                     "cityId" => $item->getCity()?->getId(),
                     "cityName" => $item->getCity()?->getName(),
@@ -807,6 +816,9 @@ class ProductorController extends AbstractController
 
         return new JsonResponse([
             "data" => $dataArr,
+            "count" => $count,
+            "allCount" => $allCount,
+            //allCount
         ]);
         
     }
