@@ -1474,6 +1474,54 @@ class ProductorController extends AbstractController
         return new JsonResponse($itemArr, 200);
         
     }
+    /**
+     * @Route("/api/productors/{id}/change/preprocessing/ia", methods={"POST"}, name="productor_preprocessing_ia")
+     */
+    public function preprocessingAi(Request $request, string $id, EntityManagerInterface $em, Pusher $pusher) 
+    {
+        if (!$this->isGranted("ROLE_ADMIN") && !$this->isGranted("ROLE_VALIDATOR")) 
+        {
+            throw new HttpException(403, "ACCESS DENIED");
+        }
+
+        $productor = $this->repository->find($id);
+
+        if (is_null($productor)) 
+        {
+            return new JsonResponse([
+                "message" => "Not found"
+            ], 404);
+        }
+
+        $someoneCanNotValidator = $productor->getHousekeeping()?->getAddress()?->getTown()?->getCity()?->getSomeoneCanNotValidator();
+        
+        if (
+            !is_null($someoneCanNotValidator) &&
+            in_array($this->getUser()?->getNormalUsername(), $someoneCanNotValidator)
+        ) 
+        {
+            throw new HttpException(403, "access denied");
+        }
+
+        $requestData = $this->getRequestParams($request, false);
+
+        //$query = $request->query;
+        $desc = isset($requestData["desc"])? $requestData["desc"] : null;
+        $activitySector = isset($requestData["activitySector"])? $requestData["activitySector"] : null;
+
+        //dd($activitySector);
+
+        $productor->setAiDesc($desc);
+        $productor->setAiActivitySector($activitySector);
+
+        $em->persist($productor);
+        $em->flush();
+
+        return new JsonResponse([
+            "data" => $this->transform($productor)
+        ]); 
+
+    }
 
     /**
      * @Route("/api/productors/{id}/change/status", methods={"POST"}, name="productor_status")

@@ -322,6 +322,20 @@ class Productor
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $editAt = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
+    private ?string $aiDesc = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
+    private ?string $aiActivitySector = null;
+
     public function __construct()
     {
         $this->AgriculturalActivity = new ArrayCollection();
@@ -965,6 +979,30 @@ class Productor
     public function setEditAt(?\DateTimeInterface $editAt): static
     {
         $this->editAt = $editAt;
+
+        return $this;
+    }
+
+    public function getAiDesc(): ?string
+    {
+        return $this->aiDesc;
+    }
+
+    public function setAiDesc(?string $aiDesc): static
+    {
+        $this->aiDesc = $aiDesc;
+
+        return $this;
+    }
+
+    public function getAiActivitySector(): ?string
+    {
+        return $this->aiActivitySector;
+    }
+
+    public function setAiActivitySector(?string $aiActivitySector): static
+    {
+        $this->aiActivitySector = $aiActivitySector;
 
         return $this;
     }
