@@ -149,3 +149,43 @@
     }
     
   ```
+
+
+ ## change status
+
+- method : `Post`
+- host : `producer.surintrants.com`
+- path : `/api/productors/{id}/change/status`
+  avec `{id}` l'identifiant du producteur
+- Body :
+  ```json
+    {
+	    "status":null
+    }
+
+  ```
+  
+- headers :
+  ```json
+    {
+        "Authorization":"Bearer {token}",
+        "Content-type":"application/json",
+        "Accept":"application/json",
+    }
+
+  ```
+
+  - response :
+  json qui reprensente le corps du map de producteur
+  ```json
+
+	"data": {
+      ...
+		  "id": 91,
+		  "isActive": false,
+    	"aiDesc": "la description....",
+		  "aiActivitySector": "secteur d'activité",
+      ...
+    }
+    
+  ```

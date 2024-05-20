@@ -1507,7 +1507,7 @@ class ProductorController extends AbstractController
 
         //$query = $request->query;
         $desc = isset($requestData["desc"])? $requestData["desc"] : null;
-        $activitySector = isset($requestData["activitySector"])? $requestData["desc"] : null;
+        $activitySector = isset($requestData["activitySector"])? $requestData["activitySector"] : null;
 
        // dd($desc);
 
