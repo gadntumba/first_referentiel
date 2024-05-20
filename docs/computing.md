@@ -112,7 +112,6 @@
     ```
  ## set description
 
- ## get token
 - method : `Post`
 - host : `producer.surintrants.com`
 - path : `/api/productors/{id}/change/preprocessing/ia`
