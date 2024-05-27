@@ -570,6 +570,16 @@ class ProductorRepository extends ServiceEntityRepository
             //DateTimeInterface::RFC3339_EXTENDED
 
         }
+        if($filterUserDto && $filterUserDto->getDateValidateStart() && $filterUserDto->getDateValidateEnd()) {
+            //dump($filterUserDto->getDateValidateStart()->format("Y-m-d"));
+            //dd($filterUserDto->getDateValidateEnd()->format("Y-m-d"));
+            //$dayEnd = (int) $filterUserDto->getDateEnd()->format("d");
+            $queryBuilder->andWhere('u.validateAt BETWEEN :dateStart AND :dateEnd');
+            $queryBuilder->setParameter('dateStart', $filterUserDto->getDateValidateStart()->format("Y-m-d"));
+            $queryBuilder->setParameter('dateEnd', $filterUserDto->getDateValidateEnd()->format("Y-m-d"));
+            //DateTimeInterface::RFC3339_EXTENDED
+
+        }
 
         if ($filterUserDto && $filterUserDto->getTowns() && count($filterUserDto->getTowns()) > 0 ) {
             $queryBuilder->andWhere('to is not null and to.id IN (:towns)');

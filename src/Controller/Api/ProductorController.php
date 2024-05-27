@@ -723,6 +723,10 @@ class ProductorController extends AbstractController
         $filter->setSectors(isset($arrQuery['sectors'])?$arrQuery['sectors']:[]);
         $filter->setDateStart(isset($arrQuery['datestart'])? new DateTime($arrQuery['datestart']) :null);
         $filter->setDateEnd(isset($arrQuery['dateend'])?new DateTime($arrQuery['dateend']) :null);
+
+        $filter->setDateValidateStart(isset($arrQuery['datevalidatestart'])? new DateTime($arrQuery['datevalidatestart']) :null);
+        $filter->setDateValidateEnd(isset($arrQuery['datevalidateend'])?new DateTime($arrQuery['datevalidateend']) :null);
+        //dd($filter);
         //dd($filter);
         //dump($arrQuery['dateend']);
         //dump((new DateTime($arrQuery['dateend']))->format("Y-m-d"));

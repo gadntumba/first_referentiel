@@ -22,6 +22,11 @@ class FilterUserDto {
     private ?\DateTime $dateStart = null;
     private ?\DateTime $dateEnd = null;
 
+    private ?\DateTime $dateValidateStart = null;
+    private ?\DateTime $dateValidateEnd = null;
+    
+    //datevalidatestart
+
 
     public function __construct() 
     {
@@ -228,6 +233,46 @@ class FilterUserDto {
     public function setActivities($activities)
     {
         $this->activities = $activities;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of dateValidateStart
+     */ 
+    public function getDateValidateStart()
+    {
+        return $this->dateValidateStart;
+    }
+
+    /**
+     * Set the value of dateValidateStart
+     *
+     * @return  self
+     */ 
+    public function setDateValidateStart($dateValidateStart)
+    {
+        $this->dateValidateStart = $dateValidateStart;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of dateValidateEnd
+     */ 
+    public function getDateValidateEnd()
+    {
+        return $this->dateValidateEnd;
+    }
+
+    /**
+     * Set the value of dateValidateEnd
+     *
+     * @return  self
+     */ 
+    public function setDateValidateEnd($dateValidateEnd)
+    {
+        $this->dateValidateEnd = $dateValidateEnd;
 
         return $this;
     }
