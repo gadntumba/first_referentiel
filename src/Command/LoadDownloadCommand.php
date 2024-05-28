@@ -101,7 +101,11 @@ class LoadDownloadCommand extends Command
                     "sectorServices" => isset($activityDataBrut[7])?$activityDataBrut[7]:null,
                     "sectorGreeEconomy" => isset($activityDataBrut[8])?$activityDataBrut[8]:null,
                     "affiliationStructure" => isset($activityDataBrut[15])?$activityDataBrut[15]:null,
-                    //15
+                    //
+                    "activityTownName" => $activity?->getTown()?->getName(),
+                    "activityCityName" => $activity?->getTown()?->getCity()->getName(),
+                    "activityAddressName" => $activity?->getAddressLine(),
+                    //
                 ];
 
                 $downloadItem->setDataBrut($jsonData);
