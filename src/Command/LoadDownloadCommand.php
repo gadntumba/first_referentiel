@@ -55,11 +55,14 @@ class LoadDownloadCommand extends Command
                 $entity = $this->downloadItemProductorRepository->findOneBy(["productorId" => $productor->getId()]);
 
                 if (!is_null($entity)) {
-                    unset($productor);
-                    continue;
+                    //unset($productor);
+                    $downloadItem = $entity;
+                    //continue;
+                }else {
+                    $downloadItem = new DownloadItemProductor();
+
                 }
 
-                $downloadItem = new DownloadItemProductor();
                 $downloadItem->setProductorId($productor->getId());
                 $downloadItem->setCity($productor->getHousekeeping()?->getAddress()?->getTown()?->getCity());
                 $downloadItem->setTown($productor->getHousekeeping()?->getAddress()?->getTown());
@@ -85,13 +88,16 @@ class LoadDownloadCommand extends Command
                     //continue;
 
                 //dd();
-
+                
                 $jsonData = [
                     "firstName" => $productor->getFirstName(),
                     "lastName" => $productor->getLastName(),
                     "name" => $productor->getName(),
                     "phoneNumber" => $productor->getPhoneNumber(),
                     "adressLine" => $productor->getHousekeeping()?->getAddress()?->getLine(),
+                    "isEdit" => !!$productor->getEditorAgentId(),
+                    "AiDesc" => $productor->getAiDesc(),
+                    "AiActivityType" => $productor->getAiActivitySector(),
                     //"town" => $productor->getHousekeeping()?->getAddress()?->getTown(),
                     //"city" => $productor->getHousekeeping()?->getAddress()?->getTown()?->getCity(),
                     //isNormal
@@ -103,15 +109,18 @@ class LoadDownloadCommand extends Command
                     "affiliationStructure" => isset($activityDataBrut[15])?$activityDataBrut[15]:null,
                     //
                     "activityTownName" => $activity?->getTown()?->getName(),
+                    "activityTownId" => $activity?->getTown()?->getId(),
                     "activityCityName" => $activity?->getTown()?->getCity()->getName(),
-                    "activityAddressName" => $activity?->getAddressLine(),
+                    "activityCityId" => $activity?->getTown()?->getCity()->getId(),
+                    "activityAddressLine" => $activity?->getAddressLine(),
                     //
+                    "otherContectNames" => isset($activityDataBrut[47])?$activityDataBrut[47]:null,
+                    "otherContectPhoneNumber" => isset($activityDataBrut[48])?$activityDataBrut[48]:null,
+                    "otherContectAddress" => isset($activityDataBrut[49])?$activityDataBrut[49]:null,
                 ];
 
                 $downloadItem->setDataBrut($jsonData);
                 $this->em->persist($downloadItem);
-
-                //dd($downloadItem);
 
                 $this->em->flush(); 
                 $io->success(''.$productor->getId().' - '.$productor->getFirstName().' - '.$productor->getLastName()); 
