@@ -513,6 +513,7 @@ class ProductorController extends AbstractController
             $productor->setIsActive(false);
 
         }
+        
         $productor->setEditorAgentId($user->getNormalUsername());
         $productor->setEditAt(new DateTime());
         
@@ -542,7 +543,10 @@ class ProductorController extends AbstractController
             throw new HttpException(404, "productor not found");
         }
 
-        if($productor->getInvestigatorId() !=  $user->getNormalUsername()) {
+        if(
+            $productor->getInvestigatorId() !=  $user->getNormalUsername() &&
+            !$this->isGranted("ROLE_VALIDATOR")
+        ) {
 
             throw new HttpException(422, "User can't update this subscriber");
             
@@ -587,8 +591,17 @@ class ProductorController extends AbstractController
         else {
             throw new HttpException(400, "pic type not found");
         }
+        
+        if ($this->isGranted("ROLE_VALIDATOR")) {
+            
+            $productor->setIsActive(true);
+            
+        }else{
+            $productor->setIsActive(false);
 
-        $productor->setIsActive(false);
+        }
+
+        //$productor->setIsActive(false);
         
         $em->flush();
 
