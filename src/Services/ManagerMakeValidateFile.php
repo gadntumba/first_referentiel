@@ -241,6 +241,78 @@ class ManagerMakeValidateFile
         //return $this->itemMayBeExist($item, $notValidedData, $indexs, 4);
         
     }
+    public function addMaybeInProductors() : array 
+    {
+        $indexs = self::INDEXS;
+        /**
+         * @var ProductorRepository
+         */
+        $productorRepository = $this->em->getRepository(Productor::class);
+        
+        /**
+         * @var DataBrutRepository
+         */
+        $dataBrutRepository = $this->em->getRepository(DataBrut::class);
+        $items = $productorRepository->findByNotValidated();
+        //dd(count($items));
+        $j = 0;
+        $total = count($items);
+
+        foreach ($items as $key => $item) {
+
+            $el = [];
+            $el["name"] = $item->getName();
+            $el["lastname"] = $item->getLastName();
+            $el["firstname"] = $item->getFirstName();
+            $el["town"] = $item->getHousekeeping()?->getAddress()?->getTown()?->getName();
+            $el["city"] = $item->getHousekeeping()?->getAddress()?->getTown()?->getCity()?->getName();
+            //$el["validation"] = "non valide";
+            $data = $dataBrutRepository->findByMetadataCityName("goma");
+            //dd($data[440]);
+            //dd($data[0]?->getMataData()?->getCityName());
+            $cityData = array_map(
+                function (DataBrut $dataBrut) : array {
+                    $content = $dataBrut->getContent();
+                    //    const INDEXS = ["name", "firstname", "lastname"];
+                    return [
+                        "id" => $dataBrut->getId(),
+                        "name" => isset($content["name"] )? $content["name"] : null,
+                        "firstname" => isset($content["firstName"] )? $content["firstName"] : null,
+                        "lastname" => isset($content["lastName"] )? $content["lastName"] : null,
+                    ];
+                },
+                $data,
+            );
+
+            $me = $this;
+            $items = [$el];
+
+            $filters = array_filter(
+                $cityData,
+                function ($item) use($indexs, $items, $me) 
+                {
+                    return $me->itemMayBeExist($item, $items, $indexs, 3);
+                }
+            );
+            $item->setPosibleBruts($filters);
+            dump(  "Start");
+            dump( "nombre posssibilté : ".  count($filters));
+            dump( "position : " . $key . "/" . $total);
+            dump(  "Id producteur : " . $item->getId());
+            dump(  "End");
+            $j++;
+            if ($j % 12 == 0) {
+                $this->em->flush();
+            }
+           // dump($el);
+        }
+
+        //dd($item);
+        
+
+        //return $this->itemMayBeExist($item, $notValidedData, $indexs, 4);
+        
+    }
 
     function getNotValidatedData() : array 
     {

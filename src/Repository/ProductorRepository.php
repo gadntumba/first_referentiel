@@ -1203,7 +1203,7 @@ class ProductorRepository extends ServiceEntityRepository
                 ->leftJoin('a.town', 'to')
                 ->leftJoin('to.city', 'c')
             ->andWhere('p.isNormal = 1')
-            ->andWhere('p.isActive = 0')
+            ->andWhere('p.isActive = 1')
             ->orderBy('p.id', 'ASC')
             //->setMaxResults(10)
             ->getQuery()

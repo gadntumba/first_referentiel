@@ -63,8 +63,8 @@ class TestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-
-        $this->managerMakeValidateFile->maybeByProductor(551);
+        //dd("OK");
+        $this->managerMakeValidateFile->addMaybeInProductors();
         //dd();
         return Command::SUCCESS;
         $dir = $this->containerBag->get("kernel.project_dir")."/var";
