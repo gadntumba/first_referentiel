@@ -336,6 +336,15 @@ class Productor
      */
     private ?string $aiActivitySector = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $created_at_bus = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $posibleBruts = null;
+
+    #[ORM\OneToMany(mappedBy: 'productor', targetEntity: DataBrut::class)]
+    private Collection $dataBruts;
+
     public function __construct()
     {
         $this->AgriculturalActivity = new ArrayCollection();
@@ -345,6 +354,7 @@ class Productor
         $this->smartphone = new ArrayCollection();
         $this->entrepreneurialActivities = new ArrayCollection();
         $this->observations = new ArrayCollection();
+        $this->dataBruts = new ArrayCollection();
         
     }
 
@@ -1003,6 +1013,60 @@ class Productor
     public function setAiActivitySector(?string $aiActivitySector): static
     {
         $this->aiActivitySector = $aiActivitySector;
+
+        return $this;
+    }
+
+    public function getCreatedAtBus(): ?\DateTimeInterface
+    {
+        return $this->created_at_bus;
+    }
+
+    public function setCreatedAtBus(?\DateTimeInterface $created_at_bus): static
+    {
+        $this->created_at_bus = $created_at_bus;
+
+        return $this;
+    }
+
+    public function getPosibleBruts(): ?array
+    {
+        return $this->posibleBruts;
+    }
+
+    public function setPosibleBruts(?array $posibleBruts): static
+    {
+        $this->posibleBruts = $posibleBruts;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DataBrut>
+     */
+    public function getDataBruts(): Collection
+    {
+        return $this->dataBruts;
+    }
+
+    public function addDataBrut(DataBrut $dataBrut): static
+    {
+        if (!$this->dataBruts->contains($dataBrut)) {
+            $this->dataBruts->add($dataBrut);
+            $dataBrut->setProductor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDataBrut(DataBrut $dataBrut): static
+    {
+        if ($this->dataBruts->removeElement($dataBrut)) {
+            // set the owning side to null (unless already changed)
+            if ($dataBrut->getProductor() === $this) {
+                $dataBrut->setProductor(null);
+            }
+        }
 
         return $this;
     }

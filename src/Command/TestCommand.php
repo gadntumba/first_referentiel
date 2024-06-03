@@ -63,6 +63,10 @@ class TestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+
+        $this->managerMakeValidateFile->maybeByProductor(551);
+        //dd();
+        return Command::SUCCESS;
         $dir = $this->containerBag->get("kernel.project_dir")."/var";
         $reader = new Xlsx();
         $path = $dir."/excelFile/agrodata_structure.xlsx";

@@ -84,6 +84,25 @@ class DataBrutRepository extends ServiceEntityRepository
     /**
      * 
      */
+    public function findByMetadataCityName(string $cityName): ?array
+    {
+        return $this->createQueryBuilder('d')
+            //->select("JSON_EXTRACT(d.content , '$.organization') org, md.cheetTitle, count(d.id) total")
+            ->JOIN('d.mataData', 'md')
+            ->andWhere('md.cityName = :cityName')
+            //->andWhere('d.rowId = :rowId')
+            ->setParameter('cityName', $cityName)
+            //->setParameter('rowId', $rowId)
+            //JSON_EXTRACT(`content` , '$.organization')
+            //->groupBy('org','md.cheetTitle')
+            //->orderBy('org')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    /**
+     * 
+     */
     public function findByCities(): ?array
     {
         return $this->createQueryBuilder('d')

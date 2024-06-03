@@ -113,6 +113,17 @@ class DataBrutService
         return $this->repository->findOneBy($criteria);
         
     }
+    public function searchByMetaData(
+        MetaDataBrut $mataData, int $rowId
+    ) : ?DataBrut 
+    {
+        $criteria = compact("mataData","rowId");
+        
+        //dd($criteria);
+
+        return $this->repository->findOneBy($criteria);
+        
+    }
 
     public function lastRow(
         MetaDataBrut $mataData

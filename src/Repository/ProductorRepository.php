@@ -640,6 +640,27 @@ class ProductorRepository extends ServiceEntityRepository
 
         return $paginator;*/
     }
+    /**
+     * @return Productor[] Returns an array of Productor objects
+     * 
+     */
+    public function findByDay(DateTimeInterface $date)
+    {
+        $dateEnd = new DateTime($date->format("Y-m-d")." 23:59:59");
+        //DateTimeInterface::RFC3339_EXTENDED;
+        //dump($date);
+        //dd($dateEnd);
+        return $this->createQueryBuilder('p')
+            //->join('p.monitor', "m")
+            ->andWhere('p.createdAt BETWEEN :dateStart AND :dateEnd')
+            ->setParameter('dateStart', $date)
+            ->setParameter('dateEnd', $dateEnd)
+            ->orderBy('p.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+        
+    }
 
     /**
      */

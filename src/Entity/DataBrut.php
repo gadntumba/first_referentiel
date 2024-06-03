@@ -27,6 +27,9 @@ class DataBrut
     #[ORM\Column]
     private ?int $rowId = null;
 
+    #[ORM\ManyToOne(inversedBy: 'dataBruts')]
+    private ?Productor $productor = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +79,18 @@ class DataBrut
     public function setRowId(int $rowId): static
     {
         $this->rowId = $rowId;
+
+        return $this;
+    }
+
+    public function getProductor(): ?Productor
+    {
+        return $this->productor;
+    }
+
+    public function setProductor(?Productor $productor): static
+    {
+        $this->productor = $productor;
 
         return $this;
     }

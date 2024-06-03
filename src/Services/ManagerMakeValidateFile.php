@@ -2,10 +2,12 @@
  
 namespace App\Services;
 
+use App\Entity\DataBrut;
 use Doctrine\ORM\EntityManagerInterface;
 use \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use \PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use App\Entity\Productor;
+use App\Repository\DataBrutRepository;
 use App\Repository\ProductorRepository;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -17,6 +19,16 @@ class ManagerMakeValidateFile
     const CITIES_NAMES = ["bukavu", "bunia", "goma", "kananga", "kin", "matadi", "mbujimayi"];
 
     Const MODES = ["certe", "approx"];
+
+    const MATCH_CITY_NAME = [
+        "10" => "kinshasa",
+        "11" => "matadi",
+        "9" => "mbuji-mayi",
+        "28" => "bukavu",
+        "6" => "bunia",
+        "23" => "goma",
+        "8" => "kananga"
+    ];
 
     public function __construct(
         private FileUploader $fileUploader,
@@ -169,6 +181,64 @@ class ManagerMakeValidateFile
         }
 
         return $cityData;
+        
+    }
+
+    public function maybeByProductor(int $id) : array 
+    {
+        $indexs = self::INDEXS;
+        /**
+         * @var ProductorRepository
+         */
+        $productorRepository = $this->em->getRepository(Productor::class);
+        
+        /**
+         * @var DataBrutRepository
+         */
+        $dataBrutRepository = $this->em->getRepository(DataBrut::class);
+        $item = $productorRepository->find($id);
+        if (is_null($item)) {
+            throw new \Exception("productor not found");
+        }
+        //dd($item);
+        $el = [];
+        $el["name"] = $item->getName();
+        $el["lastname"] = $item->getLastName();
+        $el["firstname"] = $item->getFirstName();
+        $el["town"] = $item->getHousekeeping()?->getAddress()?->getTown()?->getName();
+        $el["city"] = $item->getHousekeeping()?->getAddress()?->getTown()?->getCity()?->getName();
+        //$el["validation"] = "non valide";
+        $data = $dataBrutRepository->findByMetadataCityName("goma");
+        //dd($data[440]);
+        //dd($data[0]?->getMataData()?->getCityName());
+        $cityData = array_map(
+            function (DataBrut $dataBrut) : array {
+                $content = $dataBrut->getContent();
+                //    const INDEXS = ["name", "firstname", "lastname"];
+                return [
+                    "id" => $dataBrut->getId(),
+                    "name" => isset($content["name"] )? $content["name"] : null,
+                    "firstname" => isset($content["firstName"] )? $content["firstName"] : null,
+                    "lastname" => isset($content["lastName"] )? $content["lastName"] : null,
+                ];
+            },
+            $data,
+        );
+
+        $me = $this;
+        $items = [$el];
+
+        $filters = array_filter(
+            $cityData,
+            function ($item) use($indexs, $items, $me) 
+            {
+                return $me->itemMayBeExist($item, $items, $indexs, 3);
+            }
+        );
+        dump($filters);
+        dd($el);
+
+        //return $this->itemMayBeExist($item, $notValidedData, $indexs, 4);
         
     }
 

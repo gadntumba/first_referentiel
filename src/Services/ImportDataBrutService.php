@@ -60,13 +60,13 @@ class ImportDataBrutService
             "name" => "goma",
             "source" => "UCP",
             "filePath" => "data-received-by-ucp/Liste-Consolidée-Goma.xlsx",
-            "url" => "https://storage.cloud.google.com/agromwinda_platform/liste-consolidee-kananga-(1).xlsx",
+            "url" => "https://storage.cloud.google.com/agromwinda_platform/liste-consolidee-goma.xlsx",
         ],
         [
             "name" => "kananga",
             "source" => "UCP",
             "filePath" => "data-received-by-ucp/Liste-consolidée-Kananga-(1).xlsx",
-            "url" => "https://storage.cloud.google.com/agromwinda_platform/liste-consolidee-kinshasa-(1).xlsx",
+            "url" => "https://storage.cloud.google.com/agromwinda_platform/liste-consolidee-kananga-(1).xlsx",
         ]
     ];
 
