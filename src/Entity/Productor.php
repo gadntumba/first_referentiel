@@ -338,7 +338,10 @@ class Productor
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $created_at_bus = null;
-
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
     #[ORM\Column(nullable: true)]
     private ?array $posibleBruts = null;
 

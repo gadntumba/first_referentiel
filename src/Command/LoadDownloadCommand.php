@@ -49,6 +49,7 @@ class LoadDownloadCommand extends Command
             $offset = ($i*1000)+1;
             
             $data = $this->productorRepository->findBy(["isActive" => true, "isNormal" => true], null, $count_shunk, $offset);
+            $data = array_reverse($data);
 
             foreach ($data as $key => $productor) 
             {

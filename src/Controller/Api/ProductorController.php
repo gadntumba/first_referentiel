@@ -38,6 +38,7 @@ use App\Entity\EntrepreneurialActivity;
 use App\Entity\EntrepreneurialActivity\Document;
 use App\Entity\HouseKeeping;
 use App\Entity\Observation;
+use App\Repository\DataBrutRepository;
 use App\Repository\DownloadItemProductorRepository;
 use App\Repository\EntrepreneurialActivity\DocumentRepository;
 use App\Services\CopyEntityValuesService;
@@ -655,6 +656,48 @@ class ProductorController extends AbstractController
         return new JsonResponse($data, 201);
         
     }
+    /**
+     * @Route("/api/productors/{id}/add/bruts", methods={"GET"}, name="productor_add_brut")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function matchBrutData(
+        EntityManagerInterface $em,
+         $id,
+         ProductorRepository $productorRepository,
+         DataBrutRepository $dataBrutRepository,
+         Request $request
+    ) 
+    {
+        //$dataChanged = $this->getRequestParams($request, true);
+
+        $idBrut = $request->query->get("id_brut");
+
+        $productor = $productorRepository->find($id);
+        $brut = $dataBrutRepository->find($idBrut);
+        //$user = $this->getUser();
+
+        //dd($brut);
+
+        if (!$productor) 
+        {
+            throw new HttpException(404, "productor not found");
+        }
+
+        if (!$brut) 
+        {
+            throw new HttpException(404, "productor not found");
+        }
+        $brut->setProductor($productor);
+
+        $em->flush();
+
+        return new JsonResponse($this->transform($productor));
+
+    }
+
+    //
+    //* 
+
     /**
      * 
      */
