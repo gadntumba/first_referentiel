@@ -1512,5 +1512,16 @@ class ProductorRepository extends ServiceEntityRepository
         
             
     }
+    /**
+     * @return Productor[]
+     */
+    public function findGreatHousesize(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.householdSize > 15 or 1 > p.householdSize')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
     
 }

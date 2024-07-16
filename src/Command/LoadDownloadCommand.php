@@ -86,7 +86,7 @@ class LoadDownloadCommand extends Command
                     //dd($activityDataBrut[1]);
                 }*/
                 //continue;
-                    //continue;
+                //continue;
 
                 //dd();
                 
