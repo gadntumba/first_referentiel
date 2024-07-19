@@ -68,7 +68,7 @@ class UpdateCedrickCommand extends Command
 
         //$i = 0;
 
-        for ($i=$firstCol+1; $i < $count; $i++) { 
+        for ($i=$firstCol-1; $i < $count; $i++) { 
             $line = $dataLines[$i];
         
 
@@ -77,9 +77,10 @@ class UpdateCedrickCommand extends Command
             $item = $this->formatItem(explode(";", $line));
 
             //dump($productor);
+            
 
             $productor = $this->productorRepository->findOneBy(["phoneNumber" => "0".$item[0]]);
-
+            
             if (is_null($productor)) 
             {
                 $productor = $this->productorRepository->findOneBy(["phoneNumber" => "00".$item[0]]);
@@ -115,7 +116,7 @@ class UpdateCedrickCommand extends Command
             dump($productor->getEditAt());
             //dd($item[1]);
 
-            $i++;
+            //$i++;
 
             if ($i%25 == 0) {
 
