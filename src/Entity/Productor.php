@@ -348,6 +348,12 @@ class Productor
     #[ORM\OneToMany(mappedBy: 'productor', targetEntity: DataBrut::class)]
     private Collection $dataBruts;
 
+    #[ORM\Column(nullable: true)]
+    private ?array $oldCordinates = [];
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $oldActivitySector = null;
+
     public function __construct()
     {
         $this->AgriculturalActivity = new ArrayCollection();
@@ -1070,6 +1076,30 @@ class Productor
                 $dataBrut->setProductor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOldCordinates(): ?array
+    {
+        return $this->oldCordinates;
+    }
+
+    public function setOldCordinates(?array $oldCordinates): static
+    {
+        $this->oldCordinates = $oldCordinates;
+
+        return $this;
+    }
+
+    public function getOldActivitySector(): ?string
+    {
+        return $this->oldActivitySector;
+    }
+
+    public function setOldActivitySector(string $oldActivitySector): static
+    {
+        $this->oldActivitySector = $oldActivitySector;
 
         return $this;
     }

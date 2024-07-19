@@ -21,6 +21,10 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 )]
 class DataMakerResumCommand extends Command
 {
+    const GREEN_ECONOMY = "Economie verte";
+    const INDISTRY = "Industrie legère";
+    const AGRI_TRANSFORMATION = "Agro-transformation";
+    const SERVICES = "Service";
 
     public function __construct(
         private ProductorRepository $productorRepository,
@@ -60,11 +64,15 @@ class DataMakerResumCommand extends Command
             "taille menage",
             "lien photo profile",
             "lien photo carte",
+            "liens photo activité",
             //
+            "province",
             "ville",
             "commune",
+            "Milieu",
             "Address",
             //
+            "province activity",
             "ville activity",
             "commune activity",
             "Address activity",
@@ -73,6 +81,7 @@ class DataMakerResumCommand extends Command
             "altitude",
             //
             "Est formel",
+            "Liens photo document",
             "Date de creation",
             "description",
             "secteur",
@@ -96,20 +105,20 @@ class DataMakerResumCommand extends Command
             "chiffre d'affaire",
             "Staff journaliers",
             "staff permenant",
-            "membre de famille",
+            "Volontaires",
             "Déjà Financé dans un concour",
             "Déjà Financé par padepme",
             "Déjà Financé autre subvention",
             "Déjà Contracté un crédit",
             "Quelle institution" ,
             "Quel montant",
-            "Elle rencontre aucune difficultés?",
+            //"Elle rencontre aucune difficultés?",
             "Elle trouve pas de formation de qualité",
             "Elle rencontre des difficulté pour le financement",
             "Elle rencontre des tracsserie",
             "Elle a des difficulté à accéder au marché",
             "Elle a des difficulté dans la production",
-            "otherDificuty",
+            "Autre difficultés",
             "L'activité est lié à la gestion et transformation dechets",
             "L'activité est lié à la fabrication des Foyer amiéliorés",
             "L'activité est lié  Recyclage",
@@ -117,7 +126,7 @@ class DataMakerResumCommand extends Command
             "Elle vend à des individus?",
             "Elle vend à des supermarchés?",
             "Elle vend à des entreprises",
-            "Elle vend en ligne",
+            //"Elle vend en ligne",
             "Est-ce un marchand ambulant ?",
             "autres clients",
             "Elle a la vision d'avoir plusieur antennes?",
@@ -129,12 +138,20 @@ class DataMakerResumCommand extends Command
             "Le nom de la personne à contacter",
             "Le numéro de la personne à contacter",
             "Addresse de la personne à contacté",
-            "Opinion"
+            "Opinion",
+            "Investigateur"
             //
         ];
 
         array_push($allData, implode(";", $header));
         $countAll = count($data);
+
+        $res = array_filter(
+            $data,
+            function ($item) {
+                return $item->getPhoneNumber() == "0993426124";
+            }
+        );
 
         foreach ($data as $key => $productor) 
         {
@@ -145,6 +162,7 @@ class DataMakerResumCommand extends Command
             $addressPhysicLine = "";
             $addressPhysicCity = "";
             $addressPhysicTown = "";
+            $addressPhysicProv = "";
             //
             if (isset($item["housekeeping"]["address"]["line"])) {
                 $addressPhysicLine = $item["housekeeping"]["address"]["line"];
@@ -155,11 +173,15 @@ class DataMakerResumCommand extends Command
             if (isset($item["housekeeping"]["address"]["town"]["city"]["name"])) {
                 $addressPhysicCity = $item["housekeeping"]["address"]["town"]["city"]["name"];
             }
+            if (isset($item["housekeeping"]["address"]["town"]["city"]["province"]["name"])) {
+                $addressPhysicProv = $item["housekeeping"]["address"]["town"]["city"]["province"]["name"];
+            }
 
             //
             $addressActivityLine = "";
             $addressActivityCity = "";
             $addressActivityTown = "";
+            $addressActivityProv = "";
             //$otherData["town"] = $freeFieldData["town"];
             //$otherData["addressLine"] = $freeFieldData["addressLine"];
             //dd($item["otherData"]["town"]);
@@ -173,6 +195,10 @@ class DataMakerResumCommand extends Command
             if (isset($item["otherData"]["town"]["city"]["name"])) {
                 $addressActivityCity = $item["otherData"]["town"]["city"]["name"];
             }
+            if (isset($item["otherData"]["town"]["city"]["province"]["name"])) {
+                $addressActivityProv = $item["otherData"]["town"]["city"]["province"]["name"];
+            }
+            //
 
             $isEdit = !!$productor->getEditorAgentId();
             $activitySector = "";
@@ -194,7 +220,38 @@ class DataMakerResumCommand extends Command
               
             }
 
+            if (empty(trim($activityDesc)) && !empty($item["otherData"]["desc"])) {
+                $activityDesc = $item["otherData"]["desc"];
+            }
 
+            if (
+                empty(trim($activitySector)) && 
+                !empty($item["otherData"]["desc"])
+            ) 
+            {
+                $activitySector = $item["otherData"]["sectorAgroForestry"] == '1' ? "Agro transformation," : "";
+                $activitySector = $activitySector . ($item["otherData"]["sectorIndustry"] == '1' ? " Industrie legère," : "");
+                $activitySector = $activitySector . ($item["otherData"]["sectorServices"] == '1' ? " Services," : "");
+                $activitySector = $activitySector . ($item["otherData"]["sectorGreeEconomy"] == '1' ? " Economie verte," : "");
+                //$activityDesc = $item["otherData"]["desc"];
+            }
+            /*dump($productor->getId());
+            dump($item["otherData"]["desc"]);
+            $activities = $this->normalizer->normalize(
+                $productor, 
+                null, 
+                [
+                    'groups' => ['read:productor:activities_data']
+                ]                
+            );  
+            dd($activities);*/
+            //$freeFieldData["activities"][0];
+
+            $linksDoc = $this->getDocsLink($docs);
+            //dd($linksDoc);
+
+            //$linksDoc["docs"];
+            //$linksDoc["imgs"];
 
             $row = [
                 $item["personnalIdentityData"]["name"],
@@ -208,11 +265,15 @@ class DataMakerResumCommand extends Command
                 //
                 $item["images"]["incumbentPhoto"],
                 $item["images"]["photoPieceOfIdentification"],
+                implode(",",$linksDoc["imgs"]),
                 //
+                $addressPhysicProv,
                 $addressPhysicCity,
                 $addressPhysicTown,
+                "Urbain",
                 $addressPhysicLine,
                 //
+                $addressActivityProv,
                 $addressActivityCity,
                 $addressActivityTown,
                 $addressActivityLine,
@@ -220,10 +281,11 @@ class DataMakerResumCommand extends Command
                 $item["longitude"],
                 $item["altitude"],
                 $this->isFormal($docs)? "Oui":"Non",
+                implode(",",$linksDoc["docs"]),
 
                 $item["otherData"]["creationYear"],
                 $activityDesc,
-                $activitySector,
+                $this->convertSector($activitySector),
                 $item["otherData"]["stateMarital"],
                 $item["pieceOfIdentificationData"]["typePieceOfIdentification"]["libelle"],
                 $item["pieceOfIdentificationData"]["numberPieceOfIdentification"],
@@ -252,21 +314,21 @@ class DataMakerResumCommand extends Command
                 $item["otherData"]["haveCredit"] == "1"? "OUI" : "NON",
                 $item["otherData"]["institutCredit"],
                 $item["otherData"]["amountCredit"],
-                $item["otherData"]["noDificuty"] == "1"? "OUI" : "NON",
+                //$item["otherData"]["noDificuty"] == "1"? "OUI" : "NON",
                 $item["otherData"]["trainningDificuty"] == "1"? "OUI" : "NON",
                 $item["otherData"]["financingDificuty"] == "1"? "OUI" : "NON",
                 $item["otherData"]["tracaserieDificuty"] == "1"? "OUI" : "NON",
                 $item["otherData"]["marketAccessDificuty"] == "1"? "OUI" : "NON",
                 $item["otherData"]["productionDificuty"] == "1"? "OUI" : "NON",
-                $item["otherData"]["otherDificuty"] == "1"? "OUI" : "NON",
+                $item["otherData"]["otherDificuty"],
                 $item["otherData"]["activityLinkwasteProcessing"] == "1"? "OUI" : "NON",
                 $item["otherData"]["activityLinkImprovedStoves"] == "1"? "OUI" : "NON",
                 $item["otherData"]["activityLinkRecycling"] == "1"? "OUI" : "NON",
-                $item["otherData"]["otherActivityLink"] == "1"? "OUI" : "NON",
+                $item["otherData"]["otherActivityLink"],
                 $item["otherData"]["indidualCustomer"] == "1"? "OUI" : "NON",
                 $item["otherData"]["supermarketCustomer"] == "1"? "OUI" : "NON",
                 $item["otherData"]["businessCustomer"] == "1"? "OUI" : "NON",
-                $item["otherData"]["onLineCustomer"] == "1"? "OUI" : "NON",
+                //$item["otherData"]["onLineCustomer"] == "1"? "OUI" : "NON",
                 $item["otherData"]["dealerCustomer"] == "1"? "OUI" : "NON",
                 $item["otherData"]["otherCustomer"],
                 $item["otherData"]["visionManyBranches"] == "1"? "OUI" : "NON",
@@ -278,7 +340,9 @@ class DataMakerResumCommand extends Command
                 $item["otherData"]["otherContectNames"],
                 $item["otherData"]["otherContectPhoneNumber"],
                 $item["otherData"]["otherContectAddress"],
-                $item["otherData"]["instigatorOpinion"]
+                $item["otherData"]["instigatorOpinion"],
+                $productor->getInvestigatorId()
+                //productor
                 //
             ];
             //dd($row);
@@ -540,6 +604,106 @@ class DataMakerResumCommand extends Command
             }
         }
         return $res;
+    }
+    function getDocsLink(array $docements) : array {
+        $docs = [];
+        $imgs = [];
+        //dump($docements);
+
+        foreach ($docements as $key => $doc) {
+            if(
+                !(strpos($doc["path"], "http") === false) && 
+                !(($doc["documentType"]["id"] == 6) ||
+                ($doc["documentType"]["id"] == 7) )
+            ) 
+            {
+                array_push($docs, $doc["path"]);
+                //dump($doc["path"]);
+            }else if(!(strpos($doc["path"], "http") === false)) {
+                array_push($imgs, $doc["path"]);
+            }
+        }
+        return [
+            "docs" => $docs,
+            "imgs" => $imgs,
+        ];
+    }
+
+    function convertSector(string $text)  {
+
+        $matching = [
+           " Economie verte," => self::GREEN_ECONOMY,
+            "Industrie legère,"  => self::INDISTRY,
+            "Industrie legère, Economie verte,"  => self::GREEN_ECONOMY, 
+            "Industrie legère, Services," => self::INDISTRY,
+            "Industrie legère, Services, Economie verte," => self::GREEN_ECONOMY,
+            "Services, Economie verte,"  => self::GREEN_ECONOMY,
+           "agri-transformation " => self::AGRI_TRANSFORMATION,
+           "agro transformation " => self::AGRI_TRANSFORMATION,
+           "Agro transformation," => self::AGRI_TRANSFORMATION,
+           "Agro transformation, Economie verte,"  => self::GREEN_ECONOMY,
+           "Agro transformation, Industrie legère," => self::AGRI_TRANSFORMATION,
+           "Agro transformation, Industrie legère, Economie verte,"  => self::GREEN_ECONOMY,
+           "Agro transformation, Industrie legère, Services," => self::AGRI_TRANSFORMATION,
+           "Agro transformation, Industrie legère, Services, Economie verte,"  => self::GREEN_ECONOMY,
+           "Agro transformation, Services," => self::AGRI_TRANSFORMATION,
+           "Agro transformation, Services, Economie verte," => self::GREEN_ECONOMY,
+           "Agro-transformati"  => self::AGRI_TRANSFORMATION,
+           "Agro-transformation"  => self::AGRI_TRANSFORMATION,
+           "Agro-transformation "  => self::AGRI_TRANSFORMATION,
+           "Agroalimentaire"  => self::AGRI_TRANSFORMATION,
+           "agros-transformation"  => self::AGRI_TRANSFORMATION,
+           "agros-transformation "  => self::AGRI_TRANSFORMATION,
+           "agrotransformation"  => self::AGRI_TRANSFORMATION,
+           "agrotransformation "  => self::AGRI_TRANSFORMATION,
+           "Artisanat" => self::INDISTRY,
+           "Arts" => self::SERVICES,
+           "Boulangerie/pâtisserie "   => self::SERVICES,
+           "Commerce"   => self::SERVICES,
+           "Economie verte"  => self::GREEN_ECONOMY,
+           "Économie verte"  => self::GREEN_ECONOMY,
+           "économie verte "  => self::GREEN_ECONOMY,
+           "Fabrication de produits pharmaceutiques naturels/cosmétiques naturels"   => self::INDISTRY,
+           "Imdustrie légère "   => self::INDISTRY,
+           "Indistrie légère "   => self::INDISTRY,
+           "industrie"   => self::INDISTRY,
+           "industrie "   => self::INDISTRY,
+           "Industrie légère"   => self::INDISTRY,
+           "Industrie légère "   => self::INDISTRY,
+           "Industrie légère et "   => self::INDISTRY,
+           "Industries légere"   => self::INDISTRY,
+           "l’industrie légère"   => self::INDISTRY, 
+           "Restauration "   => self::INDISTRY,
+           "service"   => self::SERVICES,
+           "Service "   => self::SERVICES,
+           "service "   => self::SERVICES,
+           "Service et restauration "   => self::SERVICES,
+           "Services"   => self::SERVICES,
+           "Services "   => self::SERVICES,
+           "Textiles/chaussures"  => self::INDISTRY,
+           ""  => '',
+           "transformation" => self::AGRI_TRANSFORMATION
+        ];
+
+        $matching2 = [];
+
+        foreach ($matching as $key => $item) {
+            $newKey =  strtolower(trim($this->fctRetirerAccents($key)));
+            $matching2[$newKey] = $item;
+        }
+        //dd($matching2);
+        return $matching2[strtolower(trim($this->fctRetirerAccents($text)))];
+
+    }
+
+    private function fctRetirerAccents($varMaChaine)
+    {
+        $search  = array(',','À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'à', 'á', 'â', 'ã', 'ä', 'å', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ð', 'ò', 'ó', 'ô', 'õ', 'ö', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ');
+        //Préférez str_replace à strtr car strtr travaille directement sur les octets, ce qui pose problème en UTF-8
+        $replace = array('', 'A', 'A', 'A', 'A', 'A', 'A', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 'a', 'a', 'a', 'a', 'a', 'a', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y');
+
+        $varMaChaine = str_replace($search, $replace, $varMaChaine);
+        return $varMaChaine; //On retourne le résultat
     }
 
 }
