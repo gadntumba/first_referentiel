@@ -60,7 +60,6 @@ class FakeCreateMonitorCommand extends Command
         $phoneNumber = $input->getOption('phone_number');
         $iri = $input->getOption('iri_ot');
 
-
         if (!$phoneNumber) {
             throw new \Exception("option '--phoneNumber' required ");
 

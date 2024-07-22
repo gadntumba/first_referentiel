@@ -62,6 +62,25 @@ class TestCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $latitude = '-5.791665983802204';
+        $longitude = '22.672792480582448';
+        //$longitude = '-5.791665983802204';
+
+        $url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=$latitude&lon=$longitude&zoom=18&addressdetails=1";
+
+        $options = [
+            'http' => [
+                'header' => "User-Agent: PHP"
+            ]
+        ];
+        $context = stream_context_create($options);
+
+        $response = file_get_contents($url, false, $context);
+        $data = json_decode($response, true);
+
+        echo $data['display_name'] . "\n";
+
+        dd($data);
         $io = new SymfonyStyle($input, $output);
         //dd("OK");
         $this->managerMakeValidateFile->addMaybeInProductors();

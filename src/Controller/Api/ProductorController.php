@@ -1582,6 +1582,52 @@ class ProductorController extends AbstractController
         ]); 
 
     }
+    /**
+     * @Route("/api/productors/{id}/change/preprocessing/ia/activity-type", methods={"POST"}, name="productor_preprocessing_ia")
+     */
+    public function preprocessingAiActType(Request $request, string $id, EntityManagerInterface $em, Pusher $pusher) 
+    {
+        if (!$this->isGranted("ROLE_ADMIN") && !$this->isGranted("ROLE_VALIDATOR")) 
+        {
+            throw new HttpException(403, "ACCESS DENIED");
+        }
+
+        $productor = $this->repository->find($id);
+
+        if (is_null($productor)) 
+        {
+            return new JsonResponse([
+                "message" => "Not found"
+            ], 404);
+        }
+
+        $someoneCanNotValidator = $productor->getHousekeeping()?->getAddress()?->getTown()?->getCity()?->getSomeoneCanNotValidator();
+        
+        if (
+            !is_null($someoneCanNotValidator) &&
+            in_array($this->getUser()?->getNormalUsername(), $someoneCanNotValidator)
+        ) 
+        {
+            throw new HttpException(403, "access denied");
+        }
+
+        $requestData = $this->getRequestParams($request, false);
+
+        //$query = $request->query;
+        $type = isset($requestData["type"])? $requestData["type"] : null;
+
+       // dd($desc);
+       
+        $productor->setAiTypeActivity($type);
+
+        $em->persist($productor);
+        $em->flush();
+
+        return new JsonResponse([
+            "data" => $this->transform($productor)
+        ]); 
+
+    }
 
     /**
      * @Route("/api/productors/{id}/change/status", methods={"POST"}, name="productor_status")

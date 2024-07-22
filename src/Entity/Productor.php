@@ -48,6 +48,46 @@ class Productor
         self::ACTIVITY_SECTOR_OTHER, 
         self::ACTIVITY_SECTOR_SERVICES
     ];
+
+    const ACTIVITY_TYPES = [
+        "Transformation des fruits et légumes" => 1,
+        "Fabrication de jus" => 2,
+        "Fabrication de dérivés de manioc, maïs et céréales" => 3,
+        "Condiments (épices)" => 4,
+        "Chips et dérivés de fruits et légumes séchés" => 5,
+        "Chocolat"  => 6,
+        "Fumage, salaison et séchage"  => 7,
+        "Production miel"  => 8,
+        "Production huile"  => 9,
+        "Production Thé"  => 10,
+        "Production fromage"  => 11,
+        "Production d’insectes"  => 12,
+        "Produits alimentaires fermentés"  => 13,
+        "Artisanat (vannerie…)"  => 14,
+        "Chaine de froid"  => 15,
+        "Fabrication des pâtes alimentaires"  => 16,
+        "Boucherie"  => 17,
+        "Fumier (transformation des déchets en braise écologique)" => 18,
+        "Production des semences, composts" => 20,
+        "Coupe et couture" => 21,
+        "Production des meubles" => 22,
+        "Boulangerie/pâtisserie" => 23,
+        "Production d’eau" => 24,
+        "Savonnerie" => 25,
+        "Production des textiles" => 26,
+        "Imprimerie/papeterie" => 27,
+        "Fabrication des produits" => 28,
+        "pharmaceutiques" => 29,
+        "naturels/cosmétiques naturels" => 30,
+        "Textiles/chaussures" => 31,
+        "Restaurant" => 32,
+        "Service traiteur" => 33,
+        "Salon de coiffure" => 34,
+        "Gestion des déchets (des produits agricoles, des plastiques)" => 35,
+        "Foyers améliorés" => 36,
+        "Cordonnerie" => 37,
+        "Briqueterie" => 38
+    ];
     
     /**
      * 
@@ -353,6 +393,9 @@ class Productor
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $oldActivitySector = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $aiTypeActivity = null;
 
     public function __construct()
     {
@@ -1100,6 +1143,18 @@ class Productor
     public function setOldActivitySector(string $oldActivitySector): static
     {
         $this->oldActivitySector = $oldActivitySector;
+
+        return $this;
+    }
+
+    public function getAiTypeActivity(): ?string
+    {
+        return $this->aiTypeActivity;
+    }
+
+    public function setAiTypeActivity(string $aiTypeActivity): static
+    {
+        $this->aiTypeActivity = $aiTypeActivity;
 
         return $this;
     }

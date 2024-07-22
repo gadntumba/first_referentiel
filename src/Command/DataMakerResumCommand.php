@@ -139,7 +139,7 @@ class DataMakerResumCommand extends Command
             "Le numéro de la personne à contacter",
             "Addresse de la personne à contacté",
             "Opinion",
-            "Investigateur"
+            //"Investigateur"
             //
         ];
 
@@ -191,6 +191,8 @@ class DataMakerResumCommand extends Command
             }
             if (isset($item["otherData"]["town"]["name"])) {
                 $addressActivityTown = $item["otherData"]["town"]["name"];
+            }else{
+                continue;
             }
             if (isset($item["otherData"]["town"]["city"]["name"])) {
                 $addressActivityCity = $item["otherData"]["town"]["city"]["name"];
@@ -234,6 +236,21 @@ class DataMakerResumCommand extends Command
                 $activitySector = $activitySector . ($item["otherData"]["sectorServices"] == '1' ? " Services," : "");
                 $activitySector = $activitySector . ($item["otherData"]["sectorGreeEconomy"] == '1' ? " Economie verte," : "");
                 //$activityDesc = $item["otherData"]["desc"];
+            }
+            if (
+                empty(trim($activitySector))
+            ) 
+            {
+                //$activityDesc = $item["otherData"]["desc"];
+                $activitySector = $productor->getAiActivitySector();
+            }
+            if (
+                is_null($activitySector)
+            ) 
+            {
+                continue;
+                //$activityDesc = $item["otherData"]["desc"];
+                //$activitySector = $productor->getAiActivitySector();
             }
             /*dump($productor->getId());
             dump($item["otherData"]["desc"]);
@@ -341,7 +358,7 @@ class DataMakerResumCommand extends Command
                 $item["otherData"]["otherContectPhoneNumber"],
                 $item["otherData"]["otherContectAddress"],
                 $item["otherData"]["instigatorOpinion"],
-                $productor->getInvestigatorId()
+                //$productor->getInvestigatorId()
                 //productor
                 //
             ];
