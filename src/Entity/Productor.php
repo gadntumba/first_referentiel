@@ -401,6 +401,9 @@ class Productor
      */
     private ?string $aiTypeActivity = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?array $oldActivityAddr = null;
+
     public function __construct()
     {
         $this->AgriculturalActivity = new ArrayCollection();
@@ -1159,6 +1162,18 @@ class Productor
     public function setAiTypeActivity(string $aiTypeActivity): static
     {
         $this->aiTypeActivity = $aiTypeActivity;
+
+        return $this;
+    }
+
+    public function getOldActivityAddr(): ?array
+    {
+        return $this->oldActivityAddr;
+    }
+
+    public function setOldActivityAddr(?array $oldActivityAddr): static
+    {
+        $this->oldActivityAddr = $oldActivityAddr;
 
         return $this;
     }

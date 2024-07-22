@@ -945,7 +945,8 @@ class ProductorController extends AbstractController
 
         $features = [];
 
-            $offset = ($page*$limit)+1;
+            $offset = (($page-1)*$limit)+1;
+            //dd($offset);
 
             $producers = $this->repository->getBooksByGeoJson(
                 $filter, $page, 
