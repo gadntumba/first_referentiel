@@ -395,6 +395,10 @@ class Productor
     private ?string $oldActivitySector = null;
 
     #[ORM\Column(length: 255)]
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
     private ?string $aiTypeActivity = null;
 
     public function __construct()
