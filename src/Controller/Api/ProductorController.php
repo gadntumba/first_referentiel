@@ -963,6 +963,7 @@ class ProductorController extends AbstractController
 
             foreach ($producers as $key => $producer) 
             {
+                //dd($producer);
                 $feature = [
                     "type"=> "Feature",
                     "geometry"=> [
@@ -972,6 +973,8 @@ class ProductorController extends AbstractController
                     "properties"=> [
                       "names"=> $producer["name"] . " " . $producer["firstName"] . " " . $producer["lastName"],
                       "phone"=> $producer["phoneNumber"],
+                      "phone"=> $producer["phoneNumber"],
+                      "isActive"=> $producer["isActive"],
                     ]
                 ];
                 array_push($features, $feature);

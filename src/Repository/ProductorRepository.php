@@ -675,7 +675,7 @@ class ProductorRepository extends ServiceEntityRepository
         //$producer->getFirstName() . " " . $producer->getName() . " " . $producer->getLastName()
         //$producer->getPhoneNumber()
         $queryBuilder = $this->createQueryBuilder("u");
-        $queryBuilder->select('u.longitude, u.latitude, u.name, u.firstName, u.lastName, u.phoneNumber')
+        $queryBuilder->select('u.longitude, u.latitude, u.name, u.firstName, u.lastName, u.phoneNumber, u.isActive')
             ->leftJoin('u.housekeeping', 'h')
             ->leftJoin('h.address', 'a')
             ->leftJoin('a.town', 'to')
