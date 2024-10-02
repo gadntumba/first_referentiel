@@ -38,9 +38,11 @@ use App\Entity\EntrepreneurialActivity;
 use App\Entity\EntrepreneurialActivity\Document;
 use App\Entity\HouseKeeping;
 use App\Entity\Observation;
+use App\Entity\ProductorPreload;
 use App\Repository\DataBrutRepository;
 use App\Repository\DownloadItemProductorRepository;
 use App\Repository\EntrepreneurialActivity\DocumentRepository;
+use App\Repository\ProductorPreloadRepository;
 use App\Services\CopyEntityValuesService;
 use App\Services\FileUploader;
 use DateTimeImmutable;
@@ -314,6 +316,54 @@ class ProductorController extends AbstractController
         }
         
 
+    }
+    #api/productors/upload/brut
+    /**
+     * @Route("api/productors/upload/brut", methods={"POST"}, name="productor.upload.brut")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * 
+     */
+    public function setBrut(
+        EntityManagerInterface $em,
+         ProductorPreloadRepository $repository,
+         ValidatorValidatorInterface $validator,
+         
+        Request $request
+    ) : Response  {
+        $requestData = $this->getRequestParams($request, false);
+        /**
+         * @var ProductorPreload
+         */
+        $entity = $this->denormalizer->denormalize(
+            $requestData,
+            ProductorPreload::class,
+            null,
+            ["groups" => ["write:productor:preload"]]
+        );
+
+        $entity->setNormalId();
+
+        $errors = $validator->validate($entity);
+
+        if (count($errors) > 0) {
+            return new JsonResponse(["message" => (string) $errors], 400);
+        }
+        //getNormalId
+
+        $entityExists = $repository->findOneBy(["normalId" => $entity->getNormalId()]);
+
+        if (!is_null($entityExists)) {
+            return new JsonResponse( ["message" => "productor alrady exists"], 400);
+            
+        }
+
+        $em->persist($entity);
+        $em->flush();
+
+        $data = $this->normalizer->normalize($entity, null, ["groups" => ["read:productor:preload"]]);
+
+        return new JsonResponse($data, 200);
+        
     }
 
     /**
@@ -1027,6 +1077,49 @@ class ProductorController extends AbstractController
                 "statsCities" => $statsCities,
                 "statsDays" => $statsDays,
                 "statsInvest" => $statsInvest,
+            ]
+            , 200);
+        //$stats = $this->repository->getBooksByFavoriteAuthorStats($filter, $page, $onlyActived, $isTest);//
+        //$statsDays = $this->repository->getBooksByFavoriteAuthorStatsDay($filter, $page, $onlyActived, $isTest);//
+        
+    }
+    /**
+     * @Route("/api/stats/instigators", methods={"GET","HEAD"}, name="productor_stats_investigator")
+     * 
+     */
+    public function statsInvestigator(Request $req) 
+    {
+        $isTest = $this->getParameter("agromwinda_load_mode") == "TEST"? true : false;
+
+        $statsInvest = $this->repository->getStatsInvestigator($isTest);//getStatsInvestigator
+        //dump($statsAll);
+        //dump($statsCities);
+        //dump($statsDays);
+        //dd();
+        $dictData = [];
+
+        foreach ($statsInvest as $key => $item) {
+            $id = $item["investPhone"] . $item["cityId"];
+
+            if (!isset($dictData[$id])) 
+            {
+                $dictData[$id] = [
+                    "brutData"=>$item,
+                    "countTotal"=>(int)$item["total"],
+                    "countValidated"=>(int) $item["validated"]
+                ];
+
+            }else 
+            {
+                $dictData[$id]["countTotal"] = $dictData[$id]["countTotal"] + (int) $item["total"];
+                $dictData[$id]["countValidated"] = $dictData[$id]['countValidated'] + (int) $item["validated"];
+            }
+        }
+        
+
+        return new JsonResponse(
+            [
+                "statsInvest" => $dictData,
             ]
             , 200);
         //$stats = $this->repository->getBooksByFavoriteAuthorStats($filter, $page, $onlyActived, $isTest);//

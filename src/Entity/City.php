@@ -115,12 +115,16 @@ class City
     #[ORM\OneToMany(mappedBy: 'city', targetEntity: DownloadItemProductor::class)]
     private Collection $downloadItemProductors;
 
+    #[ORM\OneToMany(mappedBy: 'cityEntity', targetEntity: ProductorPreload::class)]
+    private Collection $productorPreloads;
+
     public function __construct()
     {
         $this->towns = new ArrayCollection();
         $this->supervisors = new ArrayCollection();
         $this->organizations = new ArrayCollection();
         $this->downloadItemProductors = new ArrayCollection();
+        $this->productorPreloads = new ArrayCollection();
         
     }
 
@@ -290,6 +294,36 @@ class City
             // set the owning side to null (unless already changed)
             if ($downloadItemProductor->getCity() === $this) {
                 $downloadItemProductor->setCity(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductorPreload>
+     */
+    public function getProductorPreloads(): Collection
+    {
+        return $this->productorPreloads;
+    }
+
+    public function addProductorPreload(ProductorPreload $productorPreload): static
+    {
+        if (!$this->productorPreloads->contains($productorPreload)) {
+            $this->productorPreloads->add($productorPreload);
+            $productorPreload->setCityEntity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductorPreload(ProductorPreload $productorPreload): static
+    {
+        if ($this->productorPreloads->removeElement($productorPreload)) {
+            // set the owning side to null (unless already changed)
+            if ($productorPreload->getCityEntity() === $this) {
+                $productorPreload->setCityEntity(null);
             }
         }
 
