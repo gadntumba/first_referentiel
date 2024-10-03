@@ -96,7 +96,11 @@ class ProductorAffectationController extends AbstractController
     {
       $body = $this->getRequestParams($request);
 
-      #dd($this->getUser()->getNormalUsername());
+      $phoneNumber = $this->getUser()->getNormalUsername();
+
+      if ($phoneNumber != $productorPreload->getAgentAffect()) {
+        return new JsonResponse(["message" => "Vous n'etes pas authorisé à faire cete commentaire pour cet enregistrement"], 403);
+      }
 
       if (!isset($body["contactRepport"]) || is_null($body["contactRepport"]) || empty($body["contactRepport"])) 
       {
@@ -119,7 +123,7 @@ class ProductorAffectationController extends AbstractController
         $contactComment = $body["contactComment"];
       }
 
-      if (in_array($contactComment, ProductorPreload::CONTACT_COMMENTS) ) 
+      if (!in_array($contactComment, ProductorPreload::CONTACT_COMMENTS) ) 
       {
         return new JsonResponse(["message" => "contactComment not exists"], 422);
 
@@ -144,14 +148,11 @@ class ProductorAffectationController extends AbstractController
         $productorPreload->setContactsHistory($history);
       }
 
-
-
-
       $productorPreload->setContactRepport($contactRepport);
       $productorPreload->setContanctComment($contactComment);
       $productorPreload->setContactAt(new \DateTime());
       #$productorPreloadDuplicate->setUserConfirm($this->getUser());
-      $productorPreload->setAdminDoAffect($this->getUser()?->getNormalUsername());
+      #$productorPreload->setAdminDoAffect($this->getUser()?->getNormalUsername());
       $this->em->flush();
 
       $serializedData = $normalizer->normalize($productorPreload,null, ["groups" => ["productors:affectations:read", "productors:assignable:read"]]);

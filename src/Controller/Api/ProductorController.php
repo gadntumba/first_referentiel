@@ -128,6 +128,7 @@ class ProductorController extends AbstractController
         Request $request, 
         ProductorProductor $productorValidator, 
         EntityManagerInterface $em,
+        ProductorPreloadRepository $productorPreloadRepository,
         ValidatorValidatorInterface $validator,
         LoggerInterface $logger
     )
@@ -147,6 +148,28 @@ class ProductorController extends AbstractController
          */
         try {
             $requestData = $this->getRequestParams($request, true);
+            # Traitement pour le preload
+
+            if (!isset($requestData["preloadId"])) {
+                throw new HttpException(422, "preload can't be null");
+            }
+
+            $preloadId = $requestData["preloadId"];
+
+            $preload = $productorPreloadRepository->find($preloadId);
+
+            if (is_null($preload)) 
+            {
+                throw new HttpException(422, "preload not found");                
+            }
+            $phoneNumberUser = $this->getUser()->getNormalUsername();
+
+            if ($phoneNumberUser != $preload->getAgentAffect()) {
+                throw new HttpException(403, "You can't do this record");  
+            }
+            
+            #Fin traiement pour preload
+
 
            // dd($requestData);
 
@@ -284,9 +307,12 @@ class ProductorController extends AbstractController
             $productor->setInvestigatorId($user->getNormalUsername());
             $isTest = $this->getParameter("agromwinda_load_mode") == "TEST"? true : false;
             $productor->setIsNormal(!$isTest);
-
+            //$productor->setPro(!$isTest);
+            //preload
             //dd($productor);
             //dump($productor);
+
+            $preload->setProductor($productor);
 
             $em->flush();
             //dd($user->getId());
