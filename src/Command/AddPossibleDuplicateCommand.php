@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[AsCommand(
@@ -26,6 +27,7 @@ class AddPossibleDuplicateCommand extends Command
         private ProductorPreloadRepository $productorPreloadRepository,
         private ProductorPreloadDuplicateRepository $productorPreloadDuplicateRepository,
         private EntityManagerInterface $em,
+        private ContainerInterface $container,
         private HttpClientInterface $httpClient
     ) {
         parent::__construct();
@@ -48,11 +50,14 @@ class AddPossibleDuplicateCommand extends Command
         $allNbr = count($entities);
 
         #dd($entities);
+        #matching_name_host
+        $hostname = $this->container->getParameter("matching_name_host");
+        $url = $hostname . "/" . "/get_duplicates";
 
         foreach ($entities as $i => $entity) {
             $resp = $this->httpClient->request(
                 "POST", 
-                "http://127.0.0.1:5000/get_duplicates",
+                $url,
                 [
                     "json" => ["id"=> $entity->getId()]
                 ]

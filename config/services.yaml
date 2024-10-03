@@ -21,6 +21,8 @@ parameters:
     kin_validation_file_url: "%env(KIN_VALIDATION_FILE_URL)%"
     matadi_validation_file_url: "%env(MATADI_VALIDATION_FILE_URL)%"
     mbujimayi_validation_file_url: "%env(MBUJIMAYI_VALIDATION_FILE_URL)%"
+    #matching name
+    matching_name_host: "%env(MATCHING_NAME_HOST)%"
 
 
 services:
