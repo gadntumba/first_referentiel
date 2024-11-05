@@ -2309,12 +2309,14 @@ class ProductorController extends AbstractController
             "title" => $observation->getTitle(),
             "content" => $observation->getContent(),
             "askAt" => $observation->getAskAt(),
+
             "productor" => [
                 "id" => $observation->getProductor()?->getId(),
                 "name" => $observation->getProductor()?->getName(),
                 "firstname" => $observation->getProductor()?->getFirstName(),
                 "lastname" => $observation->getProductor()?->getLastName()
             ],
+            
             "validator" => $observation->getUserId()
         ];
         

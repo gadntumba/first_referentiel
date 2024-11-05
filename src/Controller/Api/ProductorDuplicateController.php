@@ -2,6 +2,8 @@
 
 namespace App\Controller\Api;
 
+use App\Dto\FilterPreloadDto;
+use App\Dto\FilterPreloadDUplicateDto;
 use App\Entity\Productor;
 use App\Entity\ProductorBrut;
 use App\Entity\ProductorPreloadDuplicate;
@@ -12,6 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,15 +36,38 @@ class ProductorDuplicateController extends AbstractController
      */
     public function allNotConfirm(
       ProductorPreloadDuplicateRepository $repository,
-      NormalizerInterface $normalizer
+      NormalizerInterface $normalizer,
+      Request $req
     ): Response
     {
-      $data = $repository->findNoConfirm();
+      $query = $req->query;
+      //dd($query->all());
+      $arrQuery = $query->all();
+      $filter = new FilterPreloadDUplicateDto;
+      
+      $filter->setSearch(isset($arrQuery['search'])?$arrQuery['search']: null);
+      $filter->setCities(isset($arrQuery['cities'])?$arrQuery['cities']:[]);
 
-      $serializedData = $normalizer->normalize($data,null, ["groups" => ["productors:duplicate:read"]]);
+      $filter->setDateStart(isset($arrQuery['datestart'])? new \DateTime($arrQuery['datestart']) :null);
+      $filter->setDateEnd(isset($arrQuery['dateend'])?new \DateTime($arrQuery['dateend']) :null);
+ 
+      $page = isset($arrQuery['page'])?(int)$arrQuery['page']:1;
 
-      //"productors:duplicate:read"
-      return new JsonResponse($serializedData);
+      $paginator = $repository->findNoConfirm($filter, $page);
+      $iterotor = $paginator->getIterator();
+      
+      $data = [];
+      foreach ($iterotor as $key => $item) {
+          array_push($data, $item);
+      }
+      
+      $resp = [
+          "data" => $normalizer->normalize($data,null, ["groups" => ["productors:duplicate:read"]]),
+          "totalItems" => $paginator->getTotalItems(),
+          "lastPage" => $paginator->getLastPage()
+      ];
+
+      return new JsonResponse($resp);
 
     }
     //
@@ -52,17 +78,61 @@ class ProductorDuplicateController extends AbstractController
      */
     public function findByAssignable(
       ProductorPreloadRepository $repository,
-      NormalizerInterface $normalizer
+      NormalizerInterface $normalizer,
+      Request $req
     ): Response
     {
-      $data = $repository->findByAssignable();
+      $query = $req->query;
+      //dd($query->all());
+      $arrQuery = $query->all();
+      $filter = new FilterPreloadDto;
+
+      $filter->setSearch(isset($arrQuery['search'])?$arrQuery['search']: null);
+      $filter->setCities(isset($arrQuery['cities'])?$arrQuery['cities']:[]);
+      $filter->setTowns(isset($arrQuery['towns'])?$arrQuery['towns']:[]);
+      $filter->setStrutures(isset($arrQuery['structures'])?$arrQuery['structures']:[]);
+      $filter->setQuarters(isset($arrQuery['quarters'])?$arrQuery['quarters']:[]);
+
+      //$filter->setInvests(isset($arrQuery['invests'])?$arrQuery['invests']:[]);
+
+      $filter->setDateStart(isset($arrQuery['datestart'])? new \DateTime($arrQuery['datestart']) :null);
+      $filter->setDateEnd(isset($arrQuery['dateend'])?new \DateTime($arrQuery['dateend']) :null);
+      $page = isset($arrQuery['page'])?(int)$arrQuery['page']:1;
+
+      //dd($filter);
+
+      $paginator = $repository->findByAssignable($filter, $page);
 
       //dd($data);
+      $iterotor = $paginator->getIterator();
+        //$all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
+        
+        $data = [];
+        //$res = $paginator->getQuery()->getResult();
+        //$dateNumbers = min(count($statsDays), 7);
 
-      $serializedData = $normalizer->normalize($data,null, ["groups" => ["productors:assignable:read"]]);
+        //dd($statsDay);
+        //dd($stats);
+
+
+        //dd($all); "read:productor:level_0"
+        foreach ($iterotor as $key => $item) {
+            //$itemArr = $this->transform($item, true);
+            array_push($data, $item);
+        }
+        
+        $resp = [
+            "data" => $normalizer->normalize($data,null, ["groups" => ["productors:assignable:read"]]),
+            "totalItems" => $paginator->getTotalItems(),
+            "lastPage" => $paginator->getLastPage(),
+            //"stats" => $stats,
+            //"statsDays" => array_slice($statsDays, (-1)*$dateNumbers, $dateNumbers),
+        ];
+
+      #$serializedData = $normalizer->normalize($data,null, ["groups" => ["productors:assignable:read"]]);
 
       //"productors:duplicate:read"
-      return new JsonResponse($serializedData);
+      return new JsonResponse($resp);
 
     }
     /**

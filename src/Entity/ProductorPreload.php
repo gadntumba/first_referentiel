@@ -50,7 +50,8 @@ class ProductorPreload
         "RDV REPORTE",
         "REFUS D'ENREGISTREMENT",
         "PAS INTERESSE",
-        "INDENTITE NON CONFORME"
+        "INDENTITE NON CONFORME",
+        "LES NONS NE CORRESPONDENT PAS"
     ];
 
     #[ORM\Id]
@@ -139,6 +140,7 @@ class ProductorPreload
     private ?City $cityEntity = null;
 
     #[ORM\OneToOne(inversedBy: 'productorPreload', cascade: ['persist', 'remove'])]
+    #[Groups(["write:productor:preload", "read:productor:preload", "productors:assignable:read"])]
     private ?Productor $productor = null;
 
     #[ORM\Column(length: 255, nullable: true)]

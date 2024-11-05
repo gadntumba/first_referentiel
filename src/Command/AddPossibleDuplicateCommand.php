@@ -66,32 +66,42 @@ class AddPossibleDuplicateCommand extends Command
             #dd($data);
             $key = "correspondances";
             $correspondances = $data[$key];
-            $duplicate = null;
+            $duplicates = [];
             foreach ($correspondances as $k => $correspondance) {
                 if ($correspondance["id"] != $entity->getId()) {
-                    $duplicate = $correspondance;
+                    #$duplicate = $correspondance;
+                    array_push($duplicates, $correspondance);
                 }
             }
-            $entitySec = $this->productorPreloadRepository->find($duplicate["id"]);
+            
+            for ($l=0; $l < 2; $l++) { 
+                
+                $duplicate = $duplicates[$l];
+                $entitySec = $this->productorPreloadRepository->find($duplicate["id"]);
+    
+                $possibities = $this->productorPreloadDuplicateRepository->findDuplicatePossible($entity, $entitySec);
 
-            $possibities = $this->productorPreloadDuplicateRepository->findDuplicatePossible($entity, $entitySec);
+                if (2 > count($possibities)) {
+                    $duplicateEntity = new ProductorPreloadDuplicate();
+                    $duplicateEntity->setMain($entity);
+                    $duplicateEntity->setSecondary($entitySec);
+                    $duplicateEntity->setSimilarity((float) $duplicate["score"]);
+                    //score
+    
+                    $this->em->persist($duplicateEntity);
+                    $this->em->flush(); 
+                    #break;               
+                }else{
+                    #dump($possibities);
+                    #break;
+                    
+                }
+                
+            }
             #$possibities = $this->productorPreloadDuplicateRepository->findAll();
             
             #dd($possibities);
 
-            if (count($possibities) == 0) {
-                $duplicateEntity = new ProductorPreloadDuplicate();
-                $duplicateEntity->setMain($entity);
-                $duplicateEntity->setSecondary($entitySec);
-
-                $this->em->persist($duplicateEntity);
-                $this->em->flush(); 
-                #break;               
-            }else{
-                #dump($possibities);
-                #break;
-                
-            }
             //dd($i);
             $io->success('Evolution : ' . (string) ((($i+1)/$allNbr)*100)." %");
 

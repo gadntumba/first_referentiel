@@ -2,10 +2,14 @@
 
 namespace App\Repository;
 
+use App\Dto\FilterPreloadDUplicateDto;
 use App\Entity\ProductorPreload;
 use App\Entity\ProductorPreloadDuplicate;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use ApiPlatform\Doctrine\Orm\Paginator as ApiPlatformPaginator;
 
 /**
  * @extends ServiceEntityRepository<ProductorPreloadDuplicate>
@@ -17,6 +21,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ProductorPreloadDuplicateRepository extends ServiceEntityRepository
 {
+    const PAGINATOR_PER_PAGE=30;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ProductorPreloadDuplicate::class);
@@ -67,18 +73,38 @@ class ProductorPreloadDuplicateRepository extends ServiceEntityRepository
         ;
     }
     /**
-     * @return ProductorPreloadDuplicate[] Returns an array of ProductorPreloadDuplicate objects
+     * @return ApiPlatformPaginator Returns an array of ProductorPreloadDuplicate objects
      */
-    public function findNoConfirm(): array
+    public function findNoConfirm(FilterPreloadDUplicateDto $filter, int $page=1): ApiPlatformPaginator
     {
+        $firstResult = ($page -1) * self::PAGINATOR_PER_PAGE;
         //setSetNotDuplicateAt
-        return $this->createQueryBuilder('p')
+        $queryBuilder = $this->createQueryBuilder('p')
+            ->innerJoin('p.secondary', 's')
+            ->innerJoin('s.cityEntity', 'c')
             ->andWhere('p.confirmAt is null and p.setNotDuplicateAt is null')
-            ->orderBy('p.id', 'ASC')
+            ->orderBy('p.similarity', 'DESC')
             //->setMaxResults(2)
-            ->getQuery()
-            ->getResult()
+            //->getQuery()
+            //->getResult()
         ;
+
+        if ($filter && $filter->getCities() && count($filter->getCities()) > 0 ) {
+            //dd($filter->getCities());
+            $queryBuilder->andWhere('c is not null and c.id IN (:cities)');
+            $queryBuilder->setParameter('cities', $filter->getCities());
+        }
+
+        $queryBuilder;
+        $criteria = Criteria::create()
+            ->setFirstResult($firstResult)
+            ->setMaxResults(self::PAGINATOR_PER_PAGE);
+        $queryBuilder->addCriteria($criteria);
+
+        $doctrinePaginator = new Paginator($queryBuilder);
+        $paginator = new ApiPlatformPaginator($doctrinePaginator);
+
+        return $paginator;
     }
 
 }

@@ -41,6 +41,9 @@ class ProductorPreloadDuplicate
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $userConfirmIdentifier = null;
 
+    #[ORM\Column]
+    private ?float $similarity = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -114,6 +117,18 @@ class ProductorPreloadDuplicate
     public function setUserConfirmIdentifier(?string $userConfirmIdentifier): static
     {
         $this->userConfirmIdentifier = $userConfirmIdentifier;
+
+        return $this;
+    }
+
+    public function getSimilarity(): ?float
+    {
+        return $this->similarity;
+    }
+
+    public function setSimilarity(float $similarity): static
+    {
+        $this->similarity = $similarity;
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use App\Dto\FilterPreloadDto;
 use App\Entity\Productor;
 use App\Entity\ProductorBrut;
 use App\Entity\ProductorPreload;
@@ -34,9 +35,11 @@ class ProductorAffectationController extends AbstractController
      */
     public function findByAssignable(
       ProductorPreloadRepository $repository,
-      NormalizerInterface $normalizer
+      NormalizerInterface $normalizer,
+      Request $req
     ): Response
     {
+
       $data = $repository->findByUserAssignation($this->getUser()?->getNormalUsername());
 
       //dd($data);
@@ -159,6 +162,42 @@ class ProductorAffectationController extends AbstractController
 
       //"productors:duplicate:read"
       return new JsonResponse($serializedData);
+
+    }
+    /**
+     * 
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @Route("/api/productors/preload/quaters", methods={"GET"}, name="all_productor_preload_quarter")
+     */
+    public function getAllQuarters(ProductorPreloadRepository $repository): Response 
+    {
+        $data = $repository->findByGroupQuarter();
+        //dd($data);
+        return new JsonResponse($data);
+
+    }
+    /**
+     * 
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @Route("/api/productors/preload/towns", methods={"GET"}, name="all_productor_preload_towns")
+     */
+    public function getAllTowns(ProductorPreloadRepository $repository): Response 
+    {
+        $data = $repository->findByGroupTowns();
+        //dd($data);
+        return new JsonResponse($data);
+
+    }
+    /**
+     * 
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @Route("/api/productors/preload/structures", methods={"GET"}, name="all_productor_preload_structures")
+     */
+    public function getAllStructures(ProductorPreloadRepository $repository): Response 
+    {
+        $data = $repository->findByGroupStructures();
+        //dd($data);
+        return new JsonResponse($data);
 
     }
     /**
