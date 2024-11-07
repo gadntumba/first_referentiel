@@ -162,14 +162,17 @@ class ProductorController extends AbstractController
             {
                 throw new HttpException(422, "preload not found");                
             }
+
             $phoneNumberUser = $this->getUser()->getNormalUsername();
 
-            if ($phoneNumberUser != $preload->getAgentAffect()) {
+            if ($phoneNumberUser != $preload->getAgentAffect()) 
+            {
                 throw new HttpException(403, "You can't do this record");  
             }
             
             #Fin traiement pour preload
 
+            return new JsonResponse($requestData);
 
            // dd($requestData);
 
@@ -256,7 +259,6 @@ class ProductorController extends AbstractController
             $productor->setLatitude($productorValidator->getLatitude());
             $productor->setLongitude($productorValidator->getLongitude());
             $productor->setAltitude($productorValidator->getAltitude());
-
 
             $housekeeping = $productor->getHousekeeping();
             $address = $housekeeping->getAddress();
