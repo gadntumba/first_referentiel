@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use App\Validators\Util\Util;
 use App\Entity\Productor as EntityProductor;
 use App\Services\FileUploader;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ActivityData {
 
@@ -380,7 +381,15 @@ class ActivityData {
             //fileUploader
             if (!is_null($entrepreneurship->getDocumentPhoto())) 
             {
-                $entrepreneurship->setDocumentPath($this->fileUploader->uploadGoogle($entrepreneurship->getDocumentPhoto()) );
+                #throw new HttpException(400,$entrepreneurship->getDocumentPhoto());
+                #dd($entrepreneurship->getDocumentPhoto());
+                try {
+                    $entrepreneurship->setDocumentPath($this->fileUploader->uploadGoogle($entrepreneurship->getDocumentPhoto()) );
+                    
+                } catch (\Throwable $th) {
+                    //throw $th;
+                    throw new HttpException(400,$entrepreneurship->getDocumentPhoto() . $th->getMessage());
+                }
                 
             }
 

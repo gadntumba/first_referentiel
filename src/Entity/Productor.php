@@ -394,7 +394,7 @@ class Productor
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $oldActivitySector = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     /**
      * 
      * @Groups({"read:productor:level_0"})
@@ -403,6 +403,13 @@ class Productor
 
     #[ORM\Column(nullable: true)]
     private ?array $oldActivityAddr = null;
+    
+    #[ORM\OneToOne(inversedBy: 'productor', cascade: ['persist', 'remove'])]
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
+    private ?ProductorPreload $productorPreload = null;
 
     public function __construct()
     {
@@ -1174,6 +1181,18 @@ class Productor
     public function setOldActivityAddr(?array $oldActivityAddr): static
     {
         $this->oldActivityAddr = $oldActivityAddr;
+
+        return $this;
+    }
+
+    public function getProductorPreload(): ?ProductorPreload
+    {
+        return $this->productorPreload;
+    }
+
+    public function setProductorPreload(?ProductorPreload $productorPreload): static
+    {
+        $this->productorPreload = $productorPreload;
 
         return $this;
     }

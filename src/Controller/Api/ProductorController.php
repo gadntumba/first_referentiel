@@ -141,7 +141,7 @@ class ProductorController extends AbstractController
         if (!$this->isGranted("ROLE_INVESTIGATOR")) {
           throw new HttpException(403, "No access");  
         }
-        //dd($user->getRoles());
+        #dd($user->getRoles());
 
         /**
          * @var ProductorProductor
@@ -157,6 +157,9 @@ class ProductorController extends AbstractController
             $preloadId = $requestData["preloadId"];
 
             $preload = $productorPreloadRepository->find($preloadId);
+            
+            //return new JsonResponse($requestData);
+
 
             if (is_null($preload)) 
             {
@@ -172,7 +175,6 @@ class ProductorController extends AbstractController
             
             #Fin traiement pour preload
 
-            return new JsonResponse($requestData);
 
            // dd($requestData);
 
@@ -189,7 +191,7 @@ class ProductorController extends AbstractController
                 [AbstractNormalizer::OBJECT_TO_POPULATE => $productorValidator]
             );
 
-            //dd("OK");
+            #dd("OK");
 
             $phoneNumber = $productorValidator->getPersonnalIdentityData()->getPhone();
 
@@ -1949,6 +1951,10 @@ class ProductorController extends AbstractController
             ]
             
         );
+        #dd($itemArr);
+
+        return $itemArr;
+
         $itemArr['personnalIdentityData'] = $this->normalizer->normalize(
             $item, 
             null, 

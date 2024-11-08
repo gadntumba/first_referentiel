@@ -57,15 +57,15 @@ class ProductorPreload
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["read:productor:preload", "productors:duplicate:read", "productors:assignable:read"])]
+    #[Groups(["read:productor:preload", "productors:duplicate:read", "productors:assignable:read", "read:productor:level_0"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable:true)]
-    #[Groups(["write:productor:preload", "read:productor:preload", "productors:duplicate:read", "productors:assignable:read"])]
+    #[Groups(["write:productor:preload", "read:productor:preload", "productors:duplicate:read", "productors:assignable:read", "read:productor:level_0"])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable:true)]
-    #[Groups(["write:productor:preload", "read:productor:preload", "productors:duplicate:read", "productors:assignable:read"])]
+    #[Groups(["write:productor:preload", "read:productor:preload", "productors:duplicate:read", "productors:assignable:read", "read:productor:level_0"])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255, nullable:true)]
@@ -75,41 +75,41 @@ class ProductorPreload
     private ?string $city = null;
 
     #[ORM\Column(length: 255, nullable:true)]
-    #[Groups(["write:productor:preload", "read:productor:preload", "productors:duplicate:read", "productors:assignable:read"])]
+    #[Groups(["write:productor:preload", "read:productor:preload", "productors:duplicate:read", "productors:assignable:read", "read:productor:level_0"])]
     private ?string $phone1 = null;
 
     #[ORM\Column(length: 255, nullable:true)]
-    #[Groups(["write:productor:preload", "read:productor:preload", "productors:duplicate:read", "productors:assignable:read"])]
+    #[Groups(["write:productor:preload", "read:productor:preload", "productors:duplicate:read", "productors:assignable:read", "read:productor:level_0"])]
     private ?string $phone2 = null;
 
     #[ORM\Column(length: 255, nullable:true)]
-    #[Groups(["write:productor:preload", "read:productor:preload", "productors:duplicate:read"])]
+    #[Groups(["write:productor:preload", "read:productor:preload", "productors:duplicate:read", "read:productor:level_0"])]
     private ?string $phone3 = null;
 
     #[ORM\Column(length: 255, nullable:true)]
-    #[Groups(["write:productor:preload", "read:productor:preload", "productors:assignable:read"])]
+    #[Groups(["write:productor:preload", "read:productor:preload", "productors:assignable:read", "read:productor:level_0"])]
     #[Assert\NotBlank(message:"la structure ne peut pas être vide")]
     #[Assert\NotNull(message:"la structure ne peut pas être vide")]
     private ?string $structure = null;
 
     #[ORM\Column(length: 255, nullable:true)]
-    #[Groups(["write:productor:preload", "read:productor:preload", "productors:duplicate:read", "productors:assignable:read"])]
+    #[Groups(["write:productor:preload", "read:productor:preload", "productors:duplicate:read", "productors:assignable:read", "read:productor:level_0"])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(["write:productor:preload", "read:productor:preload", "productors:assignable:read"])]
+    #[Groups(["write:productor:preload", "read:productor:preload", "productors:assignable:read", "read:productor:level_0"])]
     #[Assert\NotBlank(message:"le secteur ne peut pas être vide")]
     #[Assert\NotNull(message:"le secteur ne peut pas être vide")]
     private ?string $sector = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(["write:productor:preload", "read:productor:preload", "productors:assignable:read"])]
+    #[Groups(["write:productor:preload", "read:productor:preload", "productors:assignable:read", "read:productor:level_0"])]
     #[Assert\NotBlank(message:"la commune ne peut pas être vide")]
     #[Assert\NotNull(message:"la commune ne peut pas être vide")]
     private ?string $town = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(["write:productor:preload", "read:productor:preload", "productors:assignable:read"])]
+    #[Groups(["write:productor:preload", "read:productor:preload", "productors:assignable:read", "read:productor:level_0"])]
     private ?string $address = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -139,10 +139,6 @@ class ProductorPreload
     #[Assert\NotNull(message:"le normalId ne peut pas être vide",)]
     private ?City $cityEntity = null;
 
-    #[ORM\OneToOne(inversedBy: 'productorPreload', cascade: ['persist', 'remove'])]
-    #[Groups(["write:productor:preload", "read:productor:preload", "productors:assignable:read"])]
-    private ?Productor $productor = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(["write:productor:preload", "read:productor:preload", "productors:assignable:read"])]
     private ?string $agentAffect = null;
@@ -169,6 +165,9 @@ class ProductorPreload
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(["write:productor:preload", "read:productor:preload", "productors:assignable:read"])]
     private ?string $contanctComment = null;
+
+    #[ORM\OneToOne(mappedBy: 'productorPreload', cascade: ['persist', 'remove'])]
+    private ?Productor $productor = null;
 
     public function __construct()
     {
@@ -622,6 +621,16 @@ class ProductorPreload
 
     public function setProductor(?Productor $productor): static
     {
+        // unset the owning side of the relation if necessary
+        if ($productor === null && $this->productor !== null) {
+            $this->productor->setProductorPreload(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($productor !== null && $productor->getProductorPreload() !== $this) {
+            $productor->setProductorPreload($this);
+        }
+
         $this->productor = $productor;
 
         return $this;
