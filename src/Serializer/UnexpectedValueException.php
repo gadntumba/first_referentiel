@@ -29,7 +29,8 @@ class UnexpectedValueException extends \UnexpectedValueException
      * 
      */
     public function __construct(array $errors) {
-        parent::__construct("Invalid iri");
+        #parent::__construct(isset($errors["message"])?$errors["message"] : "iri invalide");
+        parent::__construct(isset($errors["message"])?$errors["message"] : "iri invalide");
         $this->errors = $errors;
     }
     /**

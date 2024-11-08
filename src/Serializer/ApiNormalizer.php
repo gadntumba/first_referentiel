@@ -85,20 +85,24 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
                 throw new SerializerUnexpectedValueException($arr);
                 
             }
-            $jsonObject = new JsonObject();
+            /*$jsonObject = new JsonObject();
             
             $jsonObject->set(
                 "$.".$context["deserialization_path"], 
                 [
                     "code" => "aaafggfg-fhhfhfh-kgkgjgjgj-oruru",
-                    "message" => "Invalid iri",
+                    "message" => "invalid iri : " . $context["deserialization_path"] ."( value : ".json_encode($data).") ",
                     "data" => $data,
                 ]
-            );
-            $arr = json_decode($jsonObject->getJson(), true);
+            );*/
+            //$arr = json_decode($jsonObject->getJson(), true);
             //dd($th);
 
-            throw new SerializerUnexpectedValueException($arr);
+            throw new SerializerUnexpectedValueException([
+                "code" => "aaafggfg-fhhfhfh-kgkgjgjgj-oruru",
+                "message" => "invalid iri : " . $context["deserialization_path"] ."( value : ".json_encode($data).") ",
+                "data" => $data,
+            ]);
 
         }
     }
