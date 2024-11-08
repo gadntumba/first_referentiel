@@ -1953,7 +1953,7 @@ class ProductorController extends AbstractController
         );
         #dd($itemArr);
 
-        return $itemArr;
+        #return $itemArr;
 
         $itemArr['personnalIdentityData'] = $this->normalizer->normalize(
             $item, 

@@ -4,9 +4,11 @@ namespace App\Validators\Productor;
 use App\Entity\LevelStudy;
 use App\Entity\MaritalState;
 use App\Entity\Organization;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 /**
  */
 class PersonnalIdentityData {
@@ -42,8 +44,8 @@ class PersonnalIdentityData {
     private $phone; //String
     /**
      * @Assert\NotNull
-     * @Assert\NotNull
-     * @var \DateTime
+     * @Assert\NotBlank
+     * )
      */
     private $birthday; //String
     /**
@@ -87,6 +89,19 @@ class PersonnalIdentityData {
     {
         
         $this->denormalizer = $denormalizer;
+    }
+     /**
+     * @Assert\Callback
+     */
+    public function validateDates(ExecutionContextInterface $context): void
+    {
+        if (preg_match('/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}):(\d{2})(?:([\+\-]\d{2}:\d{2})|Z)?)?$/', $this->birthday, $matches)) {
+            
+        } else {
+            $context->buildViolation('invalid date '.$this->birthday)
+                ->atPath('birthday')
+                ->addViolation();
+        }
     }
 
  /**
@@ -194,7 +209,7 @@ class PersonnalIdentityData {
   */ 
  public function getBirthday()
  {
-  return $this->birthday;
+  return new \DateTime($this->birthday);
  }
 
  /**
@@ -202,11 +217,12 @@ class PersonnalIdentityData {
   *
   * @return  self
   */ 
- public function setBirthday(\DateTime $birthday)
+ public function setBirthday($birthday)
  {
-  $this->birthday = $birthday;
+    #throw new HttpException(400, (new \DateTime($birthday))->getTimestamp());
+    $this->birthday = $birthday;
 
-  return $this;
+    return $this;
  }
 
  /**
