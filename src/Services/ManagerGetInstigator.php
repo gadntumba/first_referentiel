@@ -17,6 +17,7 @@ class ManagerGetInstigator
         private HttpClientInterface $httpClient,
         private ProductorRepository $productorRepository,
         private ContainerBagInterface $containerBag,
+        private ManagerAgromwindaToken $managerAgromwindaToken,
         private InstigatorRepository $instigatorRepository
     ) 
     {
@@ -133,6 +134,92 @@ class ManagerGetInstigator
         }
 
         
+    }
+
+    public function loadAllInvigotor() : array
+    {
+        $token = $this->managerAgromwindaToken->getToken();
+
+        $rolesStr = $this->containerBag->get("agromwinda_instigator_roles");
+        $host = "https://api.agromwinda.com";
+        
+        $data = [];
+        $roles = explode(",", $rolesStr);
+        #dd($roles);
+        foreach ($roles as $key => $role) {
+            try {
+                $url = $host."/secure-users/roles/users?role=".$role;
+                #dd($url);
+                $response = $this->httpClient->request(
+                    "GET",
+                    $url,
+                    [
+                        "headers" => [
+                            "X-Auth-Token" => $token,
+                            //"Content-Type" => "application/json",
+                        ],
+                    ]
+                );
+                #dd($token);
+                $statusCode = $response->getStatusCode();
+                $isOK = $statusCode >=200 && 300 > $statusCode;
+                #dd($response->toArray(false));
+                $arr = $response->toArray(false);
+    
+                if ($isOK && isset($arr["data"])) 
+                {
+                    //$investigator = new Instigator();
+                    array_push($data, ...$arr["data"]);
+    
+                }else 
+                {
+                }
+                
+            } catch (\Throwable $th) {
+                #dd($th);
+                #return null;
+                //throw $th;
+            }
+            # code...
+        }
+        return $data;        
+    }
+    public function getAssignationInvestigator(string $phoneNumber) : array
+    {
+        $token = $this->managerAgromwindaToken->getToken();
+        $host = "https://api.agromwinda.com";
+
+        $url = $host."/"."secure-users/" .$phoneNumber. "/assignation";
+        try {
+            $response = $this->httpClient->request(
+                "GET",
+                $url,
+                [
+                    "headers" => [
+                        "X-Auth-Token" => $token,
+                        //"Content-Type" => "application/json",
+                    ],
+                ]
+            );
+    
+            $statusCode = $response->getStatusCode();
+            $isOK = $statusCode >=200 && 300 > $statusCode;
+            #dd($response->toArray(false));
+            $arr = $response->toArray(false);
+    
+            if ($isOK && isset($arr["data"])) 
+            {
+                //$investigator = new Instigator();
+                return $arr["data"];
+            }else 
+            {
+                return null;
+            }
+            
+        } catch (\Throwable $th) {
+            return null;
+            //throw $th;
+        }
     }
 
 

@@ -11,8 +11,16 @@ parameters:
     photo_host: '%env(PHOTO_HOST)%'
     oauth_client_id: "%env(OAUTH2_CLIENT_ID)%"
     oauth_client_secret: "%env(OAUTH2CLIENT_SECRET)%"
+
+    #Agromwinda
+
     agromwinda_host: "%env(AGROMWINDA_HOST)%"
     agromwinda_load_mode: "%env(AGROMWINDA_LOAD_MODE)%"
+    agromwinda_admin_username: "%env(AGROMWINDA_ADMIN_USERNAME)%"
+    agromwinda_admin_pwd: "%env(AGROMWINDA_ADMIN_PWD)%"
+    agromwinda_instigator_roles: "%env(AGROMWINDA_INVESTIGATOR_ROLES)%"
+
+    #Agromwinda end 
     # validate files url
     bukavu_validation_file_url: "%env(BUKAVU_VALIDATION_FILE_URL)%"
     bunia_validation_file_url: "%env(BUNIA_VALIDATION_FILE_URL)%"

@@ -7,8 +7,10 @@ use App\Dto\FilterPreloadDUplicateDto;
 use App\Entity\Productor;
 use App\Entity\ProductorBrut;
 use App\Entity\ProductorPreloadDuplicate;
+use App\Repository\CityRepository;
 use App\Repository\ProductorPreloadDuplicateRepository;
 use App\Repository\ProductorPreloadRepository;
+use App\Repository\TerritorryRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -19,6 +21,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use App\Security\User\OAuthUser;
+use App\Services\ManagerGetInstigator;
 
 class ProductorDuplicateController extends AbstractController
 {
@@ -37,16 +41,50 @@ class ProductorDuplicateController extends AbstractController
     public function allNotConfirm(
       ProductorPreloadDuplicateRepository $repository,
       NormalizerInterface $normalizer,
+      ManagerGetInstigator $managerGetInstigator,
+      CityRepository $cityRepository,
+      TerritorryRepository $territorryRepository,
       Request $req
     ): Response
     {
       $query = $req->query;
       //dd($query->all());
+      //dd($this->getUser()->getNormalUsername());
+      $phoneNumber = $this->getUser()->getNormalUsername();
+      $assingnation = $managerGetInstigator->getAssignationInvestigator($phoneNumber);
+      //dd($assingnation);
+      $cityName = isset($assingnation["cityName"])?$assingnation["cityName"]:null;
+      $territoryName = isset($assingnation["territoryName"])?$assingnation["territoryName"]:null;
+      
+      $cities = [];
+      $territories = [];
+      
+      if (!$this->isGranted("ROLE_ADMIN") && is_null($cityName) && is_null($territoryName)) {
+        return new HttpException(403, "Vous n'etes pas affectez à une ville");
+      }
+      #dd();
+      if ($this->isGranted("ROLE_ADMIN")) {
+        
+      }else if (!is_null($cityName)) 
+      {
+        $city = $cityRepository->findOneBy(["name" => $cityName]);
+        $cities = (!is_null($city))? [$city->getId()]:[]; 
+        #dump($phoneNumber);
+        #dd($assingnation);
+        
+      }else if(!is_null($territoryName)){
+
+        $territory = $territorryRepository->findOneBy(["name" => $territoryName]);
+        $territories = (!is_null($territory))? [$territory->getId()]:[]; 
+      }
+
       $arrQuery = $query->all();
       $filter = new FilterPreloadDUplicateDto;
       
       $filter->setSearch(isset($arrQuery['search'])?$arrQuery['search']: null);
-      $filter->setCities(isset($arrQuery['cities'])?$arrQuery['cities']:[]);
+      //$filter->setCities(isset($arrQuery['cities'])?$arrQuery['cities']:[]);
+      $filter->setCities(isset($arrQuery['cities'])?[...$cities,...$arrQuery['cities']]:$cities);
+      //$filter->setTowns(isset($arrQuery['towns'])?[...$territories,...$arrQuery['towns']] :$territories);
 
       $filter->setDateStart(isset($arrQuery['datestart'])? new \DateTime($arrQuery['datestart']) :null);
       $filter->setDateEnd(isset($arrQuery['dateend'])?new \DateTime($arrQuery['dateend']) :null);
@@ -79,17 +117,48 @@ class ProductorDuplicateController extends AbstractController
     public function findByAssignable(
       ProductorPreloadRepository $repository,
       NormalizerInterface $normalizer,
+      ManagerGetInstigator $managerGetInstigator,
+      CityRepository $cityRepository,
+      TerritorryRepository $territorryRepository,
       Request $req
     ): Response
     {
       $query = $req->query;
+      //dd($this->getUser()->getNormalUsername());
+      $phoneNumber = $this->getUser()->getNormalUsername();
+      $assingnation = $managerGetInstigator->getAssignationInvestigator($phoneNumber);
+      //dd($assingnation);
+      $cityName = isset($assingnation["cityName"])?$assingnation["cityName"]:null;
+      $territoryName = isset($assingnation["territoryName"])?$assingnation["territoryName"]:null;
+      
+      $cities = [];
+      $territories = [];
+
+      if (!$this->isGranted("ROLE_ADMIN") && is_null($cityName) && is_null($territoryName)) {
+        return new HttpException(403, "Vous n'etes pas affectez à une ville");
+      }
+      #dd();
+      if ($this->isGranted("ROLE_ADMIN")) {
+        
+      }else if (!is_null($cityName)) 
+      {
+        $city = $cityRepository->findOneBy(["name" => $cityName]);
+        $cities = (!is_null($city))? [$city->getId()]:[]; 
+        #dump($phoneNumber);
+        #dd($assingnation);
+        
+      }else if(!is_null($territoryName)){
+
+        $territory = $territorryRepository->findOneBy(["name" => $territoryName]);
+        $territories = (!is_null($territory))? [$territory->getId()]:[]; 
+      }
       //dd($query->all());
       $arrQuery = $query->all();
       $filter = new FilterPreloadDto;
 
       $filter->setSearch(isset($arrQuery['search'])?$arrQuery['search']: null);
-      $filter->setCities(isset($arrQuery['cities'])?$arrQuery['cities']:[]);
-      $filter->setTowns(isset($arrQuery['towns'])?$arrQuery['towns']:[]);
+      $filter->setCities(isset($arrQuery['cities'])?[...$cities,...$arrQuery['cities']]:$cities);
+      $filter->setTowns(isset($arrQuery['towns'])?$arrQuery['towns'] : []);
       $filter->setStrutures(isset($arrQuery['structures'])?$arrQuery['structures']:[]);
       $filter->setQuarters(isset($arrQuery['quarters'])?$arrQuery['quarters']:[]);
 

@@ -403,13 +403,10 @@ class Productor
 
     #[ORM\Column(nullable: true)]
     private ?array $oldActivityAddr = null;
+
+    #[ORM\OneToMany(mappedBy: 'productor', targetEntity: ProductorPreload::class)]
+    private Collection $productorPreloads;
     
-    #[ORM\OneToOne(inversedBy: 'productor', cascade: ['persist', 'remove'])]
-    /**
-     * 
-     * @Groups({"read:productor:level_0"})
-     */
-    private ?ProductorPreload $productorPreload = null;
 
     public function __construct()
     {
@@ -421,6 +418,7 @@ class Productor
         $this->entrepreneurialActivities = new ArrayCollection();
         $this->observations = new ArrayCollection();
         $this->dataBruts = new ArrayCollection();
+        $this->productorPreloads = new ArrayCollection();
         
     }
 
@@ -1185,14 +1183,32 @@ class Productor
         return $this;
     }
 
-    public function getProductorPreload(): ?ProductorPreload
+    /**
+     * @return Collection<int, ProductorPreload>
+     */
+    public function getProductorPreloads(): Collection
     {
-        return $this->productorPreload;
+        return $this->productorPreloads;
     }
 
-    public function setProductorPreload(?ProductorPreload $productorPreload): static
+    public function addProductorPreload(ProductorPreload $productorPreload): static
     {
-        $this->productorPreload = $productorPreload;
+        if (!$this->productorPreloads->contains($productorPreload)) {
+            $this->productorPreloads->add($productorPreload);
+            $productorPreload->setProductor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductorPreload(ProductorPreload $productorPreload): static
+    {
+        if ($this->productorPreloads->removeElement($productorPreload)) {
+            // set the owning side to null (unless already changed)
+            if ($productorPreload->getProductor() === $this) {
+                $productorPreload->setProductor(null);
+            }
+        }
 
         return $this;
     }

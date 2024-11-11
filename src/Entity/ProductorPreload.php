@@ -166,7 +166,7 @@ class ProductorPreload
     #[Groups(["write:productor:preload", "read:productor:preload", "productors:assignable:read"])]
     private ?string $contanctComment = null;
 
-    #[ORM\OneToOne(mappedBy: 'productorPreload', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'productorPreloads')]
     private ?Productor $productor = null;
 
     public function __construct()
@@ -621,16 +621,6 @@ class ProductorPreload
 
     public function setProductor(?Productor $productor): static
     {
-        // unset the owning side of the relation if necessary
-        if ($productor === null && $this->productor !== null) {
-            $this->productor->setProductorPreload(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($productor !== null && $productor->getProductorPreload() !== $this) {
-            $productor->setProductorPreload($this);
-        }
-
         $this->productor = $productor;
 
         return $this;
