@@ -52,7 +52,7 @@ class ProductorAffectationController extends AbstractController
     }
     /**
      * 
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @IsGranted("ROLE_ANALYST")
      * @Route("/api/productors/preload/affectations/{id}/set", methods={"POST"}, name="all_productor_preload_affectation_set")
      */
     public function setAssignation(

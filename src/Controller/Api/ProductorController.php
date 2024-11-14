@@ -359,7 +359,7 @@ class ProductorController extends AbstractController
     #api/productors/upload/brut
     /**
      * @Route("api/productors/upload/brut", methods={"POST"}, name="productor.upload.brut")
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @IsGranted("ROLE_ADMIN")
      * 
      */
     public function setBrut(

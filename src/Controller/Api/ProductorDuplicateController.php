@@ -35,7 +35,7 @@ class ProductorDuplicateController extends AbstractController
 
     /**
      * 
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @IsGranted("ROLE_ANALYST")
      * @Route("/api/productors/preload/duplicates/all", methods={"GET"}, name="all_productor_preload_duplicate")
      */
     public function allNotConfirm(
@@ -111,7 +111,7 @@ class ProductorDuplicateController extends AbstractController
     //
     /**
      * 
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @IsGranted("ROLE_ANALYST")
      * @Route("/api/productors/assignable/all", methods={"GET"}, name="all_productor_assignable")
      */
     public function findByAssignable(
@@ -215,7 +215,7 @@ class ProductorDuplicateController extends AbstractController
     }
     /**
      * 
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @IsGranted("ROLE_ANALYST")
      * @Route("/api/productors/preload/duplicates/{id}/set", methods={"POST"}, name="all_productor_preload_duplicate_set")
      */
     public function setDuplicate(
@@ -239,7 +239,7 @@ class ProductorDuplicateController extends AbstractController
     }
     /**
      * 
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @IsGranted("ROLE_ANALYST")
      * @Route("/api/productors/preload/duplicates/{id}/set-no", methods={"POST"}, name="all_productor_preload_duplicate_set_no")
      */
     public function setNotDuplicate(
