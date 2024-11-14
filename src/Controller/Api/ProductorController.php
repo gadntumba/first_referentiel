@@ -137,8 +137,8 @@ class ProductorController extends AbstractController
          * @var OAuthUser
          */
         $user =  $this->getUser();
-
-        if (!$this->isGranted("ROLE_INVESTIGATOR")) {
+        //ROLE_ADMIN ROLE_ROOT ROLE_VOUCHER_COORDINATOR ROLE_ANALYST
+        if (!$this->isGranted("ROLE_INVESTIGATOR") && !$this->isGranted("ROLE_ANALYST") && !$this->isGranted("ROLE_DIRECTOR")) {
           throw new HttpException(403, "No access");  
         }
         #dd($user->getRoles());
