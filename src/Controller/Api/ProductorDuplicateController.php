@@ -124,6 +124,16 @@ class ProductorDuplicateController extends AbstractController
     ): Response
     {
       $query = $req->query;
+      $arrQuery = $query->all();
+      $structures = isset($arrQuery['structures'])?$arrQuery['structures']:[];
+
+      foreach ($structures as $key => $structure) {
+        $structures[$key] = str_replace("+", " ", $structure);
+      }
+
+      $arrQuery['structures'] = $structures;
+
+      #dd($arrQuery['structures']);
       //dd($this->getUser()->getNormalUsername());
       $phoneNumber = $this->getUser()->getNormalUsername();
       $assingnation = $managerGetInstigator->getAssignationInvestigator($phoneNumber);
@@ -134,11 +144,11 @@ class ProductorDuplicateController extends AbstractController
       $cities = [];
       $territories = [];
 
-      if (!$this->isGranted("ROLE_ADMIN") && is_null($cityName) && is_null($territoryName)) {
+      if (!$this->isGranted("ROLE_ROOT") && is_null($cityName) && is_null($territoryName)) {
         return new HttpException(403, "Vous n'etes pas affectez à une ville");
       }
       #dd();
-      if ($this->isGranted("ROLE_ADMIN")) {
+      if ($this->isGranted("ROLE_ROOT")) {
         
       }else if (!is_null($cityName)) 
       {
@@ -153,7 +163,6 @@ class ProductorDuplicateController extends AbstractController
         $territories = (!is_null($territory))? [$territory->getId()]:[]; 
       }
       //dd($query->all());
-      $arrQuery = $query->all();
       $filter = new FilterPreloadDto;
 
       $filter->setSearch(isset($arrQuery['search'])?$arrQuery['search']: null);
@@ -161,7 +170,7 @@ class ProductorDuplicateController extends AbstractController
       $filter->setTowns(isset($arrQuery['towns'])?$arrQuery['towns'] : []);
       $filter->setStrutures(isset($arrQuery['structures'])?$arrQuery['structures']:[]);
       $filter->setQuarters(isset($arrQuery['quarters'])?$arrQuery['quarters']:[]);
-
+      //dd($filter);
       //$filter->setInvests(isset($arrQuery['invests'])?$arrQuery['invests']:[]);
 
       $filter->setDateStart(isset($arrQuery['datestart'])? new \DateTime($arrQuery['datestart']) :null);

@@ -157,14 +157,19 @@ class ProductorController extends AbstractController
             $preloadId = $requestData["preloadId"];
 
             $preload = $productorPreloadRepository->find($preloadId);
-            
-            //return new JsonResponse($requestData);
-
 
             if (is_null($preload)) 
             {
                 throw new HttpException(422, "preload not found");                
             }
+
+            if ( !is_null($preload->getProductor())) {
+                throw new HttpException(422, "preload already record");                
+            }
+            
+            //return new JsonResponse($requestData);
+
+
 
             $phoneNumberUser = $this->getUser()->getNormalUsername();
 
@@ -194,6 +199,7 @@ class ProductorController extends AbstractController
             #dd("OK");
 
             $phoneNumber = $productorValidator->getPersonnalIdentityData()->getPhone();
+            #throw new HttpException(400, json_encode(["phone" => $phoneNumber]));
 
         } catch (UnexpectedValueException $th) {
             //throw $th;
@@ -249,6 +255,7 @@ class ProductorController extends AbstractController
 
             $productorValidator->validate();
             //dd($productorValidator);
+            
 
             $productor = $productorValidator->addPersonnalIdentification($productor);
             // add pieceOfIdentificationData
@@ -297,6 +304,7 @@ class ProductorController extends AbstractController
             }
 
             $errors = $validator->validate($productor);
+            #throw new HttpException(400, json_encode(["phone" => $phoneNumber, "message" => $productor->getPhoneNumber()]));
 
             if (count($errors) > 0) {
                 
@@ -305,6 +313,7 @@ class ProductorController extends AbstractController
                     422
                 );
             }
+
 
             //dd($user->getId());
             

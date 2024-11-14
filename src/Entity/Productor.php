@@ -134,8 +134,8 @@ class Productor
      * 
      * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection", "read:observ"})
      * @Assert\Length(
-     *  min = 10,
-     *  max = 10 
+     *  min = 9,
+     *  max = 9 
      *)
      * @Assert\Regex(
      *      pattern="/\d+/",
@@ -403,7 +403,10 @@ class Productor
 
     #[ORM\Column(nullable: true)]
     private ?array $oldActivityAddr = null;
-
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
     #[ORM\OneToMany(mappedBy: 'productor', targetEntity: ProductorPreload::class)]
     private Collection $productorPreloads;
     

@@ -9,6 +9,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use App\Entity\HouseKeeping;
 use App\Entity\Productor as EntityProductor;
+use App\Entity\ProductorPreload;
 use App\Services\FileUploader;
 use App\Validators\Exception\Exception;
 use Psr\Log\LoggerInterface;
@@ -373,6 +374,31 @@ class Productor {
         $productor->setOrganization($persIdenProduct->getOrganization());
 
         return $productor;
+    }
+
+    public static function normalPhone(string $text) : string {
+
+        $phone = ProductorPreload::hideSpaces($text);
+        $phone = str_replace("+", '', $phone);
+
+
+        if (empty($phone)) {
+            return "";
+        }
+        //dump(strpos($phone, '243') != "");
+        
+        if (strpos($phone, '00') === 0) {
+            //dump("00");
+            $phone = substr($phone, 2);
+        }
+        
+        if (strpos($phone, '243')  === 0) {
+            //dump("243");
+            $phone = substr($phone, 3);
+        }else if (strpos($phone, '0')  === 0) {
+            $phone = substr($phone, 1);
+        }
+        return $phone;
     }
     /**
      * 

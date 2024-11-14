@@ -189,7 +189,7 @@ class PersonnalIdentityData {
   */ 
  public function getPhone()
  {
-  return $this->phone;
+  return Productor::normalPhone($this->phone);
  }
 
  /**
