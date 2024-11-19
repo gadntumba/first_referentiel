@@ -409,6 +409,9 @@ class Productor
      */
     #[ORM\OneToMany(mappedBy: 'productor', targetEntity: ProductorPreload::class)]
     private Collection $productorPreloads;
+
+    #[ORM\Column(nullable:true)]
+    private array $iec = [];
     
 
     public function __construct()
@@ -1212,6 +1215,18 @@ class Productor
                 $productorPreload->setProductor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIec(): array
+    {
+        return $this->iec;
+    }
+
+    public function setIec(array $iec): static
+    {
+        $this->iec = $iec;
 
         return $this;
     }

@@ -320,6 +320,11 @@ class ProductorController extends AbstractController
             $productor->setInvestigatorId($user->getNormalUsername());
             $isTest = $this->getParameter("agromwinda_load_mode") == "TEST"? true : false;
             $productor->setIsNormal(!$isTest);
+            
+            if (isset($requestData["iec"])) {
+                $productor->setIec($requestData["iec"]);
+                //throw new HttpException(422, "preload can't be null");
+            }
             //$productor->setPro(!$isTest);
             //preload
             //dd($productor);
