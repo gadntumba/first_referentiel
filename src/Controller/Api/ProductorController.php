@@ -322,7 +322,15 @@ class ProductorController extends AbstractController
             $productor->setIsNormal(!$isTest);
             
             if (isset($requestData["iec"])) {
-                $productor->setIec($requestData["iec"]);
+                try {
+                    $productor->setIec(json_decode($requestData["iec"], true));
+                    
+                } catch (\Throwable $th) {
+                    return new JsonResponse(
+                        "iec n'est pas un bon json",
+                        422
+                    );
+                }
                 //throw new HttpException(422, "preload can't be null");
             }
             //$productor->setPro(!$isTest);
