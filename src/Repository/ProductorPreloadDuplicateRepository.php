@@ -87,7 +87,7 @@ class ProductorPreloadDuplicateRepository extends ServiceEntityRepository
             //->setMaxResults(2)
             //->getQuery()
             //->getResult()
-        ;
+        ;//setSimilarity
 
         if ($filter && $filter->getCities() && count($filter->getCities()) > 0 ) {
             //dd($filter->getCities());

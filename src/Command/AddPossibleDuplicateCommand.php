@@ -85,8 +85,17 @@ class AddPossibleDuplicateCommand extends Command
                     $duplicateEntity = new ProductorPreloadDuplicate();
                     $duplicateEntity->setMain($entity);
                     $duplicateEntity->setSecondary($entitySec);
+                    
                     $duplicateEntity->setSimilarity((float) $duplicate["score"]);
                     //score
+                    if (70 > $duplicateEntity->getSimilarity()) {
+                        $duplicateEntity->setSetNotDuplicateAt(new \DateTime());
+                        #$user = $userRepository->findOneBy(["phoneNumber" => $this->getUser()->getNormalUsername()]);
+                        #dd($this->getUser()->getNormalUsername());
+    
+                        $duplicateEntity->setUserConfirmIdentifier("0824019836");
+                        # code...
+                    }
     
                     $this->em->persist($duplicateEntity);
                     $this->em->flush(); 
