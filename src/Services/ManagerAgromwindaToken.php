@@ -29,6 +29,10 @@ class ManagerAgromwindaToken
         $host = $this->containerBag->get("agromwinda_host");
         $pwd = $this->containerBag->get("agromwinda_admin_pwd");
         $username = $this->containerBag->get("agromwinda_admin_username");
+
+        //dump($username);
+        //dd($pwd);
+        
         $host = "https://api.agromwinda.com";
         $response = $this->httpClient->request(
             "POST",

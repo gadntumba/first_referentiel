@@ -21,6 +21,8 @@ class FilterPreloadDto {
 
     private ?\DateTime $dateValidateStart = null;
     private ?\DateTime $dateValidateEnd = null;
+
+    private bool $isNotAss = false;
     
     //datevalidatestart
 
@@ -212,6 +214,26 @@ class FilterPreloadDto {
     public function setQuarters($quarters)
     {
         $this->quarters = $quarters;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of isNotAss
+     */ 
+    public function getIsNotAss()
+    {
+        return $this->isNotAss;
+    }
+
+    /**
+     * Set the value of isNotAss
+     *
+     * @return  self
+     */ 
+    public function setIsNotAss($isNotAss)
+    {
+        $this->isNotAss = $isNotAss;
 
         return $this;
     }

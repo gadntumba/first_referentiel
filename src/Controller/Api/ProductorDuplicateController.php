@@ -88,6 +88,8 @@ class ProductorDuplicateController extends AbstractController
 
       $filter->setDateStart(isset($arrQuery['datestart'])? new \DateTime($arrQuery['datestart']) :null);
       $filter->setDateEnd(isset($arrQuery['dateend'])?new \DateTime($arrQuery['dateend']) :null);
+
+      $filter->setIsNotAss(isset($arrQuery['is_not_ass'])? true : false);
  
       $page = isset($arrQuery['page'])?(int)$arrQuery['page']:1;
 
@@ -176,6 +178,7 @@ class ProductorDuplicateController extends AbstractController
       $filter->setDateStart(isset($arrQuery['datestart'])? new \DateTime($arrQuery['datestart']) :null);
       $filter->setDateEnd(isset($arrQuery['dateend'])?new \DateTime($arrQuery['dateend']) :null);
       $page = isset($arrQuery['page'])?(int)$arrQuery['page']:1;
+      $filter->setIsNotAss(isset($arrQuery['isnotass'])? true : false);
 
       //dd($filter);
 

@@ -15,6 +15,8 @@ class FilterPreloadDUplicateDto {
     private ?\DateTime $dateStart = null;
     private ?\DateTime $dateEnd = null;
 
+    private bool $isNotAss = false;
+
     public function __construct() 
     {
         
@@ -100,6 +102,26 @@ class FilterPreloadDUplicateDto {
     public function setSearch($search)
     {
         $this->search = $search;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of isNotAss
+     */ 
+    public function getIsNotAss()
+    {
+        return $this->isNotAss;
+    }
+
+    /**
+     * Set the value of isNotAss
+     *
+     * @return  self
+     */ 
+    public function setIsNotAss($isNotAss)
+    {
+        $this->isNotAss = $isNotAss;
 
         return $this;
     }

@@ -14,12 +14,17 @@ class InvestigatorController extends AbstractController
     /**
      * 
      */
-    public function __construct(private NormalizerInterface $normaliser) {
+    public function __construct(
+        private NormalizerInterface $normaliser
+    ) 
+    {
     }
     #[Route('/api/invstigators/v2/all', name: 'app_instigator_v2_all')]
     public function index(ManagerGetInstigator $manager): Response
     {
-        $data = $manager->loadAllInvigotor();
+        //ManagerGetInstigator
+        
+        $data = $manager->loadAllInvigotor($this->getUser());
         //dd($this->getUser());
        return new JsonResponse([
         "data" => $data

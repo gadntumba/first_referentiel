@@ -8,6 +8,7 @@ use App\Repository\ProductorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ManagerGetInstigator 
@@ -136,16 +137,21 @@ class ManagerGetInstigator
         
     }
 
-    public function loadAllInvigotor() : array
+    public function loadAllInvigotor(UserInterface $user=null) : array
     {
-        $token = $this->managerAgromwindaToken->getToken();
+        //managerGetInstigator
 
         $rolesStr = $this->containerBag->get("agromwinda_instigator_roles");
         $host = "https://api.agromwinda.com";
         
         $data = [];
         $roles = explode(",", $rolesStr);
-        #dd($roles);
+
+        $phoneNumber = $user?->getNormalUsername();
+        $assingnation = $this->getAssignationInvestigator($phoneNumber);
+
+        #dd($token);
+        $token = $this->managerAgromwindaToken->getToken();
         foreach ($roles as $key => $role) {
             try {
                 $url = $host."/secure-users/roles/users?role=".$role;
@@ -163,8 +169,10 @@ class ManagerGetInstigator
                 #dd($token);
                 $statusCode = $response->getStatusCode();
                 $isOK = $statusCode >=200 && 300 > $statusCode;
+
                 #dd($response->toArray(false));
                 $arr = $response->toArray(false);
+                //dd($arr);
     
                 if ($isOK && isset($arr["data"])) 
                 {
@@ -176,13 +184,25 @@ class ManagerGetInstigator
                 }
                 
             } catch (\Throwable $th) {
-                #dd($th);
+                //dd($th);
                 #return null;
                 //throw $th;
             }
             # code...
         }
-        return $data;        
+        //dd($data);
+        $me = $this;
+
+        $dataFilter = array_filter(
+            $data,
+            function (array $item) use($me, $assingnation) : bool  {
+                
+                return $me->isConcern($assingnation, $item);
+            }
+        );  
+        
+        return array_values($dataFilter);
+        
     }
     public function getAssignationInvestigator(string $phoneNumber) : array
     {
@@ -220,6 +240,53 @@ class ManagerGetInstigator
             return null;
             //throw $th;
         }
+    }
+
+    private function isConcern(array $assingnation, array $investigator=null) : bool {
+        //dd($assingnation);
+
+        if (is_null($investigator)) 
+        {
+            return false;
+        }
+
+
+        $assingnationInvest = isset($investigator["assignment"])?$investigator["assignment"]:[];
+
+        //dd($assingnationInvest);
+
+        $cityNameUser = isset($assingnation["cityName"])?$assingnation["cityName"]:null;
+        $territoryNameUser = isset($assingnation["territoryName"])?$assingnation["territoryName"]:null;
+
+        $territoryExist = (
+            isset($assingnationInvest["territory"]) && 
+            !is_null($assingnationInvest["territory"]) &&
+            isset($assingnationInvest["territory"]["name"])
+        );
+
+        $cityExist = (
+            isset($assingnationInvest["city"]) && 
+            !is_null($assingnationInvest["city"]) &&
+            isset($assingnationInvest["city"]["name"])
+        );
+
+        //dump($assingnationInvest);
+        //dd($cityExist);
+
+        if ($cityExist) 
+        {
+            //dd($assingnationInvest["city"]["name"]);
+            
+            return $assingnationInvest["city"]["name"] == $cityNameUser;
+            
+        }else if($territoryExist) {
+
+            return $territoryNameUser == $assingnationInvest["territory"]["name"];
+
+        }
+
+        return false;
+        
     }
 
 

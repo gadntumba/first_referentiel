@@ -20,7 +20,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ProductorPreloadRepository extends ServiceEntityRepository
 {
-    const PAGINATOR_PER_PAGE = 15;
+    const PAGINATOR_PER_PAGE = 100;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -172,6 +172,13 @@ class ProductorPreloadRepository extends ServiceEntityRepository
             $queryBuilder->setParameter('cities', $filterPreloadDto->getCities());
         }
 
+        if ($filterPreloadDto->getIsNotAss()) {
+        //if (true) {
+            $queryBuilder->andWhere('p.affectAt is null');            
+        }
+
+
+        //setIsNotAss
         $criteria = Criteria::create()
             ->setFirstResult($firstResult)
             ->setMaxResults(self::PAGINATOR_PER_PAGE);

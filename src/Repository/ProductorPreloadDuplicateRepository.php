@@ -21,7 +21,7 @@ use ApiPlatform\Doctrine\Orm\Paginator as ApiPlatformPaginator;
  */
 class ProductorPreloadDuplicateRepository extends ServiceEntityRepository
 {
-    const PAGINATOR_PER_PAGE=30;
+    const PAGINATOR_PER_PAGE=1;
 
     public function __construct(ManagerRegistry $registry)
     {
