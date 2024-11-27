@@ -163,9 +163,6 @@ class ProductorController extends AbstractController
                 throw new HttpException(422, "preload not found");                
             }
 
-            if ( !is_null($preload->getProductor())) {
-                throw new HttpException(422, "preload already record");                
-            }
             
             //return new JsonResponse($requestData);
 
@@ -229,6 +226,9 @@ class ProductorController extends AbstractController
             if (is_null($productor)) 
             {
                 //dd("ok");
+                if ( !is_null($preload->getProductor())) {
+                    throw new HttpException(422, "preload already record");                
+                }
                 $productor = new Productor();  
 
             }elseif($productor->getInvestigatorId() !=  $user->getNormalUsername()) {
