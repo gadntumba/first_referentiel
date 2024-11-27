@@ -409,7 +409,10 @@ class Productor
      */
     #[ORM\OneToMany(mappedBy: 'productor', targetEntity: ProductorPreload::class)]
     private Collection $productorPreloads;
-
+    /**
+     * 
+     * @Groups({"read:productor:level_0"})
+     */
     #[ORM\Column(nullable:true)]
     private ?array $iec = [];
     
