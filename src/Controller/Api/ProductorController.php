@@ -307,11 +307,12 @@ class ProductorController extends AbstractController
             #throw new HttpException(400, json_encode(["phone" => $phoneNumber, "message" => $productor->getPhoneNumber()]));
 
             if (count($errors) > 0) {
+                throw new \Exception(json_encode(Util::tranformErrorsData($errors)));
                 
-                return new JsonResponse(
+                /*return new JsonResponse(
                     Util::tranformErrorsData($errors),
                     422
-                );
+                );*/
             }
 
 
@@ -326,10 +327,8 @@ class ProductorController extends AbstractController
                     $productor->setIec(json_decode($requestData["iec"], true));
                     
                 } catch (\Throwable $th) {
-                    return new JsonResponse(
-                        "iec n'est pas un bon json",
-                        422
-                    );
+                    throw new \Exception("iec n'est pas un bon json");
+                    
                 }
                 //throw new HttpException(422, "preload can't be null");
             }
