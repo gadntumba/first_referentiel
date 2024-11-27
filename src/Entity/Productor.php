@@ -411,7 +411,7 @@ class Productor
     private Collection $productorPreloads;
 
     #[ORM\Column(nullable:true)]
-    private array $iec = [];
+    private ?array $iec = [];
     
 
     public function __construct()
@@ -1221,12 +1221,13 @@ class Productor
 
     public function getIec(): array
     {
-        return $this->iec;
+        $iec = $this->iec;
+        return is_null($iec) ? [] : $iec;
     }
 
-    public function setIec(array $iec): static
+    public function setIec(?array $iec): static
     {
-        $this->iec = $iec;
+        $this->iec = is_null($iec) ? [] : $iec;
 
         return $this;
     }
