@@ -37,14 +37,16 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *          }
  *      }
  * )
+ */
+class HouseKeeping
+{
+
+/*
  * @UniqueEntity(
  *     fields= "NIM",
  *     errorPath="NIM",
  *     message="Ce NIM existe déjà"
- * )
- */
-class HouseKeeping
-{
+ * ) */
 
     use TimestampTrait;
     

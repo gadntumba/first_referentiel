@@ -226,9 +226,9 @@ class ProductorController extends AbstractController
             if (is_null($productor)) 
             {
                 //dd("ok");
-                if ( !is_null($preload->getProductor())) {
+                /*if ( !is_null($preload->getProductor())) {
                     throw new HttpException(422, "preload already record");                
-                }
+                }*/
                 $productor = new Productor();  
 
             }elseif($productor->getInvestigatorId() !=  $user->getNormalUsername()) {

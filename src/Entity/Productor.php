@@ -26,14 +26,17 @@ use Mink67\MultiPartDeserialize\Services\NormaliserFile\LiipImagineNormalizerFil
  *     errorPath="phoneNumber",
  *     message="Ce numéro de téléphone existe déjà"
  * )
+ */
+class Productor
+{
+/*
+
  * @UniqueEntity(
  *     fields= "nui",
  *     errorPath="nui",
  *     message="Ce NUI existe déjà"
  * )
- */
-class Productor
-{
+*/
     use TimestampTrait;
     const GENRES = ['M', 'F'];
     const ACTIVITY_SECTOR_AGROFORESTRY = "sectorAgroForestry";
