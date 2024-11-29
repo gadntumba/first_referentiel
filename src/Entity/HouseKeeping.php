@@ -64,11 +64,13 @@ class HouseKeeping
     /**
      * 
      * @Groups({"read:productor:house_keeping","read:housecollection"})
-     * @Assert\NotNull
-     * @Assert\Type("string")
+     * 
      */
     #[ORM\Column(type:"string", length:255)]
     private $NIM;
+    /*
+    @Assert\NotNull
+     * @Assert\Type("string") */
 
     /**
      * 

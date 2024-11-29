@@ -158,6 +158,10 @@ class Productor
     /**
      * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
      * 
+     */
+    #[ORM\Column(type:"string", length:255)]
+    private $nui;
+    /*
      * @Assert\Length(
      *  min = 9,
      *  max = 9 
@@ -167,9 +171,6 @@ class Productor
      *      message="Votre NUI ne peut pas contenir des lettres"
      * )
      */
-    #[ORM\Column(type:"string", length:255)]
-    private $nui;
-
     /**
      * 
      * @Groups({"read:productor:personnal_id_data","write:Productor","read:collection"})
