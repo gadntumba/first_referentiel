@@ -79,16 +79,18 @@ class Productor {
      * @Assert\File(
      *  maxSize="10M"
      * )
+     * @Assert\NotNull
      */
-    //* @Assert\NotNull
+    //* 
     private $photoPieceOfIdentification;
 
     /**
      * @Assert\File(
      *  maxSize="10M"
      * )
+     * @Assert\NotNull
      */
-    //* @Assert\NotNull
+    //* 
     private $incumbentPhoto;
 
 

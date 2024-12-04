@@ -226,9 +226,9 @@ class ProductorController extends AbstractController
             if (is_null($productor)) 
             {
                 //dd("ok");
-                /*if ( !is_null($preload->getProductor())) {
+                if ( !is_null($preload->getProductor())) {
                     throw new HttpException(422, "preload already record");                
-                }*/
+                }
                 $productor = new Productor();  
 
             }elseif($productor->getInvestigatorId() !=  $user->getNormalUsername()) {
@@ -2655,6 +2655,197 @@ class ProductorController extends AbstractController
     //private
     function getParam(array $arr, string $key, $default=null) {
         return isset($arr[$key])?$arr[$key]: $default;
+    }
+
+    private function isBlankOrNull($value) : bool 
+    {
+        return is_null($value) ||
+        trim($value) == "";
+    }
+
+
+    private function lastValidation(array $itemArr) : void {
+
+        if (!isset($itemArr['activityData']["entrepreneurialActivities"][0]["otherData"])) {
+            throw new \Exception("data not validate");
+        }
+
+        $otherData = $itemArr['activityData']["entrepreneurialActivities"][0]["otherData"];
+                
+        #$otherData["desc"] = isset($freeFieldData["activities"][0])? $freeFieldData["activities"][0] :null;
+
+        if (
+            $this->isBlankOrNull($otherData["desc"])
+        ) 
+        {
+            throw new \Exception("`description activity` can't not null or blank");
+        }
+        
+        $otherData["sectorAgroForestry"] = isset($freeFieldData["activities"][5])? $freeFieldData["activities"][5] : null;
+        $otherData["sectorIndustry"] = isset($freeFieldData["activities"][6])? $freeFieldData["activities"][6] : null;
+        $otherData["sectorServices"] = isset($freeFieldData["activities"][7])? $freeFieldData["activities"][7] : null;
+        $otherData["sectorGreeEconomy"] = isset($freeFieldData["activities"][8])? $freeFieldData["activities"][8] : null;
+        $otherData["otherActivitySector"] = isset($freeFieldData["activities"][9])? $freeFieldData["activities"][9] : null;
+
+        $sectorsActivities = [];
+
+        if ($otherData["sectorAgroForestry"] == '1') 
+        {
+            array_push($sectorsActivities, "Agro transformation,");
+        }
+        if ($otherData["sectorIndustry"] == '1') 
+        {
+            array_push($sectorsActivities, "Industrie legère,");
+        }
+        if ($otherData["sectorGreeEconomy"] == '1') 
+        {
+            array_push($sectorsActivities, "sectorGreeEconomy,");
+        }
+        if ($otherData["sectorServices"] == '1') 
+        {
+            array_push($sectorsActivities, "sectorServices,");
+        }
+
+        if (!$this->isBlankOrNull($otherData["otherActivitySector"])) 
+        {
+            array_push($sectorsActivities, "otherActivitySector");
+        }
+
+
+        if(count($sectorsActivities) != 1) 
+        {
+            throw new \Exception("vous devez choisir un et un seule secteur activité");
+        }
+
+
+        $typeActivities = [];
+
+        if (!$this->isBlankOrNull($otherData["transformFruitAndVegetableActivity"])) 
+        {
+            array_push($typeActivities, "transformFruitAndVegetableActivity");
+        }
+        if (!$this->isBlankOrNull($otherData["juiceMakerActivity"])) 
+        {
+            array_push($typeActivities, "juiceMakerActivity");
+        }
+        if (!$this->isBlankOrNull($otherData["condimengActivity"])) 
+        {
+            array_push($typeActivities, "condimengActivity");
+        }
+        if (!$this->isBlankOrNull($otherData["FumageSalaisonSechageActity"])) 
+        {
+            array_push($typeActivities, "FumageSalaisonSechageActity");
+        }
+        if (!$this->isBlankOrNull($otherData["otherActity"])) 
+        {
+            array_push($typeActivities, "otherActity");
+        }
+
+
+        if(count($typeActivities) != 1) 
+        {
+            throw new \Exception("vous devez choisir un et un seule type activité");
+        }
+
+        if (!$this->isBlankOrNull($otherData["affiliationStructure"])) 
+        {
+            throw new \Exception("vous devez renseigner la strucuture d'affiliation de la femme");
+        }
+        $turneOverAmount = (float) $otherData["turneOverAmount"];
+
+        if (
+            $turneOverAmount > 100000 &&
+            200 > $turneOverAmount 
+        ) {
+            throw new \Exception("chiffre d'affaire trop grand ou trop petit");
+            
+        }
+
+        $staffCount = (int) $otherData["journalierStaff"] + (int) $otherData["pernanentStaff"] + (int) $otherData["familyStaff"];
+
+        if (
+            $staffCount > 30 
+        ) {
+            throw new \Exception("Nombre des staffs exageré");
+            
+        }
+
+        $otherData["concourFinancing"] = isset($freeFieldData["taxes"][18])? $freeFieldData["taxes"][18] : null;
+        $otherData["padepmeFinancing"] = isset($freeFieldData["taxes"][19])? $freeFieldData["taxes"][19] : null;
+        $otherData["otherFinancing"] = isset($freeFieldData["taxes"][20])? $freeFieldData["taxes"][20] : null;
+
+        $otherData["haveCredit"] = isset($freeFieldData["taxes"][21])? $freeFieldData["taxes"][21] : null;
+        $otherData["institutCredit"] = isset($freeFieldData["taxes"][22])? $freeFieldData["taxes"][22] : null;
+        $otherData["amountCredit"] = isset($freeFieldData["taxes"][23])? $freeFieldData["taxes"][23] : null;
+
+        $otherData["noDificuty"] = isset($freeFieldData["taxes"][24])? $freeFieldData["taxes"][24] : null;
+        $otherData["trainningDificuty"] = isset($freeFieldData["taxes"][25])? $freeFieldData["taxes"][25] : null;
+        $otherData["financingDificuty"] = isset($freeFieldData["taxes"][26])? $freeFieldData["taxes"][26] : null;
+        $otherData["tracaserieDificuty"] = isset($freeFieldData["taxes"][27])? $freeFieldData["taxes"][27] : null;
+        $otherData["marketAccessDificuty"] = isset($freeFieldData["taxes"][28])? $freeFieldData["taxes"][28] : null;
+        $otherData["productionDificuty"] = isset($freeFieldData["taxes"][29])? $freeFieldData["taxes"][29] : null;
+        $otherData["otherDificuty"] = isset($freeFieldData["taxes"][30])? $freeFieldData["taxes"][30] : null;
+
+        if (
+            $this->isBlankOrNull($otherData["noDificuty"]) &&
+            $this->isBlankOrNull($otherData["trainningDificuty"]) &&
+            $this->isBlankOrNull($otherData["financingDificuty"]) &&
+            $this->isBlankOrNull($otherData["tracaserieDificuty"]) &&
+            $this->isBlankOrNull($otherData["marketAccessDificuty"]) &&
+            $this->isBlankOrNull($otherData["productionDificuty"]) &&
+            $this->isBlankOrNull($otherData["otherDificuty"])
+        ) 
+        {
+            throw new \Exception("Vous devez au moins renseigner une difficulté");
+        }
+
+        if (
+            $this->isBlankOrNull($otherData["indidualCustomer"]) &&
+            $this->isBlankOrNull($otherData["supermarketCustomer"]) &&
+            $this->isBlankOrNull($otherData["businessCustomer"]) &&
+            $this->isBlankOrNull($otherData["onLineCustomer"]) &&
+            $this->isBlankOrNull($otherData["dealerCustomer"]) &&
+            $this->isBlankOrNull($otherData["otherCustomer"])
+        ) 
+        {
+            throw new \Exception("Vous devez au moins un categorie de client de la femme");
+        }
+
+        $otherData["indidualCustomer"] = isset($freeFieldData["activities"][35])? $freeFieldData["activities"][35] : null;
+        $otherData["supermarketCustomer"] = isset($freeFieldData["activities"][36])? $freeFieldData["activities"][36] : null;
+        $otherData["businessCustomer"] = isset($freeFieldData["activities"][37])? $freeFieldData["activities"][37] : null;
+        $otherData["onLineCustomer"] = isset($freeFieldData["activities"][38])? $freeFieldData["activities"][38] : null;
+        $otherData["dealerCustomer"] = isset($freeFieldData["activities"][39])? $freeFieldData["activities"][39] : null;
+        $otherData["otherCustomer"] = isset($freeFieldData["activities"][40])? $freeFieldData["activities"][40] : null;
+
+        if (
+            $this->isBlankOrNull($otherData["visionManyBranches"]) &&
+            $this->isBlankOrNull($otherData["visionDiversifyClient"]) &&
+            $this->isBlankOrNull($otherData["visionUsePackaging"]) &&
+            $this->isBlankOrNull($otherData["visionInprouveTurneOver"]) &&
+            $this->isBlankOrNull($otherData["visionMakeFactory"]) &&
+            $this->isBlankOrNull($otherData["visionOther"])
+        ) 
+        {
+            throw new \Exception("Vous devez au moins renseigner une vision");
+        }
+
+        $phoneNumberContact = ProductorProductor::normalPhone($otherData["otherContectPhoneNumber"]);
+
+        if (
+            preg_match("/^\d+$/", $phoneNumberContact) === false ||
+            strlen($phoneNumberContact) != 9
+        ) {
+            throw new \Exception("Numero téléphone pour la personne à contacté invalide");            
+        }
+
+        if (
+            $this->isBlankOrNull($otherData["instigatorOpinion"])
+        ) 
+        {
+            throw new \Exception("Vous devez donner votre opinion");
+        }
+
     }
     //end private
 
