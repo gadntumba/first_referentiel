@@ -46,78 +46,86 @@ class AddPossibleDuplicateCommand extends Command
         $io = new SymfonyStyle($input, $output);
         //findWithoutE2Relation
         dump("#Begin");
+        $count = $this->productorPreloadRepository->count([]);
+        do {
+            $entities = $this->productorPreloadRepository->findWithoutE2Relation();
+            $allNbr = count($entities);
+            # code...
+            #dd($entities);
+            dump("load data to database");
+            #matching_name_host
+            $hostname = $this->container->getParameter("matching_name_host");
+            $url = $hostname . "/" . "/get_duplicates";
+
+            foreach ($entities as $i => $entity) {
+                dump("load data to database : " . $entity->getId() . " sur " . $count);
+                $resp = $this->httpClient->request(
+                    "POST", 
+                    $url,
+                    [
+                        "json" => ["id"=> $entity->getId()]
+                    ]
+                );
+                $data = $resp->toArray();
+                #dd($data);
+                $key = "correspondances";
+                $correspondances = $data[$key];
+                $duplicates = [];
+                foreach ($correspondances as $k => $correspondance) {
+                    if ($correspondance["id"] != $entity->getId()) {
+                        #$duplicate = $correspondance;
+                        array_push($duplicates, $correspondance);
+                    }
+                }
+                
+                for ($l=0; $l < 2; $l++) { 
+                    
+                    $duplicate = $duplicates[$l];
+                    $entitySec = $this->productorPreloadRepository->find($duplicate["id"]);
+        
+                    $possibities = $this->productorPreloadDuplicateRepository->findDuplicatePossible($entity, $entitySec);
+
+                    if (2 > count($possibities)) {
+                        $duplicateEntity = new ProductorPreloadDuplicate();
+                        $duplicateEntity->setMain($entity);
+                        $duplicateEntity->setSecondary($entitySec);
+                        
+                        $duplicateEntity->setSimilarity((float) $duplicate["score"]);
+                        //score
+                        if (70 > $duplicateEntity->getSimilarity()) {
+                            $duplicateEntity->setSetNotDuplicateAt(new \DateTime());
+                            #$user = $userRepository->findOneBy(["phoneNumber" => $this->getUser()->getNormalUsername()]);
+                            #dd($this->getUser()->getNormalUsername());
+        
+                            $duplicateEntity->setUserConfirmIdentifier("0824019836");
+                            # code...
+                        }
+        
+                        $this->em->persist($duplicateEntity);
+                        $this->em->flush(); 
+                        #break;               
+                    }else{
+                        #dump($possibities);
+                        #break;
+                        
+                    }
+                    
+                }
+                #$possibities = $this->productorPreloadDuplicateRepository->findAll();
+                
+                #dd($possibities);
+
+                //dd($i);
+                $io->success('Evolution : ' . (string) ((($i+1)/$allNbr)*100)." %");
+
+            }
+
+        } while ($allNbr != 0);
+        
         $entities = $this->productorPreloadRepository->findWithoutE2Relation();
         #$entities = $this->productorPreloadRepository->findAll();
         $allNbr = count($entities);
 
-        #dd($entities);
-        dump("load data to database");
-        #matching_name_host
-        $hostname = $this->container->getParameter("matching_name_host");
-        $url = $hostname . "/" . "/get_duplicates";
-
-        foreach ($entities as $i => $entity) {
-            dump("load data to database : " . $entity->getId());
-            $resp = $this->httpClient->request(
-                "POST", 
-                $url,
-                [
-                    "json" => ["id"=> $entity->getId()]
-                ]
-            );
-            $data = $resp->toArray();
-            #dd($data);
-            $key = "correspondances";
-            $correspondances = $data[$key];
-            $duplicates = [];
-            foreach ($correspondances as $k => $correspondance) {
-                if ($correspondance["id"] != $entity->getId()) {
-                    #$duplicate = $correspondance;
-                    array_push($duplicates, $correspondance);
-                }
-            }
-            
-            for ($l=0; $l < 2; $l++) { 
-                
-                $duplicate = $duplicates[$l];
-                $entitySec = $this->productorPreloadRepository->find($duplicate["id"]);
-    
-                $possibities = $this->productorPreloadDuplicateRepository->findDuplicatePossible($entity, $entitySec);
-
-                if (2 > count($possibities)) {
-                    $duplicateEntity = new ProductorPreloadDuplicate();
-                    $duplicateEntity->setMain($entity);
-                    $duplicateEntity->setSecondary($entitySec);
-                    
-                    $duplicateEntity->setSimilarity((float) $duplicate["score"]);
-                    //score
-                    if (70 > $duplicateEntity->getSimilarity()) {
-                        $duplicateEntity->setSetNotDuplicateAt(new \DateTime());
-                        #$user = $userRepository->findOneBy(["phoneNumber" => $this->getUser()->getNormalUsername()]);
-                        #dd($this->getUser()->getNormalUsername());
-    
-                        $duplicateEntity->setUserConfirmIdentifier("0824019836");
-                        # code...
-                    }
-    
-                    $this->em->persist($duplicateEntity);
-                    $this->em->flush(); 
-                    #break;               
-                }else{
-                    #dump($possibities);
-                    #break;
-                    
-                }
-                
-            }
-            #$possibities = $this->productorPreloadDuplicateRepository->findAll();
-            
-            #dd($possibities);
-
-            //dd($i);
-            $io->success('Evolution : ' . (string) ((($i+1)/$allNbr)*100)." %");
-
-        }
 
         /*$arg1 = $input->getArgument('arg1');
 
