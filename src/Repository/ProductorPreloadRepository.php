@@ -214,6 +214,7 @@ class ProductorPreloadRepository extends ServiceEntityRepository
             ->leftJoin('App\Entity\ProductorPreloadDuplicate', 'e2', 'WITH', 'e2.main = e1 OR e2.secondary = e1') // Left Join avec E2
             //->leftJoin('App\Entity\ProductorPreloadDuplicate', 'e2', 'WITH', 'e2.main = e1 OR e2.secondary = e1') // Left Join avec E2
             ->where('e2.id IS NULL')  // Condition pour récupérer les E1 sans relation avec E2
+            ->setMaxResults(5000)
             ->getQuery()
             ->getResult();
     }

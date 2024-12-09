@@ -32,6 +32,11 @@ parameters:
     #matching name
     matching_name_host: "%env(MATCHING_NAME_HOST)%"
 
+    #Project
+    agrodata_project_name: "%env(AGRODATA_PROJECT_NAME)%"
+    agrodata_project_all_project_name: "%env(AGRODATA_ALL_PROJECT_NAME)%"
+    agrodata_project_project_name_all: "%env(AGRODATA_PROJECT_NAME_ALL)%"
+
 
 services:
     # default configuration for services in *this* file

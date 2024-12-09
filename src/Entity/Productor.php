@@ -419,6 +419,9 @@ class Productor
      */
     #[ORM\Column(nullable:true)]
     private ?array $iec = [];
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $projectName = null;
     
 
     public function __construct()
@@ -1235,6 +1238,18 @@ class Productor
     public function setIec(?array $iec): static
     {
         $this->iec = is_null($iec) ? [] : $iec;
+
+        return $this;
+    }
+
+    public function getProjectName(): ?string
+    {
+        return $this->projectName;
+    }
+
+    public function setProjectName(?string $projectName): static
+    {
+        $this->projectName = $projectName;
 
         return $this;
     }

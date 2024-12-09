@@ -50,11 +50,13 @@ class AddPossibleDuplicateCommand extends Command
         $allNbr = count($entities);
 
         #dd($entities);
+        dump("load data to database");
         #matching_name_host
         $hostname = $this->container->getParameter("matching_name_host");
         $url = $hostname . "/" . "/get_duplicates";
 
         foreach ($entities as $i => $entity) {
+            dump("load data to database : " . $entity->getId());
             $resp = $this->httpClient->request(
                 "POST", 
                 $url,

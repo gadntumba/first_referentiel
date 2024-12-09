@@ -338,10 +338,16 @@ class ProductorController extends AbstractController
             //dump($productor);
 
             $preload->setProductor($productor);
+            $projectName = $this->getParameter("agrodata_project_name");
+            $productor->setProjectName($projectName);
 
             $em->flush();
             //dd($user->getId());
             $itemArr = $this->transform($productor);
+            /**
+             * dernier validation
+             */
+            $this->lastValidation($itemArr);
 
             $em->getConnection()->commit();
             //dd();
@@ -407,6 +413,9 @@ class ProductorController extends AbstractController
             return new JsonResponse( ["message" => "productor alrady exists"], 400);
             
         }
+
+        $projectName = $this->getParameter("agrodata_project_name");
+        $entity->setProjectName($projectName);
 
         $em->persist($entity);
         $em->flush();

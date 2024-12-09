@@ -169,6 +169,9 @@ class ProductorPreload
     #[ORM\ManyToOne(inversedBy: 'productorPreloads')]
     private ?Productor $productor = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $projectName = null;
+
     public function __construct()
     {
         $this->produtorDuplicateMain = new ArrayCollection();
@@ -622,6 +625,18 @@ class ProductorPreload
     public function setProductor(?Productor $productor): static
     {
         $this->productor = $productor;
+
+        return $this;
+    }
+
+    public function getProjectName(): ?string
+    {
+        return $this->projectName;
+    }
+
+    public function setProjectName(string $projectName): static
+    {
+        $this->projectName = $projectName;
 
         return $this;
     }
