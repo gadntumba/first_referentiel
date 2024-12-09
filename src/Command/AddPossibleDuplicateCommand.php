@@ -45,6 +45,7 @@ class AddPossibleDuplicateCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         //findWithoutE2Relation
+        dump("#Begin");
         $entities = $this->productorPreloadRepository->findWithoutE2Relation();
         #$entities = $this->productorPreloadRepository->findAll();
         $allNbr = count($entities);
