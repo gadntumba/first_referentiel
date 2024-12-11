@@ -20,7 +20,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ProductorPreloadRepository extends ServiceEntityRepository
 {
-    const PAGINATOR_PER_PAGE = 100;
+    const PAGINATOR_PER_PAGE = 1000;
 
     public function __construct(ManagerRegistry $registry)
     {
