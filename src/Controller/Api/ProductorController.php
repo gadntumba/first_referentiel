@@ -2674,6 +2674,7 @@ class ProductorController extends AbstractController
 
 
     private function lastValidation(array $itemArr) : void {
+        return ;
 
         if (!isset($itemArr['activityData']["entrepreneurialActivities"][0]["otherData"])) {
             throw new \Exception("data not validate");
