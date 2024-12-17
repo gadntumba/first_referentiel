@@ -2723,7 +2723,7 @@ class ProductorController extends AbstractController
 
         if(count($sectorsActivities) != 1) 
         {
-            throw new \Exception("vous devez choisir un et un seule secteur activité");
+           // throw new \Exception("vous devez choisir un et un seule secteur activité");
         }
 
 
@@ -2753,7 +2753,7 @@ class ProductorController extends AbstractController
 
         if(count($typeActivities) != 1) 
         {
-            throw new \Exception("vous devez choisir un et un seule type activité");
+            //throw new \Exception("vous devez choisir un et un seule type activité");
         }
 
         if (!$this->isBlankOrNull($otherData["affiliationStructure"])) 
