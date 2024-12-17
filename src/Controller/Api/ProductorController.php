@@ -2758,7 +2758,7 @@ class ProductorController extends AbstractController
 
         if (!$this->isBlankOrNull($otherData["affiliationStructure"])) 
         {
-            throw new \Exception("vous devez renseigner la strucuture d'affiliation de la femme");
+            #throw new \Exception("vous devez renseigner la strucuture d'affiliation de la femme");
         }
         $turneOverAmount = (float) $otherData["turneOverAmount"];
 
