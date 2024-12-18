@@ -227,7 +227,7 @@ class ProductorPreloadRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->andWhere('p.agentAffect = :phoneNumber and p.productor is null')
             ->setParameter('phoneNumber', $phoneNumber)
-            ->orderBy('p.id', 'ASC')
+            ->orderBy('p.name', 'ASC')
             //->setMaxResults(10)
             ->getQuery()
             ->getResult()
