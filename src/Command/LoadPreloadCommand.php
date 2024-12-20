@@ -50,16 +50,20 @@ class LoadPreloadCommand extends Command
             foreach ($data as $key => $item) 
             {
                 $itemArray = [
-                    '\"'.strtoupper(substr($item->getCityEntity()?->getName(), 0, 3))."-". $item->getId().'\"',
-                    '\"'.$item->getName().'\"',
-                    '\"'.$item->getLastname().'\"',
-                    '\"'.$item->getFileName().'\"',
-                    '\"'.$item->getStructure().'\"',
-                    '\"'.$item->getSector().'\"',
-                    '\"'.$item->getCityEntity()?->getName().'\"',
-                    '\"'.$item->getQuarter().'\"',
-                    '\"'.$item->getAddress().'\"',
+                    strtoupper(substr($item->getCityEntity()?->getName(), 0, 3))."-". $item->getId(),
+                    $item->getName(),
+                    $item->getLastname(),
+                    $item->getFileName(),
+                    $item->getStructure(),
+                    $item->getSector(),
+                    $item->getCityEntity()?->getName(),
+                    $item->getQuarter(),
+                    $item->getAddress(),
                 ];
+
+                foreach ($itemArray as $k => $val) {
+                    $itemArray[$k] = "\"".str_replace("\"","`",$val)."\"";
+                }
                 array_push($data_arr, implode(";", $itemArray));
             }
             
