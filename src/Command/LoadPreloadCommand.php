@@ -50,7 +50,7 @@ class LoadPreloadCommand extends Command
             foreach ($data as $key => $item) 
             {
                 $itemArray = [
-                    '\"'.$item->getId().'\"',
+                    '\"'.strtoupper(substr($item->getCityEntity()?->getName(), 0, 3))."-". $item->getId().'\"',
                     '\"'.$item->getName().'\"',
                     '\"'.$item->getLastname().'\"',
                     '\"'.$item->getFileName().'\"',
