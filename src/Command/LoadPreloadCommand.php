@@ -53,10 +53,11 @@ class LoadPreloadCommand extends Command
                     strtoupper(substr($item->getCityEntity()?->getName(), 0, 3))."-". $item->getId(),
                     $item->getName(),
                     $item->getLastname(),
-                    $item->getFileName(),
+                    $item->getFirstname(),
                     $item->getStructure(),
                     $item->getSector(),
                     $item->getCityEntity()?->getName(),
+                    $item->getTown(),
                     $item->getQuarter(),
                     $item->getAddress(),
                 ];
