@@ -60,7 +60,7 @@ class LoadPreloadCommand extends Command
                     '\"'.$item->getQuarter().'\"',
                     '\"'.$item->getAddress().'\"',
                 ];
-                array_push($data_arr, $itemArray);
+                array_push($data_arr, implode(";", $itemArray));
             }
             
             $i++;
@@ -68,7 +68,7 @@ class LoadPreloadCommand extends Command
         } while (count($data));
 
         $data_str = implode("\n", $data_arr);
-        
+
         file_put_contents($projectDir."/download_preload_all.csv", $data_str);
 
 
