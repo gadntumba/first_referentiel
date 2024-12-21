@@ -56,6 +56,7 @@ class DataMakerResumCommand extends Command
         $allData = [];
 
         $header = [
+            "ID",
             "nom",
             "post-nom",
             "pre-nom",
@@ -283,6 +284,7 @@ class DataMakerResumCommand extends Command
             //$linksDoc["imgs"];
 
             $row = [
+                strtoupper(substr($preload?->getName()?->getName(), 0, 3))."-". $preload?->getId(),
                 $item["personnalIdentityData"]["name"],
                 $item["personnalIdentityData"]["lastName"],
                 $item["personnalIdentityData"]["firstName"],
