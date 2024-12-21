@@ -37,7 +37,7 @@ class LoadPreloadCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $data_arr =[ '"ID";"Nom";"PostNom"; "PréNom";"Structure";"Secteur";"Ville";"Commune Activité";"Quartier Activité";"Adresse Activité"'];
+        $data_arr =[ '"ID";"Nom";"PostNom"; "PréNom";"Structure";"Secteur";"Ville";"Commune Activité";"Quartier Activité";"Adresse Activité";"Date Signale Enregistrement";"Rapport";"commentaire";"Enregistré";'];
         $projectDir = $this->container->getParameter('kernel.project_dir');
         
         $count_shunk = 1000;
@@ -60,6 +60,10 @@ class LoadPreloadCommand extends Command
                     $item->getTown(),
                     $item->getQuarter(),
                     $item->getAddress(),
+                    $item->getContactAt(),
+                    $item->getContactRepport(),
+                    $item->getContanctComment(),
+                   is_null($item->getProductor())?"OUI":"NON",
                 ];
 
                 foreach ($itemArray as $k => $val) {
