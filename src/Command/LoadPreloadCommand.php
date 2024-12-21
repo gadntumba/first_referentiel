@@ -60,7 +60,7 @@ class LoadPreloadCommand extends Command
                     $item->getTown(),
                     $item->getQuarter(),
                     $item->getAddress(),
-                    $item->getContactAt(),
+                    is_null($item->getContactAt())? null : $item->getContactAt()->format(\DateTimeInterface::RFC3339_EXTENDED),
                     $item->getContactRepport(),
                     $item->getContanctComment(),
                    is_null($item->getProductor())?"OUI":"NON",
