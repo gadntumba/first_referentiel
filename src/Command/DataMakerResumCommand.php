@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Productor;
+use App\Entity\ProductorPreload;
 use App\Repository\ProductorRepository;
 use phpDocumentor\Reflection\PseudoTypes\True_;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -49,7 +50,8 @@ class DataMakerResumCommand extends Command
         //$arg1 = $input->getArgument('arg1');
         $projectDir = $this->container->getParameter('kernel.project_dir');
         
-        $data = $this->productorRepository->findBy(["isNormal" => true, "isActive" => true], ["created_at_bus"=>"DESC"]);
+        #$data = $this->productorRepository->findBy(["isNormal" => true, "isActive" => true], ["created_at_bus"=>"DESC"]);
+        $data = $this->productorRepository->findBy([], ["created_at"=>"DESC"]);
 
         $allData = [];
 
@@ -57,6 +59,7 @@ class DataMakerResumCommand extends Command
             "nom",
             "post-nom",
             "pre-nom",
+            "Nom UCP",
             "sexe",
             "téléphone",
             "date naissance",
@@ -84,6 +87,7 @@ class DataMakerResumCommand extends Command
             "Liens photo document",
             "Date de creation",
             "description",
+            "type activité",
             "secteur",
             "Etat civile",
             "type carte",
@@ -143,6 +147,7 @@ class DataMakerResumCommand extends Command
             //
         ];
 
+
         array_push($allData, implode(";", $header));
         $countAll = count($data);
 
@@ -155,6 +160,12 @@ class DataMakerResumCommand extends Command
 
         foreach ($data as $key => $productor) 
         {
+            
+            /**
+             * @var ProductorPreload
+             */
+            $preload = $productor->getProductorPreloads()->first();
+
             $item = $this->transform($productor);
             $docs = $item["documents"]["entrepreneurialActivities"][0]["documents"];
             //dd($item);
@@ -274,6 +285,7 @@ class DataMakerResumCommand extends Command
                 $item["personnalIdentityData"]["name"],
                 $item["personnalIdentityData"]["lastName"],
                 $item["personnalIdentityData"]["firstName"],
+                $preload?->getName() . " " . $preload?->getLastname() . " " . $preload?->getFirstname(),
                 $item["personnalIdentityData"]["sexe"],
                 $item["personnalIdentityData"]["phoneNumber"],
                 $item["personnalIdentityData"]["birthdate"],
@@ -302,7 +314,8 @@ class DataMakerResumCommand extends Command
 
                 $item["otherData"]["creationYear"],
                 $activityDesc,
-                $this->convertSector($activitySector),
+                //preload
+                $preload?->getSector() == null? $this->convertSector($activitySector) : $preload?->getSector(),
                 $item["otherData"]["stateMarital"],
                 $item["pieceOfIdentificationData"]["typePieceOfIdentification"]["libelle"],
                 $item["pieceOfIdentificationData"]["numberPieceOfIdentification"],
