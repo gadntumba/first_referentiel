@@ -228,7 +228,7 @@ class ProductorPreloadRepository extends ServiceEntityRepository
             ->andWhere('p.agentAffect = :phoneNumber and p.productor is null')
             ->setParameter('phoneNumber', $phoneNumber)
             ->orderBy('p.structure', 'ASC')
-            ->addOrderBy('p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.name', 'ASC')
+            ->addOrderBy('p.name', 'ASC')
             //->setMaxResults(10) 
             ->getQuery()
             ->getResult()
