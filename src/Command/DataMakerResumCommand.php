@@ -103,7 +103,7 @@ class DataMakerResumCommand extends Command
             "Transformation des fruit et Legume",
             "Production des jus",
             "Condiments",
-            "Fumage, salaison, séchage",
+            "Fumage - salaison - séchage",
             "Autre Type activité",
             "structure d'affiliation",
             "chiffre d'affaire",
