@@ -88,7 +88,6 @@ class DataMakerResumCommand extends Command
             "Liens photo document",
             "Date de creation",
             "description",
-            "type activité",
             "secteur",
             "Etat civile",
             "type carte",
