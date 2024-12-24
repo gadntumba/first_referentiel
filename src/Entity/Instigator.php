@@ -29,21 +29,21 @@ class Instigator
      */
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     /**
      * 
      * @Groups({"read:productor:level_0"})
      */
     private ?string $firstname = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     /**
      * 
      * @Groups({"read:productor:level_0"})
      */
     private ?string $lastname = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     /**
      * 
      * @Groups({"read:productor:level_0"})
