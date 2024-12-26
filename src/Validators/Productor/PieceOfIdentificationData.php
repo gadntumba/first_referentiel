@@ -9,10 +9,11 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 class PieceOfIdentificationData {
 
     /**
-     * @Assert\NotNull
+     * 
      * @var PieceIdentificationType
      */
     private $pieceIdentificationType; //PieceIdentificationType
+    #@Assert\NotNull
     /**
      * @var string
      * @Assert\NotNull
