@@ -24,6 +24,11 @@ class ManagerGetInstigator
             "name" => "Ambongi",
             "firstname" => "Makita",
             "lastname" => "Bienheureuse",
+        ],
+        "+243818828800" => [
+            "name" => "Kalubi",
+            "firstname" => "Mutombo",
+            "lastname" => "Josué"
         ]
     ];
     public function __construct(
@@ -110,7 +115,7 @@ class ManagerGetInstigator
             $investigator->setName(isset($arrData["name"]) ? $arrData["name"] :null );
             $investigator->setFirstname(isset($arrData["firstname"]) ? $arrData["firstname"] : null);
             $investigator->setLastname(isset($arrData["lastname"]) ? $arrData["lastname"] : null);
-
+            $investigator->setPhoneNumber($productor->getInvestigatorId());
             $this->em->persist($investigator);
             $this->em->flush();
             return $investigator;
