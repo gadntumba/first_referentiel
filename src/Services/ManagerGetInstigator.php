@@ -13,6 +13,19 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ManagerGetInstigator 
 {
+
+    const OTHER_USERS=[
+        "00000810869537" => [
+            "name" => "KOOSO",
+            "firstname" => "BOOTO",
+            "lastname" => "Gilbert",
+        ],
+        "+243817513342" => [
+            "name" => "Ambongi",
+            "firstname" => "Makita",
+            "lastname" => "Bienheureuse",
+        ]
+    ];
     public function __construct(
         private EntityManagerInterface $em,
         private HttpClientInterface $httpClient,
@@ -24,6 +37,8 @@ class ManagerGetInstigator
     {
         
     }
+
+
 
     function getIfNotExist() {
         /**
@@ -87,7 +102,19 @@ class ManagerGetInstigator
 
     function loadInvigotor(Productor $productor, string $prefixId="", Instigator $investigator=null) : ?Instigator 
     {
+        if (isset(self::OTHER_USERS[$investigator])) {
+            
+            $arrData = self::OTHER_USERS[$investigator];
+            $investigator = new Instigator();
+            $investigator->setName(isset($arrData["name"]) ? $arrData["name"] :null );
+            $investigator->setFirstname(isset($arrData["firstname"]) ? $arrData["firstname"] : null);
+            $investigator->setLastname(isset($arrData["lastname"]) ? $arrData["lastname"] : null);
+
+            $this->em->persist($investigator);
+            
+        }
         $investigatorId = $prefixId . $productor->getInvestigatorId();
+        
 
         $host = $this->containerBag->get("agromwinda_host");
         $host = "https://api.agromwinda.com";
