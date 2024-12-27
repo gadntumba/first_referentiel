@@ -103,7 +103,7 @@ class ManagerGetInstigator
     function loadInvigotor(Productor $productor, string $prefixId="", Instigator $investigator=null) : ?Instigator 
     {
         if (isset(self::OTHER_USERS[$investigator])) {
-            
+
             $arrData = self::OTHER_USERS[$investigator];
             $investigator = new Instigator();
             $investigator->setName(isset($arrData["name"]) ? $arrData["name"] :null );
@@ -111,6 +111,8 @@ class ManagerGetInstigator
             $investigator->setLastname(isset($arrData["lastname"]) ? $arrData["lastname"] : null);
 
             $this->em->persist($investigator);
+            $this->em->flush();
+            return $investigator;
             
         }
         $investigatorId = $prefixId . $productor->getInvestigatorId();
