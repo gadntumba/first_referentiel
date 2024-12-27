@@ -102,9 +102,10 @@ class ManagerGetInstigator
 
     function loadInvigotor(Productor $productor, string $prefixId="", Instigator $investigator=null) : ?Instigator 
     {
-        if (isset(self::OTHER_USERS[$investigator])) {
+        $investigatorId = $prefixId . $productor->getInvestigatorId();
+        if (isset(self::OTHER_USERS[$investigatorId])) {
 
-            $arrData = self::OTHER_USERS[$investigator];
+            $arrData = self::OTHER_USERS[$investigatorId];
             $investigator = new Instigator();
             $investigator->setName(isset($arrData["name"]) ? $arrData["name"] :null );
             $investigator->setFirstname(isset($arrData["firstname"]) ? $arrData["firstname"] : null);
@@ -115,7 +116,6 @@ class ManagerGetInstigator
             return $investigator;
             
         }
-        $investigatorId = $prefixId . $productor->getInvestigatorId();
         
 
         $host = $this->containerBag->get("agromwinda_host");
