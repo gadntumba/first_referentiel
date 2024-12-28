@@ -39,7 +39,7 @@ class ReloadCasLitigeCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $projectDir = $this->container->getParameter('kernel.project_dir')."/var/kin_cas_litigie.csv";
+        $projectDir = $this->container->getParameter('kernel.project_dir')."/var/cas_litigie.csv";
 
         $content = file_get_contents($projectDir);
 
