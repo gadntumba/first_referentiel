@@ -319,7 +319,7 @@ class DataMakerResumCommand extends Command
                 //preload
                 $preload?->getSector() == null? $this->convertSector($activitySector) : $preload?->getSector(),
                 $item["otherData"]["stateMarital"],
-                $item["pieceOfIdentificationData"]["typePieceOfIdentification"]["libelle"],
+                isset($item["pieceOfIdentificationData"]["typePieceOfIdentification"]["libelle"])?$item["pieceOfIdentificationData"]["typePieceOfIdentification"]["libelle"]:null,
                 $item["pieceOfIdentificationData"]["numberPieceOfIdentification"],
                 $item["otherData"]["legalStatus"],
                 /*$item["otherData"]["sectorAgroForestry"],
