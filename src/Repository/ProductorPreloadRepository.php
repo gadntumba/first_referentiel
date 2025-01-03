@@ -176,6 +176,8 @@ class ProductorPreloadRepository extends ServiceEntityRepository
         //if (true) {
             $queryBuilder->andWhere('p.affectAt is null');            
         }
+        //
+        $queryBuilder->andWhere('p.contactRepport is null');  
 
 
         //setIsNotAss
