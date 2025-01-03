@@ -111,7 +111,7 @@ class ProductorPreloadRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('p');
         $qb->leftJoin('p.cityEntity', 'c');
         // Sous-requête pour vérifier l'existence de commandes pour chaque utilisateur
-        $subQb1 = $this->_em->createQueryBuilder();
+        /*$subQb1 = $this->_em->createQueryBuilder();
         $subQb1->select('1')
             ->from('App\Entity\ProductorPreloadDuplicate', 'dm')
             ->innerJoin('dm.secondary', 'dms')
@@ -146,7 +146,7 @@ class ProductorPreloadRepository extends ServiceEntityRepository
                 $qb->expr()->not($qb->expr()->exists($subQb2->getDQL())), 
                 $qb->expr()->exists($subQb1->getDQL())
             ));
-        //$qb->andWhere($qb->expr()->not($qb->expr()->exists($subQb2->getDQL())));
+        //$qb->andWhere($qb->expr()->not($qb->expr()->exists($subQb2->getDQL())));*/
 
         $queryBuilder = $qb;//->getQuery()->getResult();
 
