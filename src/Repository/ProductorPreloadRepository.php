@@ -178,7 +178,8 @@ class ProductorPreloadRepository extends ServiceEntityRepository
             $queryBuilder->andWhere('p.affectAt is null');            
         }
         //
-        $queryBuilder->andWhere('p.contactRepport is null');  
+        $queryBuilder->andWhere('p.contactRepport is null')->orderBy('p.name', 'ASC')
+        ->addOrderBy('p.lastname', 'ASC');  
 
 
         //setIsNotAss
