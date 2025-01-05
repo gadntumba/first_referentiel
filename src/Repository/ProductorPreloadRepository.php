@@ -270,7 +270,7 @@ class ProductorPreloadRepository extends ServiceEntityRepository
             $queryBuilder->andWhere('p.affectAt is null');            
         }
         //
-        $queryBuilder->andWhere('p.contactRepport is not null');  
+        $queryBuilder->andWhere('p.contactRepport is not null and p.productor is null');  
 
 
         //setIsNotAss
