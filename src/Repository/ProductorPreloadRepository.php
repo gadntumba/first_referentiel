@@ -286,7 +286,7 @@ class ProductorPreloadRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder->groupBy('p.structure')
-            //->orderBy('p.id', 'ASC')
+            ->orderBy('p.structure', 'ASC')
             //->setMaxResults(10)
             ->getQuery()
             ->getResult()
