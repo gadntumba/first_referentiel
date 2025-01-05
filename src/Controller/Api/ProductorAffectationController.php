@@ -168,6 +168,44 @@ class ProductorAffectationController extends AbstractController
     }
     /**
      * 
+     * @IsGranted("ROLE_ANALYST")
+     * @Route("/api/productors/preload/{id}/contacts/reinit", methods={"POST"}, name="all_productor_preload_contacts_reinit")
+     */
+    public function reinitContactRepport(
+      ProductorPreloadDuplicateRepository $repository,
+      Request $request,
+      ProductorPreload $productorPreload,
+      NormalizerInterface $normalizer
+    ): Response
+    {
+      if (is_null($productorPreload->getContactAt())) {
+        $history = $productorPreload->getContactsHistory()??[];
+        array_push(
+            $history,
+            [
+                "repport" => $productorPreload->getContactRepport(),
+                "comment" => $productorPreload->getContanctComment(),
+                "contactAt" => $productorPreload->getContactAt()
+            ]
+        );
+        $productorPreload->setContactsHistory($history);
+      }
+
+      $productorPreload->setContactRepport(NULL);
+      $productorPreload->setContanctComment(NULL);
+      $productorPreload->setContactAt(new \DateTime());
+      #$productorPreloadDuplicate->setUserConfirm($this->getUser());
+      #$productorPreload->setAdminDoAffect($this->getUser()?->getNormalUsername());
+      $this->em->flush();
+
+      $serializedData = $normalizer->normalize($productorPreload,null, ["groups" => ["productors:affectations:read", "productors:assignable:read"]]);
+
+      //"productors:duplicate:read"
+      return new JsonResponse($serializedData);
+
+    }
+    /**
+     * 
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @Route("/api/productors/preload/quaters", methods={"GET"}, name="all_productor_preload_quarter")
      */
