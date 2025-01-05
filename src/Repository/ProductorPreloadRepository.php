@@ -178,7 +178,7 @@ class ProductorPreloadRepository extends ServiceEntityRepository
             $queryBuilder->andWhere('p.affectAt is null');            
         }
         //
-        $queryBuilder->andWhere('p.contactRepport is null')->orderBy('TRIM(p.name)', 'ASC')
+        $queryBuilder->andWhere('p.contactRepport is null or p.contactRepport=:rdvaccept')->orderBy('TRIM(p.name)', 'ASC')
         ->addOrderBy('TRIM(p.lastname)', 'ASC');  
 
 
@@ -187,6 +187,7 @@ class ProductorPreloadRepository extends ServiceEntityRepository
             ->setFirstResult($firstResult)
             ->setMaxResults(self::PAGINATOR_PER_PAGE);
         $queryBuilder->addCriteria($criteria);
+        $queryBuilder->setParameter("rdvaccept", ProductorPreload::CONTACT_REPPORT_APPOINTMENT_ACCEPTED);
 
         $doctrinePaginator = new Paginator($queryBuilder);
         $paginator = new ApiPlatformPaginator($doctrinePaginator);
