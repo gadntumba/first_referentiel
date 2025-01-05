@@ -7,9 +7,11 @@ use App\Entity\Productor;
 use App\Entity\ProductorBrut;
 use App\Entity\ProductorPreload;
 use App\Entity\ProductorPreloadDuplicate;
+use App\Repository\CityRepository;
 use App\Repository\ProductorPreloadDuplicateRepository;
 use App\Repository\ProductorPreloadRepository;
 use App\Repository\UserRepository;
+use App\Services\ManagerGetInstigator;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -193,9 +195,32 @@ class ProductorAffectationController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @Route("/api/productors/preload/structures", methods={"GET"}, name="all_productor_preload_structures")
      */
-    public function getAllStructures(ProductorPreloadRepository $repository): Response 
+    public function getAllStructures(
+      ProductorPreloadRepository $repository,
+      ManagerGetInstigator $managerGetInstigator,
+      CityRepository $cityRepository
+    ): Response 
     {
-        $data = $repository->findByGroupStructures();
+        $phoneNumber = $this->getUser()->getNormalUsername();
+        $assingnation = $managerGetInstigator->getAssignationInvestigator($phoneNumber);
+        $cityName = isset($assingnation["cityName"])?$assingnation["cityName"]:null;
+
+        if (!$this->isGranted("ROLE_ROOT") && is_null($cityName)) {
+          return new HttpException(403, "Vous n'etes pas affectez à une ville");
+        }
+        #dd();
+        if ($this->isGranted("ROLE_ROOT")) {
+          
+        }else  
+        {
+          $city = $cityRepository->findOneBy(["name" => $cityName]);
+          $cities = (!is_null($city))? [$city->getId()]:[]; 
+          #dump($phoneNumber);
+          #dd($assingnation);
+          
+        }
+
+        $data = $repository->findByGroupStructures($cities);
         //dd($data);
         return new JsonResponse($data);
 

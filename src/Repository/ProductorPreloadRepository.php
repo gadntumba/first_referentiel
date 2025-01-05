@@ -271,13 +271,20 @@ class ProductorPreloadRepository extends ServiceEntityRepository
     /**
      * @return ProductorPreload[] Returns an array of ProductorPreload objects
      */
-    public function findByGroupStructures(): array
+    public function findByGroupStructures(array $cities=[]): array
     {
-        return $this->createQueryBuilder('p')
+        $queryBuilder = $this->createQueryBuilder('p')
             //->andWhere('p.exampleField = :val')
             //->setParameter('val', $value)
             ->select('p.structure, count(p.id) nbr')
-            ->groupBy('p.structure')
+        ;
+        if (count($cities) > 0 ) {
+            //dd($filterPreloadDto->getCities());
+            $queryBuilder->andWhere('c is not null and c.id IN (:cities)');
+            $queryBuilder->setParameter('cities', $cities);
+        }
+
+        return $queryBuilder->groupBy('p.structure')
             //->orderBy('p.id', 'ASC')
             //->setMaxResults(10)
             ->getQuery()
