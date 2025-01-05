@@ -91,7 +91,8 @@ class ProductorPreloadRepository extends ServiceEntityRepository
             $criteria = Criteria::create()
                 ->setFirstResult($firstResult)
                 ->setMaxResults(self::PAGINATOR_PER_PAGE);
-            $queryBuilder->addCriteria($criteria);
+            $queryBuilder->addCriteria($criteria)->orderBy('p.name', 'ASC')
+            ->addOrderBy('p.lastname', 'ASC');
     
             $doctrinePaginator = new Paginator($queryBuilder);
             $paginator = new ApiPlatformPaginator($doctrinePaginator);
@@ -270,8 +271,9 @@ class ProductorPreloadRepository extends ServiceEntityRepository
             $queryBuilder->andWhere('p.affectAt is null');            
         }
         //
-        $queryBuilder->andWhere('p.contactRepport is not null and p.productor is null');  
-
+        $queryBuilder->andWhere('p.contactRepport is not null and p.productor is null') 
+        ->orderBy('p.name', 'ASC')
+            ->addOrderBy('p.lastname', 'ASC'); 
 
         //setIsNotAss
         $criteria = Criteria::create()
