@@ -277,6 +277,7 @@ class ProductorPreloadRepository extends ServiceEntityRepository
             //->andWhere('p.exampleField = :val')
             //->setParameter('val', $value)
             ->select('p.structure, count(p.id) nbr')
+            ->leftJoin('p.cityEntity', 'c')
         ;
         if (count($cities) > 0 ) {
             //dd($filterPreloadDto->getCities());
