@@ -178,8 +178,8 @@ class ProductorPreloadRepository extends ServiceEntityRepository
             $queryBuilder->andWhere('p.affectAt is null');            
         }
         //
-        $queryBuilder->andWhere('p.contactRepport is null')->orderBy('p.name', 'ASC')
-        ->addOrderBy('p.lastname', 'ASC');  
+        $queryBuilder->andWhere('p.contactRepport is null')->orderBy('TRIM(p.name)', 'ASC')
+        ->addOrderBy('TRIM(p.lastname)', 'ASC');  
 
 
         //setIsNotAss
@@ -273,8 +273,8 @@ class ProductorPreloadRepository extends ServiceEntityRepository
         }
         //
         $queryBuilder->andWhere('p.contactRepport is not null and p.productor is null') 
-        ->orderBy('p.name', 'ASC')
-            ->addOrderBy('p.lastname', 'ASC'); 
+        ->orderBy('TRIM(p.name)', 'ASC')
+            ->addOrderBy('TRIM(p.lastname)', 'ASC'); 
 
         //setIsNotAss
         $criteria = Criteria::create()
