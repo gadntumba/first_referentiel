@@ -216,6 +216,112 @@ class ProductorDuplicateController extends AbstractController
       return new JsonResponse($resp);
 
     }
+
+    /**
+     * 
+     * @IsGranted("ROLE_ANALYST")
+     * @Route("/api/productors/litige/all", methods={"GET"}, name="all_productor_litige")
+     */
+    public function findByLitige(
+      ProductorPreloadRepository $repository,
+      NormalizerInterface $normalizer,
+      ManagerGetInstigator $managerGetInstigator,
+      CityRepository $cityRepository,
+      TerritorryRepository $territorryRepository,
+      Request $req
+    ): Response
+    {
+      $query = $req->query;
+      $arrQuery = $query->all();
+      $structures = isset($arrQuery['structures'])?$arrQuery['structures']:[];
+
+      foreach ($structures as $key => $structure) {
+        $structures[$key] = str_replace("+", " ", $structure);
+      }
+
+      $arrQuery['structures'] = $structures;
+
+      #dd($arrQuery['structures']);
+      //dd($this->getUser()->getNormalUsername());
+      $phoneNumber = $this->getUser()->getNormalUsername();
+      $assingnation = $managerGetInstigator->getAssignationInvestigator($phoneNumber);
+      //dd($assingnation);
+      $cityName = isset($assingnation["cityName"])?$assingnation["cityName"]:null;
+      $territoryName = isset($assingnation["territoryName"])?$assingnation["territoryName"]:null;
+      
+      $cities = [];
+      $territories = [];
+
+      if (!$this->isGranted("ROLE_ROOT") && is_null($cityName) && is_null($territoryName)) {
+        return new HttpException(403, "Vous n'etes pas affectez à une ville");
+      }
+      #dd();
+      if ($this->isGranted("ROLE_ROOT")) {
+        
+      }else if (!is_null($cityName)) 
+      {
+        $city = $cityRepository->findOneBy(["name" => $cityName]);
+        $cities = (!is_null($city))? [$city->getId()]:[]; 
+        #dump($phoneNumber);
+        #dd($assingnation);
+        
+      }else if(!is_null($territoryName)){
+
+        $territory = $territorryRepository->findOneBy(["name" => $territoryName]);
+        $territories = (!is_null($territory))? [$territory->getId()]:[]; 
+      }
+      //dd($query->all());
+      $filter = new FilterPreloadDto;
+
+      $filter->setSearch(isset($arrQuery['search'])?$arrQuery['search']: null);
+      $filter->setCities(isset($arrQuery['cities'])?[...$cities,...$arrQuery['cities']]:$cities);
+      $filter->setTowns(isset($arrQuery['towns'])?$arrQuery['towns'] : []);
+      $filter->setStrutures(isset($arrQuery['structures'])?$arrQuery['structures']:[]);
+      $filter->setQuarters(isset($arrQuery['quarters'])?$arrQuery['quarters']:[]);
+      //dd($filter);
+      //$filter->setInvests(isset($arrQuery['invests'])?$arrQuery['invests']:[]);
+
+      $filter->setDateStart(isset($arrQuery['datestart'])? new \DateTime($arrQuery['datestart']) :null);
+      $filter->setDateEnd(isset($arrQuery['dateend'])?new \DateTime($arrQuery['dateend']) :null);
+      $page = isset($arrQuery['page'])?(int)$arrQuery['page']:1;
+      $filter->setIsNotAss(isset($arrQuery['isnotass'])? true : false);
+
+      //dd($filter);
+
+      $paginator = $repository->findByLitige($filter, $page);
+
+      //dd($data);
+      $iterotor = $paginator->getIterator();
+        //$all = $this->repository->findBy([],  array('createdAt' => 'DESC'), 30);
+        
+        $data = [];
+        //$res = $paginator->getQuery()->getResult();
+        //$dateNumbers = min(count($statsDays), 7);
+
+        //dd($statsDay);
+        //dd($stats);
+
+
+        //dd($all); "read:productor:level_0"
+        foreach ($iterotor as $key => $item) {
+            //$itemArr = $this->transform($item, true);
+            array_push($data, $item);
+        }
+        
+        $resp = [
+            "data" => $normalizer->normalize($data,null, ["groups" => ["productors:assignable:read"]]),
+            "totalItems" => $paginator->getTotalItems(),
+            "lastPage" => $paginator->getLastPage(),
+            //"stats" => $stats,
+            //"statsDays" => array_slice($statsDays, (-1)*$dateNumbers, $dateNumbers),
+        ];
+
+      #$serializedData = $normalizer->normalize($data,null, ["groups" => ["productors:assignable:read"]]);
+
+      //"productors:duplicate:read"
+      return new JsonResponse($resp);
+
+    }
     /**
      * 
      * @IsGranted("ROLE_ANALYST")

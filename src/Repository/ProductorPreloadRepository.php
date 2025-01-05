@@ -191,6 +191,99 @@ class ProductorPreloadRepository extends ServiceEntityRepository
 
         return $paginator;
     }
+
+    /**
+     * Récupérer les enregistrements de E1 liés à E2 par 'secondary' avec confirm = true
+     */
+    public function findByLitige(FilterPreloadDto $filterPreloadDto, int $page=1) : ApiPlatformPaginator
+    {
+        $firstResult = ($page -1) * self::PAGINATOR_PER_PAGE;
+        //http://127.0.0.1:8000/api/productors/assignable/all
+        
+        // Création du QueryBuilder principal pour la table User
+        $qb = $this->createQueryBuilder('p');
+        $qb->leftJoin('p.cityEntity', 'c');
+        // Sous-requête pour vérifier l'existence de commandes pour chaque utilisateur
+        /*$subQb1 = $this->_em->createQueryBuilder();
+        $subQb1->select('1')
+            ->from('App\Entity\ProductorPreloadDuplicate', 'dm')
+            ->innerJoin('dm.secondary', 'dms')
+            ->where('dm.main = p.id AND dms.productor IS NULL'); // Association entre Order et User
+
+        // Sous-requête pour vérifier l'existence de commandes pour chaque utilisateur
+        $subQb2 = $this->_em->createQueryBuilder();
+        
+        $subQb2->select('1')
+            ->from('App\Entity\ProductorPreloadDuplicate', 'ds')
+            ->where('ds.secondary = p.id'); // Association entre Order et User
+
+        $subQb3 = $this->_em->createQueryBuilder();
+
+        $subQb3
+            ->select('1')
+            ->from('App\Entity\ProductorPreload', 'pnd')
+            ->join('App\Entity\ProductorPreloadDuplicate', 'e2', 'WITH', 'e2.secondary = pnd')  // Joindre l'entité E2 avec secondary pointant vers E1
+            ->where('e2.setNotDuplicateAt is NOT NULL AND pnd.id = p.id')  // Condition sur l'attribut confirm
+            //->setParameter('confirm', true)   // Paramètre à true
+            //->leftJoin('e1.city', 'c')
+            //->getQuery()
+            //->getResult()
+            ;
+
+        // Utilisation de EXISTS avec la sous-requête
+        $qb->where($qb->expr()->exists($subQb3->getDQL()));
+        //$qb->where($qb->expr()->exists($subQb1->getDQL()));
+        // Utilisation de NOT EXISTS avec la sous-requête
+        $qb->orWhere(
+            $qb->expr()->andX(
+                $qb->expr()->not($qb->expr()->exists($subQb2->getDQL())), 
+                $qb->expr()->exists($subQb1->getDQL())
+            ));
+        //$qb->andWhere($qb->expr()->not($qb->expr()->exists($subQb2->getDQL())));*/
+
+        $queryBuilder = $qb;//->getQuery()->getResult();
+
+        if ($filterPreloadDto && $filterPreloadDto->getTowns() && count($filterPreloadDto->getTowns()) > 0 ) {
+            $queryBuilder->andWhere('p.town IN (:towns)');
+            $queryBuilder->setParameter('towns', $filterPreloadDto->getTowns());
+        }
+
+        if ($filterPreloadDto && $filterPreloadDto->getQuarters() && count($filterPreloadDto->getQuarters()) > 0 ) {
+            $queryBuilder->andWhere('p.quarter IN (:quarters)');
+            $queryBuilder->setParameter('quarters', $filterPreloadDto->getQuarters());
+        }
+
+        if ($filterPreloadDto && $filterPreloadDto->getStrutures() && count($filterPreloadDto->getStrutures()) > 0 ) {
+            $queryBuilder->andWhere('p.structure IN (:structures)');
+            $queryBuilder->setParameter('structures', $filterPreloadDto->getStrutures());
+        }
+
+
+        if ($filterPreloadDto && $filterPreloadDto->getCities() && count($filterPreloadDto->getCities()) > 0 ) {
+            //dd($filterPreloadDto->getCities());
+            $queryBuilder->andWhere('c is not null and c.id IN (:cities)');
+            $queryBuilder->setParameter('cities', $filterPreloadDto->getCities());
+        }
+
+        if ($filterPreloadDto->getIsNotAss()) {
+        //if (true) {
+            $queryBuilder->andWhere('p.affectAt is null');            
+        }
+        //
+        $queryBuilder->andWhere('p.contactRepport is not null');  
+
+
+        //setIsNotAss
+        $criteria = Criteria::create()
+            ->setFirstResult($firstResult)
+            ->setMaxResults(self::PAGINATOR_PER_PAGE);
+        $queryBuilder->addCriteria($criteria);
+
+        $doctrinePaginator = new Paginator($queryBuilder);
+        $paginator = new ApiPlatformPaginator($doctrinePaginator);
+
+        return $paginator;
+    }
     /**
      * Récupérer les enregistrements de E1 liés à E2 par 'secondary' avec confirm = true
      */
