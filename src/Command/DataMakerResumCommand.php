@@ -166,6 +166,9 @@ class DataMakerResumCommand extends Command
              */
             $preload = $productor->getProductorPreloads()->first();
             $preload = $preload?$preload:null;
+            if (is_null($preload)) {
+                continue;
+            }
 
             $item = $this->transform($productor);
             $docs = $item["documents"]["entrepreneurialActivities"][0]["documents"];
