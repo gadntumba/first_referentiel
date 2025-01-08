@@ -284,9 +284,10 @@ class DataMakerResumCommand extends Command
 
             //$linksDoc["docs"];
             //$linksDoc["imgs"];
+            $cityName = $preload?->getCityEntity()?->getName() ? $preload?->getCityEntity()?->getName() : $addressActivityCity;
 
             $row = [
-                strtoupper(substr($preload?->getCityEntity()->getName(), 0, 3))."-". $preload?->getId(),
+                strtoupper(substr($cityName, 0, 3))."-". $preload?->getId(),
                 $item["personnalIdentityData"]["name"],
                 $item["personnalIdentityData"]["lastName"],
                 $item["personnalIdentityData"]["firstName"],
