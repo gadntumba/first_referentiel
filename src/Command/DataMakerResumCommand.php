@@ -207,18 +207,25 @@ class DataMakerResumCommand extends Command
 
             if (isset($item["otherData"]["addressLine"])) {
                 $addressActivityLine = $item["otherData"]["addressLine"];
+            }else {
+                $addressActivityLine = $addressPhysicLine;
             }
             if (isset($item["otherData"]["town"]["name"])) {
                 $addressActivityTown = $item["otherData"]["town"]["name"];
             }else{
+                $addressActivityTown = $addressPhysicTown;
                 array_push($error, ["town", $addressPhysicCity, $item["personnalIdentityData"]["phoneNumber"]]);
-                continue;
+                #continue;
             }
             if (isset($item["otherData"]["town"]["city"]["name"])) {
                 $addressActivityCity = $item["otherData"]["town"]["city"]["name"];
+            }else {
+                $addressActivityCity = $addressPhysicCity;
             }
             if (isset($item["otherData"]["town"]["city"]["province"]["name"])) {
                 $addressActivityProv = $item["otherData"]["town"]["city"]["province"]["name"];
+            }else {
+                $addressActivityProv = $addressPhysicProv;
             }
             //
 
