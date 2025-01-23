@@ -157,6 +157,7 @@ class DataMakerResumCommand extends Command
                 return $item->getPhoneNumber() == "0993426124";
             }
         );
+        $error = [];
 
         foreach ($data as $key => $productor) 
         {
@@ -166,9 +167,8 @@ class DataMakerResumCommand extends Command
              */
             $preload = $productor->getProductorPreloads()->first();
             $preload = $preload?$preload:null;
-            if (is_null($preload)) {
-                continue;
-            }
+            $item = $this->transform($productor);
+            
 
             $item = $this->transform($productor);
             $docs = $item["documents"]["entrepreneurialActivities"][0]["documents"];
@@ -191,6 +191,10 @@ class DataMakerResumCommand extends Command
             if (isset($item["housekeeping"]["address"]["town"]["city"]["province"]["name"])) {
                 $addressPhysicProv = $item["housekeeping"]["address"]["town"]["city"]["province"]["name"];
             }
+            if (is_null($preload)) {
+                array_push($error, ["preload", $addressPhysicCity, $item["personnalIdentityData"]["phoneNumber"]]);
+                continue;
+            }
 
             //
             $addressActivityLine = "";
@@ -207,6 +211,7 @@ class DataMakerResumCommand extends Command
             if (isset($item["otherData"]["town"]["name"])) {
                 $addressActivityTown = $item["otherData"]["town"]["name"];
             }else{
+                array_push($error, ["town", $addressPhysicCity, $item["personnalIdentityData"]["phoneNumber"]]);
                 continue;
             }
             if (isset($item["otherData"]["town"]["city"]["name"])) {
@@ -263,6 +268,7 @@ class DataMakerResumCommand extends Command
                 is_null($activitySector)
             ) 
             {
+                array_push($error, ["activitySector", $addressPhysicCity, $item["personnalIdentityData"]["phoneNumber"]]);
                 continue;
                 //$activityDesc = $item["otherData"]["desc"];
                 //$activitySector = $productor->getAiActivitySector();
@@ -402,7 +408,7 @@ class DataMakerResumCommand extends Command
         file_put_contents($projectDir."/download_all.csv", implode("\n", $allData));
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
-
+        dump($error);
         return Command::SUCCESS;
     }
 
