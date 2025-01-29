@@ -158,6 +158,7 @@ class DataMakerResumCommand extends Command
             }
         );
         $error = [];
+        array_push($error, ["cause","Ville", "phone"] );
 
         foreach ($data as $key => $productor) 
         {
@@ -416,6 +417,13 @@ class DataMakerResumCommand extends Command
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
         dump($error);
+        $error_trans = [];
+        foreach ($error as $key => $item) {
+            array_push($error_trans, implode(";", $item));            
+        }
+
+        file_put_contents($projectDir."/download_all_errors.csv", implode("\n", $error_trans));
+
         return Command::SUCCESS;
     }
 
