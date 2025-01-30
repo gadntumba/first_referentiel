@@ -50,8 +50,8 @@ class DataMakerResumCommand extends Command
         //$arg1 = $input->getArgument('arg1');
         $projectDir = $this->container->getParameter('kernel.project_dir');
         
-        #$data = $this->productorRepository->findBy(["isNormal" => true, "isActive" => true], ["createdAt"=>"DESC"]);
-        $data = $this->productorRepository->findBy([], ["createdAt"=>"DESC"]);
+        $data = $this->productorRepository->findBy(["isNormal" => true, "isActive" => true], ["createdAt"=>"DESC"]);
+        #$data = $this->productorRepository->findBy([], ["createdAt"=>"DESC"]);
 
         $allData = [];
 
