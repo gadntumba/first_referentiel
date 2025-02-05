@@ -37,7 +37,7 @@ class LoadPreloadCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $data_arr =[ '"ID";"Nom";"PostNom"; "PréNom";"Phone1"; "Phone2";"Structure";"Secteur";"Ville";"Commune Activité";"Quartier Activité";"Adresse Activité";"Agent","Date Signale Enregistrement";"Rapport";"commentaire";"Enregistré";"Validé";"ProductorId"'];
+        $data_arr =[ '"ID";"Nom";"PostNom"; "PréNom";"Phone1"; "Phone2";"Structure";"Secteur";"Ville";"Commune Activité";"Quartier Activité";"Adresse Activité";"Agent","Date Signale Enregistrement";"Rapport";"commentaire";"Enregistré";"Validé";"ProductorId";"ProductorFullName"'];
         $projectDir = $this->container->getParameter('kernel.project_dir');
         
         $count_shunk = 1000;
@@ -69,6 +69,7 @@ class LoadPreloadCommand extends Command
                     is_null($item->getProductor())?"NON":"OUI",
                     is_null($item?->getProductor()?->getValidateAt())?"NON":"OUI",
                     is_null($item?->getProductor()) ? null:$item?->getProductor()?->getId(),
+                    is_null($item?->getProductor()) ? null:$item?->getProductor()?->getName() + " " + $item?->getProductor()?->getLastName() + " " + $item?->getProductor()?->getFirstName(),
                 ];
 
                 foreach ($itemArray as $k => $val) {
