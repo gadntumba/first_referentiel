@@ -68,7 +68,7 @@ class LoadPreloadCommand extends Command
                     $item->getContanctComment(),
                     is_null($item->getProductor())?"NON":"OUI",
                     is_null($item?->getProductor()?->getValidateAt())?"NON":"OUI",
-                    is_null($item?->getProductor())?$item?->getProductor()?->getId():null,
+                    is_null($item?->getProductor()) ? null:$item?->getProductor()?->getId(),
                 ];
 
                 foreach ($itemArray as $k => $val) {
