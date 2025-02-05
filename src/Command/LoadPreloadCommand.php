@@ -69,7 +69,7 @@ class LoadPreloadCommand extends Command
                     is_null($item->getProductor())?"NON":"OUI",
                     is_null($item?->getProductor()?->getValidateAt())?"NON":"OUI",
                     is_null($item?->getProductor()) ? null:$item?->getProductor()?->getId(),
-                    is_null($item?->getProductor()) ? null:$item?->getProductor()?->getName() + " " + $item?->getProductor()?->getLastName() + " " + $item?->getProductor()?->getFirstName(),
+                    is_null($item?->getProductor()) ? null:$item?->getProductor()?->getName() . " " . $item?->getProductor()?->getLastName() . " " . $item?->getProductor()?->getFirstName(),
                 ];
 
                 foreach ($itemArray as $k => $val) {
