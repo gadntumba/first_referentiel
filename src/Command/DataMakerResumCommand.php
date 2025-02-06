@@ -194,7 +194,7 @@ class DataMakerResumCommand extends Command
             }
             if (is_null($preload)) {
                 array_push($error, ["preload", $addressPhysicCity, $item["personnalIdentityData"]["phoneNumber"]]);
-                continue;
+                //continue;
             }
 
             //
