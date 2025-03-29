@@ -12,6 +12,7 @@
         "doctrine/doctrine-bundle": "^2.5",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.11",
+        "firebase/php-jwt": "v6.3.0",
         "galbar/jsonpath": "^2.0",
         "knplabs/knp-paginator-bundle": "^5.8",
         "league/uri": "^6.0",
