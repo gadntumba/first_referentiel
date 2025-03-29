@@ -187,8 +187,9 @@ class InsertAgromwindaPlacesCommand extends Command
             $province = new Province;
             $province->setName($arrProvince["name"]);
             $this->em->persist($province);
+            $this->em->flush();
             
-            $this->setParam($iriProvince, $arrProvince["id"]);
+            $this->setParam($iriProvince, $province->getId());
             $name = $arrProvince["name"];
             dump("province $name : persist");
 
@@ -244,7 +245,9 @@ class InsertAgromwindaPlacesCommand extends Command
             $city->setProvince($province);
 
             $this->em->persist($city);
-            $this->setParam($iriCity, $arrCity["id"]);
+            $this->em->flush();
+
+            $this->setParam($iriCity, $city->getId());
             $name = $arrCity["name"];
 
             dump("city $name : persist");
@@ -287,8 +290,9 @@ class InsertAgromwindaPlacesCommand extends Command
             $territory->setProvince($province);
 
             $this->em->persist($territory);
+            $this->em->flush();
             
-            $this->setParam($iriTerritory, $arrTerritory["id"]);
+            $this->setParam($iriTerritory, $territory->getId());
             $name = $arrTerritory["name"];
 
             dump("territory $name : persist");
@@ -332,8 +336,8 @@ class InsertAgromwindaPlacesCommand extends Command
             $town->setCity($city);
 
             $this->em->persist($town);
-            
-            $this->setParam($iriTown, $arrTown["id"]);
+            $this->em->flush();
+            $this->setParam($iriTown, $town->getId());
             $name = $arrTown["name"];
 
             dump("town $name : persist");
@@ -363,6 +367,7 @@ class InsertAgromwindaPlacesCommand extends Command
             $sector->setTerritorry($territorry);
 
             $this->em->persist($sector);
+            $this->em->flush();
             
             $this->setParam($iriSector, $sector->getId());
             $name = $arrSector["name"];
