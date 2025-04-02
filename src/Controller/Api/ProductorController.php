@@ -199,7 +199,7 @@ class ProductorController extends AbstractController
                 );
             }
             //dd($user->getId());
-            $productor->setInvestigatorId($user->getId());
+            $productor->setInvestigatorId("0824019836");
 
             //dd($productor);
             $em->flush();
