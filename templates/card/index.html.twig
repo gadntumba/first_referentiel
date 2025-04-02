@@ -229,13 +229,13 @@
                 </div>
                 <div class="main-item">
                     <label for="" >Date et lieux de naissance :</label>
-                    <div id="" class="content"> 12-JUILLET-1985</div>
+                    <div id="" class="content"> {{formattedDate}}</div>
                 </div>
                 <div class="main-item">
                     <label for="">Adresse :</label>
                     <div id="" class="content">
-                        <div>16 AVENUE SAINT GERMAIN BARUMBU </div>
-                        <div>KINSHASA RDC</div>
+                        <div>{{address1}} </div>
+                        <div>{{address2}}</div>
                     </div>
                 </div>
                 <div class="main-item">
@@ -260,7 +260,7 @@
 <script src="/canevaHttml.js"></script>
 <script>
     console.log(window)
-    html2canvas(document.querySelector("#capture"), {width:1063, height:650}).then(canvas => {
+    /*html2canvas(document.querySelector("#capture"), {width:1063, height:650}).then(canvas => {
         console.log(canvas.toString())
         /*var data = canvas.toDataURL();
         var prev = window.location.href;
@@ -272,7 +272,7 @@
             var url  = window.URL.createObjectURL(blob);
             window.location.assign(url);
         });
-    });
+    });*/
 </script>
 
 </body>

@@ -28,15 +28,40 @@ class CardController extends AbstractController
 
         if ($statusCode >=200 && 300 > $statusCode) {
             $data = $resp->toArray();
+            $address = "";
+            $line = $data["housekeeping"]["address"]["line"];
+
+            if(isset($data["housekeeping"]["address"]["town"])) {
+                $townName = isset($data["housekeeping"]["address"]["town"]["name"]) ? $data["housekeeping"]["address"]["town"]["name"] : "" ;
+                $cityName = isset($data["housekeeping"]["address"]["town"]["city"]["name"]) ? $data["housekeeping"]["address"]["town"]["city"]["name"] : "" ;
+                $provinceName = isset($data["housekeeping"]["address"]["town"]["city"]["province"]["name"]) ? $data["housekeeping"]["address"]["town"]["city"]["province"]["name"] : "" ;
+                $address1 = $cityName . ", " .$townName . ", " . $line;
+                $address2 = $provinceName ;
+            }elseif (isset($data["housekeeping"]["address"]["sector"])) {
+                $sectorName = isset($data["housekeeping"]["address"]["sector"]["name"]) ? $data["housekeeping"]["address"]["sector"]["name"] : "" ;
+                $territoryName = isset($data["housekeeping"]["address"]["sector"]["territory"]["name"]) ? $data["housekeeping"]["address"]["sector"]["territory"]["name"] : "" ;
+                $provinceName = isset($data["housekeeping"]["address"]["sector"]["territory"]["province"]["name"]) ? $data["housekeeping"]["address"]["sector"]["territory"]["province"]["name"] : "" ;
+                $address1 = $territoryName .", " . $sectorName . ", " . $line;
+                $address2 = $provinceName ;
+            }
+
+            $dateString = isset($data["personnalIdentityData"]["birthdate"])? $data["personnalIdentityData"]["birthdate"] : "";
+
+            $date = new \DateTime($dateString);
+            $formattedDate = $date->format("d-m-Y");
+
             return $this->render('card/index.html.twig', [
                 'controller_name' => 'CardController',
                 'data' => $data,
+                'address1' => $address1,
+                'address2' => $address2,
+                'formattedDate' => $formattedDate,
             ]);
         }
 
         throw new HttpException(400, "Not found");
 
-        dd($data);
+        //dd($data);
 
         //dd($user->getNfcId());
         
