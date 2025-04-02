@@ -380,7 +380,7 @@ class Productor {
 
         $productor->setNumberPieceOfIdentification($pieceOfIdentificationData->getPieceId());
         $productor->setTypePieceOfIdentification($pieceOfIdentificationData->getPieceIdentificationType());
-        $productor->setPhotoPieceOfIdentification($this->getPathFile($this->getPhotoPieceOfIdentification()));
+        //$productor->setPhotoPieceOfIdentification($this->getPathFile($this->getPhotoPieceOfIdentification()));
 
         return $productor;
     }
