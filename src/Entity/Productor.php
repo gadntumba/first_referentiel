@@ -200,7 +200,7 @@ class Productor
      * 
      * @Groups({"read:collection","read:producer:image","write:Productor"})
      */
-    #[ORM\Column(type:"string")]
+    #[ORM\Column(type:"string", nullable:true)]
     #[File(normalizerClassName: LiipImagineNormalizerFile::class, normalizerParams:["filter" => ["pic_identity"]])]
     private $photoPieceOfIdentification;
 
