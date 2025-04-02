@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
+<style>
+    .item1 { 
+        grid-area: header;
+    }
+    .item2 { grid-area: photo; }
+    .item3 { grid-area: qrcode; }
+        
+    .item4 { grid-area: main;}
+    
+    .frame {
+      /*width: 100%;*/
+      width: 1063px;
+      margin: auto;
+      height: auto;
+      position: absolute;
+      /*max-width: 100%;*/
+    }
+    
+    .item2 .photo {
+      /*width: 100%;*/
+      width: 100%;
+      margin: auto;
+      height: auto;
+      /*max-width: 100%;*/
+    }
+    .item2 .photo-container {
+        width: 80%;
+        height: 100%;
+        max-width: 200px;
+        padding-top: 22px;
+        margin: auto;
+        /*border: 1px solid black;*/
+    }
+    
+    
+    .item3 .photo {
+      /*width: 100%;*/
+      width: 100%;
+      margin: auto;
+      height: auto;
+      /*max-width: 100%;*/
+    }
+    .item3 .photo-container {
+        width: 70%;
+        height: 100%;
+        max-width: 200px;
+        padding-top: 22px;
+        margin: auto;
+        /*border: 1px solid black;*/
+    }
+    
+    
+    .item1 .me-container {
+        color: black;
+        font-family: 'Nexa', sans-serif;
+        padding-top: 22px;
+                                                    
+    }
+    .item1 .me-container .me-footer {
+        color: black;
+        background-color: black;
+        height: 2px;
+        width: 85%;
+    }
+    
+    .item1 h1 { 
+        font-size: .8em;
+        padding: 0px;
+        margin: 0px;
+        text-align: left;
+    }
+    .item1 h2 { 
+        font-size: 1.1em;
+        padding: 0px;
+        margin: 0px;
+        text-align: left;
+    }
+    .item1 h4 { 
+        font-size: 0.65em;
+        padding: 0px;
+        margin: 0px;
+        text-align: left;
+    }
+    
+    .item4 .me-container .nui span {
+        padding-left: 15px;
+        display: inline-block;
+    }
+    .item4 .me-container .nui {
+        font-family: 'OCR A Extended', sans-serif;
+        font-size: 1em;
+    }
+    .item4 .me-container {
+        /*padding-left: 15px;*/
+        padding-top: 1rem;
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        z-index: 2;
+        /*border: 1px solid black;*/
+    }
+    .logo {
+        position: absolute;
+        bottom: -5px;
+        right: 100px;
+    }
+    
+    .flag-logo {
+        position: relative;
+        bottom: 17px;
+    }
+    .armoiries {
+        position: absolute;
+        bottom: 50px;
+        right: 300px;
+    }
+    .armoiries-img {
+        z-index: 999 !important;
+    }
+    .item4 .personnal-id {
+        /*padding-left: 15px;*/
+        font-size: 0.7em;
+        padding-top: 1rem;
+        font-family: 'Lato', sans-serif;
+        z-index: 1;
+    }
+    
+    .item4 .personnal-id .main-item {
+        padding-top: 2px;
+    }
+    .item4 .personnal-id .main-item label {
+        font-size: 0.8em;
+    }
+    .item4 .personnal-id .main-item .content {
+        font-size: 1.2em;
+        font-family: 'OCR A Extended', sans-serif;
+    }
+    
+    .grid-container {
+      display: grid;
+      grid-template-areas:
+        'photo photo header header header '
+        'photo photo main main main '
+        'qrcode qrcode main main main '
+        ;
+      gap: 10px;
+      border: 1px solid black;
+      background-color: rgba(255, 255, 255, 0.8);
+      /*background-color: #2196F3;*/
+      padding: 10px;
+      width: 1063px;
+      margin: auto;
+      height: 591px;
+    }
+    
+    .grid-container > div {
+      background-color: rgba(255, 255, 255, 0.8);
+      /*text-align: center;*/
+      padding: 20px 0;
+      font-size: 30px;
+    }
+    @media print 
+    {
+        @page
+        {
+            size: 3.6in 2.2in;
+            size: portrait;
+        }
+    }
+</style>
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+<link href="http://fonts.cdnfonts.com/css/ocr-a-extended" rel="stylesheet">
+<link href="http://fonts.cdnfonts.com/css/nexa-bold" rel="stylesheet">
+                
+</head>
+<!--body onload="window.print()"-->
+<body>
+
+
+    <div class="grid-container" id="capture">
+        <img class="frame" height="591" src="/filigrane.png" alt="">
+        <img class="frame" height="591" src="/filigrane_2.png" alt="">
+        
+      <div class="item1">
+          <div class="me-container">
+            <h1>REPUBLIQUE DEMOCRATIQUE DU CONGO</h1>
+            <h4>Ministère de l'Agriculture, Pêche et Elevage et du Développement Rural</h4>
+            <h2>CARTE DU PRODUCTEUR/PRODUCTRICE</h2>
+            <div class="me-footer">
+    
+            </div>
+          </div>
+      </div>
+      <div class="item2">
+          <div class="photo-container">
+            <img class="photo" height="54" src="{{data.photoPath}}" alt="">
+          </div>
+      </div>
+      <div class="item3">
+        <div class="photo-container">
+            <img class="photo" height="54" src="/qrcode.png" alt="">
+        </div>
+      </div>  
+      <div class="item4">
+    
+        <div class="me-container">
+    
+            <div class="nui">
+                <label for="">NUI : </label>
+                <span id="">{{data.personnalIdentityData.nui}}</span>
+            </div>
+            
+            <div class="personnal-id">
+                    
+                <div class="main-item">
+                    <label for="">Nom :</label>
+                    <div id="" class="content">{{data.personnalIdentityData.lastName}}</div>
+                </div>
+                <div class="main-item">
+                    <label for="">Prenom :</label>
+                    <div id="" class="content">{{data.personnalIdentityData.firstName}}</div>
+                </div>
+                <div class="main-item">
+                    <label for="" >Date et lieux de naissance :</label>
+                    <div id="" class="content"> 12-JUILLET-1985</div>
+                </div>
+                <div class="main-item">
+                    <label for="">Adresse :</label>
+                    <div id="" class="content">
+                        <div>16 AVENUE SAINT GERMAIN BARUMBU </div>
+                        <div>KINSHASA RDC</div>
+                    </div>
+                </div>
+                <div class="main-item">
+                    <label for="">Profession :</label>
+                    <div id="" class="content">Agriculteur</div>
+                </div>
+    
+            </div>
+            <div class="logo">
+                <img class="flag-logo" src="/cd.jpg" height="50" alt="ggg">
+                <img src="/LOGO-PNDA.png" height="100" alt="ggg">
+            </div>
+            <div class="armoiries">
+                <img class="armoiries-img" src="/armoirie1.png" height="300" alt="ggg">
+            </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    </body>
+<script src="/canevaHttml.js"></script>
+<script>
+    console.log(window)
+    html2canvas(document.querySelector("#capture"), {width:1063, height:650}).then(canvas => {
+        console.log(canvas.toString())
+        /*var data = canvas.toDataURL();
+        var prev = window.location.href;
+        window.location.href = data.replace("image/png", "image/octet-stream");
+        window.location.href = prev;
+        document.body.appendChild(canvas)*/
+
+        canvas.toBlob(function (blob) {
+            var url  = window.URL.createObjectURL(blob);
+            window.location.assign(url);
+        });
+    });
+</script>
+
+</body>
+</html>

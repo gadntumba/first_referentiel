@@ -11,7 +11,7 @@ liip_imagine:
         pic_producer:
             quality: 75
             filters:
-                thumbnail: { size: [270, 360], mode: outbound }
+                thumbnail: { size: [818 , 1080], mode: outbound }
         pic_identity:
             quality: 80
             filters:
