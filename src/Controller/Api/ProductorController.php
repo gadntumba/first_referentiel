@@ -942,7 +942,7 @@ class ProductorController extends AbstractController
         // 4. Sauvegarder le fichier
         file_put_contents($filePath, $decodedData);
 
-        return $filePath;
+        return $fileName;
     }
 
 
