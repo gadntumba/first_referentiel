@@ -260,19 +260,19 @@
 <script src="/canevaHttml.js"></script>
 <script>
     console.log(window)
-    /*html2canvas(document.querySelector("#capture"), {width:1063, height:650}).then(canvas => {
+    html2canvas(document.querySelector("#capture"), {width:1063, height:650}).then(canvas => {
         console.log(canvas.toString())
-        /*var data = canvas.toDataURL();
+        var data = canvas.toDataURL();
         var prev = window.location.href;
         window.location.href = data.replace("image/png", "image/octet-stream");
         window.location.href = prev;
-        document.body.appendChild(canvas)*/
+        document.body.appendChild(canvas)
 
         canvas.toBlob(function (blob) {
             var url  = window.URL.createObjectURL(blob);
             window.location.assign(url);
         });
-    });*/
+    });
 </script>
 
 </body>
