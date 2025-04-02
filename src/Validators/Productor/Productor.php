@@ -77,7 +77,7 @@ class Productor {
      * @Assert\File(
      *  maxSize="10M"
      * )
-     * @Assert\NotNull
+     * 
      */
     private $photoPieceOfIdentification;
 
@@ -85,7 +85,6 @@ class Productor {
      * @Assert\File(
      *  maxSize="10M"
      * )
-     * @Assert\NotNull
      */
     private $incumbentPhoto;
 
@@ -362,7 +361,7 @@ class Productor {
         $productor->setFirstName($persIdenProduct->getFirstName());
         $productor->setLastName($persIdenProduct->getLastName());
         $productor->setSexe($persIdenProduct->getSexe());
-        $productor->setIncumbentPhoto($this->getPathFile($this->getIncumbentPhoto()));
+        //$productor->setIncumbentPhoto($this->getPathFile($this->getIncumbentPhoto()));
         $productor->setPhoneNumber($persIdenProduct->getPhone());
         $productor->setPhoneNumber($persIdenProduct->getPhone());
         $productor->setBirthdate($persIdenProduct->getBirthday());
@@ -510,5 +509,40 @@ class Productor {
         $this->incumbentPhoto = $incumbentPhoto;
 
         return $this;
+    }
+
+    /**
+     * 
+     */
+    function savePhoto($base64String) : string {
+        
+        //$dirName = $this->getParameter("kernel.project_dir") ."/data";
+        //$this->fileUploader->getuploadPath();
+        $dirName = $this->fileUploader->getuploadPath();
+        //$fileName = $dirName . "/productor.json";
+        //$data = json_decode(file_get_contents($fileName), true);
+        //$base64String = $data["personnalIdentityData"]["photo"];
+         // 1. Décoder la chaîne base64
+        $decodedData = base64_decode($base64String);
+        $extension= "png";
+        $uploadDirectory=$dirName;
+        
+        if ($decodedData === false) {
+            throw new \InvalidArgumentException('Invalid base64 string');
+        }
+        
+        // 2. Vérifier que les données décodées sont bien une image
+        if (@imagecreatefromstring($decodedData) === false) {
+            throw new \InvalidArgumentException('The decoded string is not a valid image');
+        }
+        
+        // 3. Créer un nom de fichier unique
+        $fileName = uniqid().'.'.$extension;
+        $filePath = $uploadDirectory.'/'.$fileName;
+        
+        // 4. Sauvegarder le fichier
+        file_put_contents($filePath, $decodedData);
+
+        return $filePath;
     }
 }

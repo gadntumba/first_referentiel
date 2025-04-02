@@ -106,11 +106,15 @@ class ProductorController extends AbstractController
          */
         try {
             $requestData = $this->getRequestParams($request, true);
+            #$logger->info()
 
             $logger->info('############### Start data json productor #########');
             $logger->info(\json_encode($requestData));
             $logger->info('########## End Data jso productor ##########');
             
+            /**
+             * @var ProductorProductor
+             */
             $productorValidator = $this->denormalizer->denormalize(
                 $requestData,
                 ProductorProductor::class,
@@ -139,6 +143,8 @@ class ProductorController extends AbstractController
             $productor = new Productor();
             // add the identify data
             $productor = $productorValidator->addPersonnalIdentification($productor);
+
+            $productor->setIncumbentPhoto($this->savePhoto($productorValidator->getPersonnalIdentityData()->getPhoto()));
             // add the house keeping
             $productor->setHousekeeping($productorValidator->getHouseKeeping());
             // add pieceOfIdentificationData
@@ -903,6 +909,40 @@ class ProductorController extends AbstractController
 
 
         return new JsonResponse($data, 200);
+    }
+
+    /**
+     * 
+     */
+    function savePhoto($base64String) : string {
+        
+        //$dirName = $this->getParameter("kernel.project_dir") ."/data";
+        $dirName = $this->getParameter("uploads_directory");
+        //$fileName = $dirName . "/productor.json";
+        //$data = json_decode(file_get_contents($fileName), true);
+        //$base64String = $data["personnalIdentityData"]["photo"];
+         // 1. Décoder la chaîne base64
+        $decodedData = base64_decode($base64String);
+        $extension= "png";
+        $uploadDirectory=$dirName;
+        
+        if ($decodedData === false) {
+            throw new \InvalidArgumentException('Invalid base64 string');
+        }
+        
+        // 2. Vérifier que les données décodées sont bien une image
+        if (@imagecreatefromstring($decodedData) === false) {
+            throw new \InvalidArgumentException('The decoded string is not a valid image');
+        }
+        
+        // 3. Créer un nom de fichier unique
+        $fileName = uniqid().'.'.$extension;
+        $filePath = $uploadDirectory.'/'.$fileName;
+        
+        // 4. Sauvegarder le fichier
+        file_put_contents($filePath, $decodedData);
+
+        return $filePath;
     }
 
 
